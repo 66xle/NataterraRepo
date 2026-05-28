@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,8 +10,10 @@ public class HexGrid : MonoBehaviour
     public int height = 6;
 
     public HexCell cellPrefab;
-
     public TMP_Text cellLabelPrefab;
+
+    public Color defaultColor = Color.white;
+    public Color touchedColor = Color.magenta;
 
     HexCell[] cells;
     Canvas gridCanvas;
@@ -59,7 +62,12 @@ public class HexGrid : MonoBehaviour
     {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
-        Debug.Log("touched at " + coordinates.ToString());
+        int x = coordinates.X;
+        int z = coordinates.Z + (coordinates.X - (coordinates.X & 1)) / 2;
+        int index = x + z * width;
+        HexCell cell = cells[index];
+        cell.color = touchedColor;
+        hexMesh.Triangulate(cells);
     }
 
     void CreateCell(int x, int z, int i)
@@ -73,11 +81,13 @@ public class HexGrid : MonoBehaviour
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        cell.color = defaultColor;
 
         TMP_Text label = Instantiate<TMP_Text>(cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
         label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
         label.text = cell.coordinates.ToStringOnSeparateLines();
+
     }
 
     

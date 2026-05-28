@@ -24,7 +24,7 @@ public struct HexCoordinates
 
     public static HexCoordinates FromOffsetCoordinates(int x, int z)
     {
-        return new HexCoordinates(x, z - x / 2);
+        return new HexCoordinates(x, z - (x - (x & 1)) / 2);
     }
 
     public static HexCoordinates FromPosition(Vector3 position)
@@ -58,11 +58,11 @@ public struct HexCoordinates
 
     public override string ToString()
     {
-        return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
+        return "(" + X.ToString() + ", " + Z.ToString() + ")";
     }
 
     public string ToStringOnSeparateLines()
     {
-        return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
+        return X.ToString() + "\n" + Z.ToString();
     }
 }
