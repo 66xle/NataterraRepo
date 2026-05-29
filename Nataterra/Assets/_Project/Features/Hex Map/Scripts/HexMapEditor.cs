@@ -54,6 +54,10 @@ public class HexMapEditor : MonoBehaviour
         {
             HandleInput();
         }
+        else if (Input.GetKeyDown(KeyCode.Mouse1) && !EventSystem.current.IsPointerOverGameObject())
+        {
+            ResetCell();
+        }
     }
 
     void HandleInput()
@@ -99,6 +103,20 @@ public class HexMapEditor : MonoBehaviour
 
                 basesPlaced[baseIndex] = cellIndex;
             }
+        }
+    }
+
+    void ResetCell()
+    {
+        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        {
+            int cellIndex = hexGrid.GetCellIndex(hit.point);
+
+            hexGrid.RemoveCellBiome(cellIndex);
+            hexGrid.RemoveCellResource(cellIndex);
+            hexGrid.RemoveCellBase(cellIndex);
         }
     }
 

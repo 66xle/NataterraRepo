@@ -49,6 +49,14 @@ public class HexGrid : MonoBehaviour
         hexMesh.Triangulate(cells);
     }
 
+    public void RemoveCellBiome(int index)
+    {
+        HexCell cell = cells[index];
+        cell.biome = Biome.None;
+        cell.color = Color.white;
+        hexMesh.Triangulate(cells);
+    }
+
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
         if (cells[index].resourceObj != null)
