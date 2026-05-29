@@ -42,6 +42,14 @@ public class HexGrid : MonoBehaviour
 
 
 
+    public bool IsCellABiome(int index)
+    {
+        if (cells[index].biome == Biome.None)
+            return false;
+
+        return true;
+    }
+
     public void SetCellBiome(int index, Biome biome, Color color)
     {
         cells[index].biome = biome;

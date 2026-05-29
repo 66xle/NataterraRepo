@@ -70,10 +70,15 @@ public class HexMapEditor : MonoBehaviour
 
             if (Tab.Biome == currentTab)
             {
+                // Biome
                 hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeColors[biomeIndex]);
             }
             else if (Tab.Resource == currentTab)
             {
+                #region Resource
+
+                if (!hexGrid.IsCellABiome(cellIndex)) return;
+
                 Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
                 cellPosition = hexGrid.transform.TransformPoint(cellPosition);
 
@@ -84,9 +89,13 @@ public class HexMapEditor : MonoBehaviour
 
                 hexGrid.RemoveCellBase(cellIndex);
                 hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
+
+                #endregion
             }
             else if (Tab.Base == currentTab)
             {
+                #region Base
+
                 Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
                 cellPosition = hexGrid.transform.TransformPoint(cellPosition);
 
@@ -102,6 +111,8 @@ public class HexMapEditor : MonoBehaviour
                 hexGrid.SetCellBase(cellIndex, baseIndex, baseObj);
 
                 basesPlaced[baseIndex] = cellIndex;
+
+                #endregion
             }
         }
     }
