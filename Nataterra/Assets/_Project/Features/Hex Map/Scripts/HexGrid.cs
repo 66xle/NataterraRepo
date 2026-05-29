@@ -40,7 +40,19 @@ public class HexGrid : MonoBehaviour
         hexMesh.Triangulate(cells);
     }
 
-    public void ColorCell(Vector3 position, Color color)
+    public void ColorCell(int index, Color color)
+    {
+        HexCell cell = cells[index];
+        cell.color = color;
+        hexMesh.Triangulate(cells);
+    }
+
+    public void SetCellBiome(int index, Biome biome)
+    {
+        cells[index].biome = biome;
+    }
+
+    public int GetCellIndex(Vector3 position)
     {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPosition(position);
@@ -48,8 +60,7 @@ public class HexGrid : MonoBehaviour
         int z = coordinates.Z + (coordinates.X - (coordinates.X & 1)) / 2;
         int index = x + z * width;
         HexCell cell = cells[index];
-        cell.color = color;
-        hexMesh.Triangulate(cells);
+        return index;
     }
 
     void CreateCell(int x, int z, int i)
