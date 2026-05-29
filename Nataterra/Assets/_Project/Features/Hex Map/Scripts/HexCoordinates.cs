@@ -22,6 +22,8 @@ public struct HexCoordinates
         Z = z;
     }
 
+
+
     public static HexCoordinates FromOffsetCoordinates(int x, int z)
     {
         return new HexCoordinates(x, z - (x - (x & 1)) / 2);
@@ -55,6 +57,16 @@ public struct HexCoordinates
 
         return new HexCoordinates(iX, iZ);
     }
+
+    public static Vector3 ToPosition(HexCoordinates coordinates)
+    {
+        float x = HexMetrics.outerRadius * 1.5f * coordinates.X;
+        float z = HexMetrics.outerRadius * Mathf.Sqrt(3f) * (coordinates.Z + coordinates.X * 0.5f);
+
+        return new Vector3(x, 0f, z);
+    }
+
+
 
     public override string ToString()
     {

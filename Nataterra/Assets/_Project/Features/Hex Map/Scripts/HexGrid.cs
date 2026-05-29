@@ -40,17 +40,63 @@ public class HexGrid : MonoBehaviour
         hexMesh.Triangulate(cells);
     }
 
-    public void ColorCell(int index, Color color)
+
+
+    public void SetCellBiome(int index, Biome biome, Color color)
     {
-        HexCell cell = cells[index];
-        cell.color = color;
+        cells[index].biome = biome;
+        cells[index].color = color;
         hexMesh.Triangulate(cells);
     }
 
-    public void SetCellBiome(int index, Biome biome)
+    public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
-        cells[index].biome = biome;
+        if (cells[index].resourceObj != null)
+        {
+            Destroy(cells[index].resourceObj);
+        }
+
+        cells[index].resource = resource;
+        cells[index].resourceObj = resourceObj;
     }
+
+    public void RemoveCellResource(int cellIndex)
+    {
+        HexCell cell = cells[cellIndex];
+        if (cell.resourceObj != null)
+        {
+            Destroy(cell.resourceObj);
+        }
+
+        cell.resource = Resource.None;
+        cell.resourceObj = null;
+    }
+
+    public void SetCellBase(int cellIndex, int baseIndex, GameObject baseObj)
+    {
+        if (cells[cellIndex].baseObj != null)
+        {
+            Destroy(cells[cellIndex].baseObj);
+        }
+
+        HexCell cell = cells[cellIndex];
+
+        cell.raceBase = (Base)baseIndex;
+        cell.baseObj = baseObj;
+    }
+
+    public void RemoveCellBase(int cellIndex)
+    {
+        HexCell cell = cells[cellIndex];
+        if (cell.baseObj != null)
+        {
+            Destroy(cell.baseObj);
+        }
+
+        cell.raceBase = Base.None;
+        cell.baseObj = null;
+    }
+    
 
     public int GetCellIndex(Vector3 position)
     {
@@ -59,8 +105,12 @@ public class HexGrid : MonoBehaviour
         int x = coordinates.X;
         int z = coordinates.Z + (coordinates.X - (coordinates.X & 1)) / 2;
         int index = x + z * width;
-        HexCell cell = cells[index];
         return index;
+    }
+
+    public Vector3 GetCellPosition(int index)
+    {
+        return HexCoordinates.ToPosition(cells[index].coordinates);
     }
 
     void CreateCell(int x, int z, int i)

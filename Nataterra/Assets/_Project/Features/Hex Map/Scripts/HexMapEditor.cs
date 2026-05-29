@@ -15,13 +15,24 @@ public enum Tab
 
 public class HexMapEditor : MonoBehaviour
 {
-    public Color[] colors;
+    public Color[] biomeColors;
+    public Color[] resourceColors;
 
     public List<Button> buttons;
 
     public List<GameObject> panels;
 
+    public GameObject prefab;
+    public Vector3 resourceScale = Vector3.one;
+    public Vector3 baseScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+    public LayerMask hexGridLayer;
+
     public HexGrid hexGrid;
+
+
+
+    int[] basesPlaced = new int[4];
 
     Tab currentTab;
 
@@ -49,22 +60,44 @@ public class HexMapEditor : MonoBehaviour
     {
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit))
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
         {
             int cellIndex = hexGrid.GetCellIndex(hit.point);
 
             if (Tab.Biome == currentTab)
             {
-                hexGrid.ColorCell(cellIndex, colors[biomeIndex]);
-                hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex);
+                hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeColors[biomeIndex]);
             }
             else if (Tab.Resource == currentTab)
             {
-                
+                Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
+                cellPosition = hexGrid.transform.TransformPoint(cellPosition);
+
+                GameObject resourceObj = Instantiate(prefab, cellPosition, Quaternion.identity);
+                resourceObj.transform.localScale = resourceScale;
+                resourceObj.GetComponent<Renderer>().material.color = resourceColors[resourceIndex];
+
+
+                hexGrid.RemoveCellBase(cellIndex);
+                hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
             }
             else if (Tab.Base == currentTab)
             {
-                
+                Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
+                cellPosition = hexGrid.transform.TransformPoint(cellPosition);
+
+                GameObject baseObj = Instantiate(prefab, cellPosition, Quaternion.identity);
+                baseObj.transform.localScale = baseScale;
+                baseObj.GetComponent<Renderer>().material.color = Color.white;
+
+                // Only one base should exist per type
+                hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
+
+                hexGrid.RemoveCellResource(cellIndex);
+                hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex, biomeColors[baseIndex]);
+                hexGrid.SetCellBase(cellIndex, baseIndex, baseObj);
+
+                basesPlaced[baseIndex] = cellIndex;
             }
         }
     }
