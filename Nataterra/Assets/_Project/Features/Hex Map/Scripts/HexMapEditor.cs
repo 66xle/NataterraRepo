@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -35,7 +36,7 @@ public class HexMapEditor : MonoBehaviour
 
 
 
-    int[] basesPlaced = new int[4];
+    int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
     ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
 
     Tab currentTab;
@@ -186,8 +187,16 @@ public class HexMapEditor : MonoBehaviour
         baseObj.transform.localScale = baseScale;
         baseObj.GetComponent<Renderer>().material.color = Color.white;
 
+        for (int i = 0; i < basesPlaced.Length; i++)
+        {
+            if (basesPlaced[i] != cellIndex) continue;
+
+            basesPlaced[i] = -1;
+        }
+
         // Only one base should exist per type
-        hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
+        if (basesPlaced[baseIndex] != -1)
+            hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
 
         hexGrid.RemoveCellResource(cellIndex);
         hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex, biomeColors[baseIndex]);
