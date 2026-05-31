@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class HexGrid : MonoBehaviour
@@ -56,15 +57,6 @@ public class HexGrid : MonoBehaviour
         cells[index].color = color;
         hexMesh.Triangulate(cells);
     }
-
-    public void RemoveCellBiome(int index)
-    {
-        HexCell cell = cells[index];
-        cell.biome = Biome.None;
-        cell.color = Color.white;
-        hexMesh.Triangulate(cells);
-    }
-
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
         if (cells[index].resourceObj != null)
@@ -75,19 +67,6 @@ public class HexGrid : MonoBehaviour
         cells[index].resource = resource;
         cells[index].resourceObj = resourceObj;
     }
-
-    public void RemoveCellResource(int cellIndex)
-    {
-        HexCell cell = cells[cellIndex];
-        if (cell.resourceObj != null)
-        {
-            Destroy(cell.resourceObj);
-        }
-
-        cell.resource = Resource.None;
-        cell.resourceObj = null;
-    }
-
     public void SetCellBase(int cellIndex, int baseIndex, GameObject baseObj)
     {
         if (cells[cellIndex].baseObj != null)
@@ -101,6 +80,24 @@ public class HexGrid : MonoBehaviour
         cell.baseObj = baseObj;
     }
 
+    public void RemoveCellBiome(int index)
+    {
+        HexCell cell = cells[index];
+        cell.biome = Biome.None;
+        cell.color = Color.white;
+        hexMesh.Triangulate(cells);
+    }
+    public void RemoveCellResource(int cellIndex)
+    {
+        HexCell cell = cells[cellIndex];
+        if (cell.resourceObj != null)
+        {
+            Destroy(cell.resourceObj);
+        }
+
+        cell.resource = Resource.None;
+        cell.resourceObj = null;
+    }
     public void RemoveCellBase(int cellIndex)
     {
         HexCell cell = cells[cellIndex];
@@ -112,16 +109,37 @@ public class HexGrid : MonoBehaviour
         cell.raceBase = Base.None;
         cell.baseObj = null;
     }
+
+    public Biome GetCellBiome(int index)
+    {
+        return cells[index].biome;
+    }
+    public Resource GetCellResource(int index)
+    {
+        return cells[index].resource;
+    }
+    public Base GetCellBase(int index)
+    {
+        return cells[index].raceBase;
+    }
+
+
+
     
 
     public int GetCellIndex(Vector3 position)
     {
-        position = transform.InverseTransformPoint(position);
-        HexCoordinates coordinates = HexCoordinates.FromPosition(position);
+        HexCoordinates coordinates = GetHexCoordinates(position);
         int x = coordinates.X;
         int z = coordinates.Z + (coordinates.X - (coordinates.X & 1)) / 2;
         int index = x + z * width;
         return index;
+    }
+
+    public HexCoordinates GetHexCoordinates(Vector3 position)
+    {
+        position = transform.InverseTransformPoint(position);
+        return HexCoordinates.FromPosition(position);
     }
 
     public Vector3 GetCellPosition(int index)
