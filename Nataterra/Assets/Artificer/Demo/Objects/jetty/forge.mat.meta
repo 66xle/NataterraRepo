@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 230ea7567ebe34941bf23e59efe50749
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/forge.mat
+  uploadId: 926254

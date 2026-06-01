@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 761fe066a79385d4da808be676e4795c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Other Bits/Scripts/DOFControl.cs
+  uploadId: 926254

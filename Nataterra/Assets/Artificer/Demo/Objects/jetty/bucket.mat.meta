@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a6b8bc60cb2e96d4b87097670485bd06
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/bucket.mat
+  uploadId: 926254

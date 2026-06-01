@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ceb840375e9be1842bd50cf5093ba65d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Other Bits/URP-Artificer HF-Renderer 1.asset
+  uploadId: 926254

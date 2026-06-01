@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 111a2f03875a29949b0503d5b1b2476f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Other Bits/Scripts/Target.cs
+  uploadId: 926254

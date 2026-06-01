@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f80e439edfb99a942aa8c9186a9aea63
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Build Profiles/jetty merged_BuildData 1.asset
+  uploadId: 926254

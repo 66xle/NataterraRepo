@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1405fd8bd9d826544b30a6375c9bce3a
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/FloatRange.cs
+  uploadId: 926254

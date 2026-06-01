@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fd0f416f63ca7264bbaa03f0337b2d42
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/fender.mat
+  uploadId: 926254

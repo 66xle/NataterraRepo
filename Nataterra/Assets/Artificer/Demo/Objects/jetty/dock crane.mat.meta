@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 02c04ab869d1c38459d1d50d7d497b01
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/dock crane.mat
+  uploadId: 926254

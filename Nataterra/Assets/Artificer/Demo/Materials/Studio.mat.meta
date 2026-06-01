@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 77f2b4ab2e53dc94991c0dbb1329743a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Materials/Studio.mat
+  uploadId: 926254

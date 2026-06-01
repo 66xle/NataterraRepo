@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e6e78e48776a84341b1d361e6a2d2bb6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/MeshSplitterHybrid.cs
+  uploadId: 926254

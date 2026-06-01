@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 26c2bc379345c5e4c9696c96ddc4511b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Materials/Click Build Material.mat
+  uploadId: 926254

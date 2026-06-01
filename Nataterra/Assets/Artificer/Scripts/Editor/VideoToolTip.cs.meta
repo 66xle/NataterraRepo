@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 5c1c21ff9472f754295c31e41ca2a7a8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/VideoToolTip.cs
+  uploadId: 926254

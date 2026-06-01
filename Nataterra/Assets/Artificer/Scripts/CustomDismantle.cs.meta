@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e52ca52ad9ca2244eae7e4b42c434ea1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/CustomDismantle.cs
+  uploadId: 926254

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ec363661db323704b908e75a2fa52da7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Build Profiles/artificer sphere_BuildData 1.asset
+  uploadId: 926254

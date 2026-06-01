@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a4543fccd2a657b40a6fbe3072f43e0b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/Beer Crate/beer crate.mat
+  uploadId: 926254

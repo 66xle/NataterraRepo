@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 39c52cec3702aca4b8c3be75a8696ff1
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Other Bits/Scripts/TestPlacedEvents.cs
+  uploadId: 926254

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 0cea8511eb1d6214f86d9aaa2f36fcdf
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Materials/Place Material.mat
+  uploadId: 926254

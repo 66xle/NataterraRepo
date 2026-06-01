@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: aa37ee5a6792c9144b3210f6829c9fdb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/MeshFractureEditor.cs
+  uploadId: 926254

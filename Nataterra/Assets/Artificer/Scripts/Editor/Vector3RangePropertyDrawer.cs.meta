@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 03e981c31df32b347bed64674f8512dd
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/Vector3RangePropertyDrawer.cs
+  uploadId: 926254

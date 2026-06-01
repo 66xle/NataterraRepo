@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a8cb56b067942ca4297695238f9e6040
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Build Profiles/FT_BuildData 1.asset
+  uploadId: 926254

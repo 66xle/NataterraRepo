@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 748f05c37352c4e44a88af371a74453d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/UrpToBuiltin.cs
+  uploadId: 926254

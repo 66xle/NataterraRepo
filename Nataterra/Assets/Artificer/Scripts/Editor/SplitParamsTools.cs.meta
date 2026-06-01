@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: be94146154b000c47aa3ee25f9c04bb0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/SplitParamsTools.cs
+  uploadId: 926254

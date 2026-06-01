@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 9b435973a216c2c41bd19c2d23ecae35
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Scripts/Editor/HelixSplineAdvancedEditor.cs
+  uploadId: 926254

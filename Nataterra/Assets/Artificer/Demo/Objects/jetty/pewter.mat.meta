@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f93f21182f9845e479c049bbef1f3dd0
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/pewter.mat
+  uploadId: 926254

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e89806740046f044da5f62077d97db88
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Prefabs/Click to Build.prefab
+  uploadId: 926254

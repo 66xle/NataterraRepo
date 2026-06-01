@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6f89456b176e0394c9e4a98003da93d8
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Objects/jetty/barrack metal.mat
+  uploadId: 926254

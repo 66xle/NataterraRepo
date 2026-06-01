@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d7d97c7f12695dc4eb921fa393fc53fb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 341008
+  packageName: Artificer
+  packageVersion: 1.14
+  assetPath: Assets/Artificer/Demo/Materials/Unbuilt Material.mat
+  uploadId: 926254
