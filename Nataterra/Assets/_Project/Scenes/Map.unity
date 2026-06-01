@@ -5892,9 +5892,9 @@ RectTransform:
   m_Children:
   - {fileID: 1245438757}
   - {fileID: 1863919958}
-  - {fileID: 2002863905}
   - {fileID: 732403501}
   - {fileID: 1436500146}
+  - {fileID: 2002863905}
   m_Father: {fileID: 1060004295}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -8697,7 +8697,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 18, y: 213}
+  m_AnchoredPosition: {x: 18, y: 214}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1245438758
@@ -12773,7 +12773,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1894565850}
+        m_TargetAssemblyTypeName: HexMapEditor, Assembly-CSharp
+        m_MethodName: DisableToggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &1877011902
 GameObject:
@@ -12927,6 +12939,7 @@ MonoBehaviour:
   - {fileID: 481444711}
   - {fileID: 398277397}
   selectedTileText: {fileID: 1245438758}
+  disableToggle: {fileID: 1863919959}
   prefab: {fileID: 806209074225207713, guid: 7e094eb5199093345967d5c0bec52b4d, type: 3}
   resourceScale: {x: 5, y: 1, z: 5}
   baseScale: {x: 7, y: 3, z: 7}

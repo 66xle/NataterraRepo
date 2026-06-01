@@ -25,6 +25,7 @@ public class HexMapEditor : MonoBehaviour
     public List<GameObject> panels;
 
     public TMP_Text selectedTileText;
+    public Toggle disableToggle;
 
     public GameObject prefab;
     public Vector3 resourceScale = Vector3.one;
@@ -206,7 +207,14 @@ public class HexMapEditor : MonoBehaviour
     }
 
 
-    
+    public void DisableToggle()
+    {
+        bool isDisabled = disableToggle.isOn;
+
+        selectToggleGroups[0].gameObject.SetActive(isDisabled);
+        selectToggleGroups[1].gameObject.SetActive(isDisabled);
+        selectToggleGroups[2].gameObject.SetActive(isDisabled);
+    }
 
     public void SelectButton(int index)
     {
