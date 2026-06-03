@@ -53,12 +53,20 @@ public class HexMapEditor : MonoBehaviour
 
         selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
 
-        hexGrid.tgs.OnCellMouseDown += OnCellMouseDown;
+
+        
     }
 
-    void OnCellMouseDown(TerrainGridSystem grid, int cellIndex, int buttonIndex)
+    private void Update()
     {
-        if (buttonIndex == 0)
+        HandleInput();
+    }
+
+    void HandleInput()
+    {
+        int cellIndex = hexGrid.tgs.CellGetAtMousePosition().index;
+
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             if (Tab.Select == currentTab)
             {
@@ -77,7 +85,7 @@ public class HexMapEditor : MonoBehaviour
                 ChangeTileBase(cellIndex);
             }
         }
-        else if (buttonIndex == 1)
+        else if (Input.GetKey(KeyCode.Mouse1))
         {
             hexGrid.RemoveCellBiome(cellIndex);
             hexGrid.RemoveCellResource(cellIndex);
