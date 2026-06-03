@@ -1,0 +1,498 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0d4c446e80a32c438a7ffd1c57696e2, type: 3}
+  m_Name: UserData
+  m_EditorClassIdentifier: CoInspector::CoInspector.UserSaveData
+  recycleUnlockedTabs: 0
+  generalScrollSensitivity: 1
+  userInstalls:
+  - 1.7.1
+  tabPreviewExpanded: 1
+  softWheelScrolling: 1
+  middleScrollMode: 1
+  newTabIfLocked: 0
+  rootPath: Assets/CoInspector
+  showHistory: 1
+  showTabName: 1
+  showTabTree: 1
+  showFilterBar: 1
+  hideEmptyComponents: 0
+  showInstallMessage: 0
+  showSceneToolsMessage: 1
+  softSelection: 0
+  showCollapseTool: 1
+  showHierarchyButton: 1
+  showInspectorButton: 1
+  showFocusButton: 1
+  showSelectButton: 1
+  showMaximizeButton: 0
+  assetPreviewExpanded: 1
+  showLastClicked: 1
+  showMostClicked: 1
+  showIcons: 1
+  richNames: 1
+  showScrollBar: 1
+  showAdditionalOptions: 1
+  rememberSessions: 1
+  useThumbKeys: 1
+  ignoreFolders: 1
+  collapsePrefabComponents: 1
+  openPrefabsInNewTab: 1
+  showTextAssetPreviews: 1
+  showAssetLabels: 0
+  autoFocus: 0
+  assetInspection: 1
+  componentCulling: 1
+  reuseTabs: 0
+  overrideSceneTools: 0
+  sessionsMode: 0
+  tabCompactMode: 1
+  doubleClickMode: 1
+  scrollSpeedX: 2
+  scrollSpeedY: 2
+  scrollDirectionX: 1
+  scrollDirectionY: 1
+  generalScrollSpeed: 18
+  sessions:
+  - tracker:
+      mostClicked:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+        count: 13
+        gameObjects:
+        - {fileID: 0}
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Directional Light[0]"}'
+        count: 10
+        gameObjects:
+        - {fileID: 0}
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"TerrainGridSystem[0]"}'
+        count: 6
+        gameObjects:
+        - {fileID: 0}
+      recentlyClicked:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+        count: 1
+        gameObjects:
+        - {fileID: 0}
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Directional Light[0]"}'
+        count: 1
+        gameObjects:
+        - {fileID: 0}
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"TerrainGridSystem[0]"}'
+        count: 1
+        gameObjects:
+        - {fileID: 0}
+      mostClickedContents: []
+      recentlyClickedContents: []
+    sceneGUID: 42db0986cd53d4c008afdf12f9607222
+    sceneName: Scene
+    lastSaveTimePrint: 02:55 PM (June 3, 2026)
+    gracePeriod: 3
+    activeIndex: 0
+    checkingToLoad: 0
+    assetsCollapsed: 0
+    lockedAsset: 0
+    maximizedAssetView: 0
+    showImportSettings: 0
+    suggestedHeight: 0
+    userAssetViewSize: 189.59998
+    previewHeight: 0
+    scrollPosition: {x: 0, y: 0}
+    toolbarScrollPosition: {x: 0, y: 0}
+    rawUserHeight: 0
+    lastValidTabWidth: 197
+    alreadyCalculatedHeight: 1
+    lastKnownHeight: 1
+    tabs:
+    - path: '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+      paths: []
+      tabWidth: 92
+      name: Demo Script
+      icon: {fileID: -8204150473280056172, guid: 0000000000000000d000000000000000, type: 0}
+      shortName: Demo Script
+      filterString: 
+      newTab: 0
+      scrollPosition: 0
+      isSelected: 1
+      allCollapsed: 0
+      runtimeFoldouts: 
+      runtimeMultiComponents: []
+      tabTextContent:
+        m_Text: Demo Script
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "Demo Script\u200B"
+      multiEditMode: 0
+      locked: 0
+      hasPreview: 0
+      previewHeight: 150
+      debug: 0
+      filtering: 0
+      prefab: 0
+      multiFoldout: 1
+      target: {fileID: 0}
+      targets: []
+      linkedPrefabs: []
+      trackMultiTarget: {fileID: 0}
+      serializedTransform:
+        owner: {fileID: 0}
+        localPosition: {x: 0, y: 0, z: 0}
+        localRotation: {x: 0, y: 0, z: 0, w: 0}
+        localScale: {x: 0, y: 0, z: 0}
+        originalPosition: {x: 0, y: 0, z: 0}
+        originalRotation: {x: 0, y: 0, z: 0, w: 0}
+        originalLocalScale: {x: 0, y: 0, z: 0}
+        anchorMin: {x: 0, y: 0}
+        anchorMax: {x: 0, y: 0}
+        anchoredPosition: {x: 0, y: 0}
+        sizeDelta: {x: 0, y: 0}
+        pivot: {x: 0, y: 0}
+        originalAnchorMin: {x: 0, y: 0}
+        originalAnchorMax: {x: 0, y: 0}
+        originalAnchoredPosition: {x: 0, y: 0}
+        originalSizeDelta: {x: 0, y: 0}
+        originalPivot: {x: 0, y: 0}
+        isRectTransform: 0
+        appliedTransform: 0
+        undidTransform: 0
+        autoSave: 0
+      serializedTransforms: []
+      savePlayModeTransform: 0
+      index: 0
+      historyPosition: 0
+      componentMaps:
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: transform
+        niceComponentName: transform
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: demo2
+        niceComponentName: demo 2
+      historyPaths:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+        prefab: 0
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Directional Light[0]"}'
+        prefab: 0
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"TerrainGridSystem[0]"}'
+        prefab: 0
+      owner: {fileID: 0}
+    - path: '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Directional
+        Light[0]"}'
+      paths: []
+      tabWidth: 102
+      name: Directional Light
+      icon: {fileID: -2268488020772222307, guid: 0000000000000000d000000000000000, type: 0}
+      shortName: "Directional L\u2026"
+      filterString: 
+      newTab: 0
+      scrollPosition: 0
+      isSelected: 0
+      allCollapsed: 0
+      runtimeFoldouts: 
+      runtimeMultiComponents: []
+      tabTextContent:
+        m_Text: "Directional L\u2026"
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "Directional L\u2026\u200B"
+      multiEditMode: 0
+      locked: 0
+      hasPreview: 0
+      previewHeight: 150
+      debug: 0
+      filtering: 0
+      prefab: 0
+      multiFoldout: 1
+      target: {fileID: 0}
+      targets: []
+      linkedPrefabs: []
+      trackMultiTarget: {fileID: 0}
+      serializedTransform:
+        owner: {fileID: 0}
+        localPosition: {x: 0, y: 0, z: 0}
+        localRotation: {x: 0, y: 0, z: 0, w: 0}
+        localScale: {x: 0, y: 0, z: 0}
+        originalPosition: {x: 0, y: 0, z: 0}
+        originalRotation: {x: 0, y: 0, z: 0, w: 0}
+        originalLocalScale: {x: 0, y: 0, z: 0}
+        anchorMin: {x: 0, y: 0}
+        anchorMax: {x: 0, y: 0}
+        anchoredPosition: {x: 0, y: 0}
+        sizeDelta: {x: 0, y: 0}
+        pivot: {x: 0, y: 0}
+        originalAnchorMin: {x: 0, y: 0}
+        originalAnchorMax: {x: 0, y: 0}
+        originalAnchoredPosition: {x: 0, y: 0}
+        originalSizeDelta: {x: 0, y: 0}
+        originalPivot: {x: 0, y: 0}
+        isRectTransform: 0
+        appliedTransform: 0
+        undidTransform: 0
+        autoSave: 0
+      serializedTransforms: []
+      savePlayModeTransform: 0
+      index: 1
+      historyPosition: 0
+      componentMaps:
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: transform
+        niceComponentName: transform
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: light
+        niceComponentName: light
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: hdadditionallightdata
+        niceComponentName: hd additional light data
+      historyPaths:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Directional Light[0]"}'
+        prefab: 0
+      owner: {fileID: 0}
+    closedTabs:
+    - path: '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+      paths: []
+      tabWidth: 92
+      name: Demo Script
+      icon: {fileID: -8204150473280056172, guid: 0000000000000000d000000000000000, type: 0}
+      shortName: Demo Script
+      filterString: 
+      newTab: 0
+      scrollPosition: 0
+      isSelected: 1
+      allCollapsed: 0
+      runtimeFoldouts: 
+      runtimeMultiComponents: []
+      tabTextContent:
+        m_Text: Demo Script
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "Demo Script\u200B"
+      multiEditMode: 0
+      locked: 0
+      hasPreview: 0
+      previewHeight: 150
+      debug: 0
+      filtering: 0
+      prefab: 0
+      multiFoldout: 1
+      target: {fileID: 0}
+      targets: []
+      linkedPrefabs: []
+      trackMultiTarget: {fileID: 0}
+      serializedTransform:
+        owner: {fileID: 0}
+        localPosition: {x: 0, y: 0, z: 0}
+        localRotation: {x: 0, y: 0, z: 0, w: 0}
+        localScale: {x: 0, y: 0, z: 0}
+        originalPosition: {x: 0, y: 0, z: 0}
+        originalRotation: {x: 0, y: 0, z: 0, w: 0}
+        originalLocalScale: {x: 0, y: 0, z: 0}
+        anchorMin: {x: 0, y: 0}
+        anchorMax: {x: 0, y: 0}
+        anchoredPosition: {x: 0, y: 0}
+        sizeDelta: {x: 0, y: 0}
+        pivot: {x: 0, y: 0}
+        originalAnchorMin: {x: 0, y: 0}
+        originalAnchorMax: {x: 0, y: 0}
+        originalAnchoredPosition: {x: 0, y: 0}
+        originalSizeDelta: {x: 0, y: 0}
+        originalPivot: {x: 0, y: 0}
+        isRectTransform: 0
+        appliedTransform: 0
+        undidTransform: 0
+        autoSave: 0
+      serializedTransforms: []
+      savePlayModeTransform: 0
+      index: 2
+      historyPosition: 0
+      componentMaps:
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: transform
+        niceComponentName: transform
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: demo2
+        niceComponentName: demo 2
+      historyPaths:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"Demo Script[0]"}'
+        prefab: 0
+      owner: {fileID: 0}
+    - path: '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"TerrainGridSystem[0]"}'
+      paths: []
+      tabWidth: 108
+      name: TerrainGridSystem
+      icon: {fileID: 2244882685325231567, guid: 0000000000000000d000000000000000, type: 0}
+      shortName: "TerrainGridSy\u2026"
+      filterString: 
+      newTab: 0
+      scrollPosition: 0
+      isSelected: 1
+      allCollapsed: 0
+      runtimeFoldouts: 
+      runtimeMultiComponents: []
+      tabTextContent:
+        m_Text: "TerrainGridSy\u2026"
+        m_Image: {fileID: 0}
+        m_Tooltip: 
+        m_TextWithWhitespace: "TerrainGridSy\u2026\u200B"
+      multiEditMode: 0
+      locked: 0
+      hasPreview: 0
+      previewHeight: 150
+      debug: 0
+      filtering: 0
+      prefab: 0
+      multiFoldout: 1
+      target: {fileID: 0}
+      targets: []
+      linkedPrefabs: []
+      trackMultiTarget: {fileID: 0}
+      serializedTransform:
+        owner: {fileID: 0}
+        localPosition: {x: 0, y: 0, z: 0}
+        localRotation: {x: 0, y: 0, z: 0, w: 0}
+        localScale: {x: 0, y: 0, z: 0}
+        originalPosition: {x: 0, y: 0, z: 0}
+        originalRotation: {x: 0, y: 0, z: 0, w: 0}
+        originalLocalScale: {x: 0, y: 0, z: 0}
+        anchorMin: {x: 0, y: 0}
+        anchorMax: {x: 0, y: 0}
+        anchoredPosition: {x: 0, y: 0}
+        sizeDelta: {x: 0, y: 0}
+        pivot: {x: 0, y: 0}
+        originalAnchorMin: {x: 0, y: 0}
+        originalAnchorMax: {x: 0, y: 0}
+        originalAnchoredPosition: {x: 0, y: 0}
+        originalSizeDelta: {x: 0, y: 0}
+        originalPivot: {x: 0, y: 0}
+        isRectTransform: 0
+        appliedTransform: 0
+        undidTransform: 0
+        autoSave: 0
+      serializedTransforms: []
+      savePlayModeTransform: 0
+      index: 1
+      historyPosition: 0
+      componentMaps:
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: transform
+        niceComponentName: transform
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: meshfilter
+        niceComponentName: mesh filter
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: meshrenderer
+        niceComponentName: mesh renderer
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: terraingridsystem
+        niceComponentName: terrain grid system
+      - index: 0
+        component: {fileID: 0}
+        missingComponentID: -1
+        foldout: 1
+        focusAfter: 0
+        awaitingScroll: 0
+        hidden: 0
+        componentName: meshcollider
+        niceComponentName: mesh collider
+      historyPaths:
+      - paths:
+        - '{"sceneGUID":"42db0986cd53d4c008afdf12f9607222","path":"TerrainGridSystem[0]"}'
+        prefab: 0
+      owner: {fileID: 0}
+    playModeTransforms: []
+    historyAssets:
+    - assetGUIDs:
+      - b1d6a4e54c39c8b458d0139e557a644f
+    - assetGUIDs:
+      - b1a043a4268648c488f678de31592700
+    targetObject: {fileID: 8300000, guid: b1d6a4e54c39c8b458d0139e557a644f, type: 3}
+    targetObjects: []
+    lastSelectedAsset: Assets/CoInspector/Editor/Custom/Example Assets/FX_tada.wav
+    lastClickedTab: 0
+    previousTab: 1
+  tipsShown: 01000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  playModeStartScene: {}
+  enteringPlayMode: 0

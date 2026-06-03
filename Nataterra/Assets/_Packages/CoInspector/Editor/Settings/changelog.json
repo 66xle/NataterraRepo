@@ -1,0 +1,48 @@
+{
+  "version": "1.7.1",
+  "date": "2026-05-23",
+  "entries": [
+    {
+      "section": "new",
+      "title": "Basic previews for all GameObjects",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "new",
+      "title": "Support for Unity 6000.4",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "fixed",
+      "title": "Animation Play rendering issues on Unity 6000.4",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "fixed",
+      "title": "Deprecation warnings on Unity 6000.4",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "fixed",
+      "title": "Some Scriptable Objects failing to display their Editors when using Odin Inspector",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "fixed",
+      "title": "Changing scenes during Play Mode when no previous data exists causing errors",
+      "description": "",
+      "important": true
+    },
+    {
+      "section": "fixed",
+      "title": "Multiple preview bars appearing when entering Play Mode",
+      "description": "",
+      "important": true
+    }
+  ]
+}
