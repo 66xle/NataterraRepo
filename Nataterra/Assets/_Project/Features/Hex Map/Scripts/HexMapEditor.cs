@@ -64,7 +64,11 @@ public class HexMapEditor : MonoBehaviour
 
     void HandleInput()
     {
-        int cellIndex = hexGrid.tgs.CellGetAtMousePosition().index;
+        Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+
+        if (cell == null) return;
+
+        int cellIndex = cell.index;
 
         if (Input.GetKey(KeyCode.Mouse0))
         {
