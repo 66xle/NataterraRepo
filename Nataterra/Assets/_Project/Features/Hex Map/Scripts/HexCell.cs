@@ -1,8 +1,10 @@
+using TGS;
 using UnityEngine;
 
-public class HexCell : MonoBehaviour
+public class HexCell
 {
-    public HexCoordinates coordinates;
+    public Cell cell;
+
     public Color color;
     public Biome biome = Biome.None;
 
@@ -11,4 +13,9 @@ public class HexCell : MonoBehaviour
 
     public Base raceBase = Base.None;
     public GameObject baseObj;
+
+    public HexCell(Cell cell)
+    {
+        this.cell = cell;
+    }
 }

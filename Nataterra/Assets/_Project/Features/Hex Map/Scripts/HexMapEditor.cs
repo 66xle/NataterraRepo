@@ -1,10 +1,9 @@
-using JetBrains.Annotations;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TGS;
 
 public enum Tab
 {
@@ -35,8 +34,6 @@ public class HexMapEditor : MonoBehaviour
 
     public HexGrid hexGrid;
 
-
-
     int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
     ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
 
@@ -55,31 +52,17 @@ public class HexMapEditor : MonoBehaviour
         baseIndex = 0;
 
         selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
+
+        hexGrid.tgs.OnCellMouseDown += OnCellMouseDown;
     }
 
-    void Update()
+    void OnCellMouseDown(TerrainGridSystem grid, int cellIndex, int buttonIndex)
     {
-        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+        if (buttonIndex == 0)
         {
-            HandleInput();
-        }
-        else if (Input.GetKeyDown(KeyCode.Mouse1) && !EventSystem.current.IsPointerOverGameObject())
-        {
-            ResetCell();
-        }
-    }
-
-    void HandleInput()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
-        {
-            int cellIndex = hexGrid.GetCellIndex(hit.point);
-
             if (Tab.Select == currentTab)
             {
-                ShowTileDetails(cellIndex, hit.point);
+                //ShowTileDetails(cellIndex, hit.point);
             }
             else if (Tab.Biome == currentTab)
             {
@@ -94,16 +77,8 @@ public class HexMapEditor : MonoBehaviour
                 ChangeTileBase(cellIndex);
             }
         }
-    }
-
-    private void ResetCell()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        else if (buttonIndex == 1)
         {
-            int cellIndex = hexGrid.GetCellIndex(hit.point);
-
             hexGrid.RemoveCellBiome(cellIndex);
             hexGrid.RemoveCellResource(cellIndex);
             hexGrid.RemoveCellBase(cellIndex);
@@ -167,13 +142,11 @@ public class HexMapEditor : MonoBehaviour
     {
         if (!hexGrid.IsCellABiome(cellIndex)) return;
 
-        Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
-        cellPosition = hexGrid.transform.TransformPoint(cellPosition);
+        Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
 
         GameObject resourceObj = Instantiate(prefab, cellPosition, Quaternion.identity);
-        resourceObj.transform.localScale = resourceScale;
+        resourceObj.transform.localScale = new Vector3(resourceScale.x * hexGrid.CellSize.x, resourceScale.y, resourceScale.z * hexGrid.CellSize.y);
         resourceObj.GetComponent<Renderer>().material.color = resourceColors[resourceIndex];
-
 
         hexGrid.RemoveCellBase(cellIndex);
         hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
@@ -181,11 +154,10 @@ public class HexMapEditor : MonoBehaviour
 
     private void ChangeTileBase(int cellIndex)
     {
-        Vector3 cellPosition = hexGrid.GetCellPosition(cellIndex);
-        cellPosition = hexGrid.transform.TransformPoint(cellPosition);
+        Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
 
         GameObject baseObj = Instantiate(prefab, cellPosition, Quaternion.identity);
-        baseObj.transform.localScale = baseScale;
+        baseObj.transform.localScale = new Vector3(baseScale.x * hexGrid.CellSize.x, baseScale.y, baseScale.z * hexGrid.CellSize.y);
         baseObj.GetComponent<Renderer>().material.color = Color.white;
 
         for (int i = 0; i < basesPlaced.Length; i++)

@@ -1,9 +1,8 @@
-using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
+using TGS;
+using UnityEditor.Rendering;
 
 public class HexGrid : MonoBehaviour
 {
@@ -15,32 +14,39 @@ public class HexGrid : MonoBehaviour
 
     public Color defaultColor = Color.white;
     public Color touchedColor = Color.magenta;
+        
+        
+    public TerrainGridSystem tgs;
 
     HexCell[] cells;
     Canvas gridCanvas;
     HexMesh hexMesh;
 
+    public Vector2 CellSize => tgs.cellSize / 2f;
+
     void Awake()
     {
         gridCanvas = GetComponentInChildren<Canvas>();
         hexMesh = GetComponentInChildren<HexMesh>();
-
-        cells = new HexCell[height * width];
-
-        for (int z = 0, i = 0; z < height; z++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                CreateCell(x, z, i++);
-            }
-        }
     }
 
     void Start()
     {
-        hexMesh.Triangulate(cells);
-    }
+        tgs.Redraw();
+        tgs.highlightMode = HighlightMode.None;
 
+        cells = new HexCell[tgs.cellCount];
+
+        Debug.Log(tgs.cellSize);
+
+        for (int i = 0; i < tgs.cellCount; i++)
+        {
+            Cell cell = tgs.cells[i];
+
+            cells[i] = new HexCell(cell);
+            CreateCellLabel(cell.index, tgs.CellGetPosition(cell.index));
+        }
+    }
 
 
     public bool IsCellABiome(int index)
@@ -54,8 +60,8 @@ public class HexGrid : MonoBehaviour
     public void SetCellBiome(int index, Biome biome, Color color)
     {
         cells[index].biome = biome;
-        cells[index].color = color;
-        hexMesh.Triangulate(cells);
+
+        tgs.CellSetColor(index, color);
     }
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
@@ -82,10 +88,9 @@ public class HexGrid : MonoBehaviour
 
     public void RemoveCellBiome(int index)
     {
-        HexCell cell = cells[index];
-        cell.biome = Biome.None;
-        cell.color = Color.white;
-        hexMesh.Triangulate(cells);
+        cells[index].biome = Biome.None;
+
+        tgs.CellSetColor(index, Color.white);
     }
     public void RemoveCellResource(int cellIndex)
     {
@@ -142,29 +147,19 @@ public class HexGrid : MonoBehaviour
         return HexCoordinates.FromPosition(position);
     }
 
-    public Vector3 GetCellPosition(int index)
+    public Vector3 GetCellWorldPosition(int index)
     {
-        return HexCoordinates.ToPosition(cells[index].coordinates);
+        return tgs.CellGetPosition(index);
     }
 
-    void CreateCell(int x, int z, int i)
+    void CreateCellLabel(int cellIndex, Vector3 position)
     {
-        Vector3 position;
-        position.x = x * (HexMetrics.outerRadius * 1.5f);
-        position.y = 0f;
-        position.z = (z + x * 0.5f - x / 2) * (HexMetrics.innerRadius * 2f);
-
-        HexCell cell = cells[i] = Instantiate<HexCell>(cellPrefab);
-        cell.transform.SetParent(transform, false);
-        cell.transform.localPosition = position;
-        cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-        cell.color = defaultColor;
-
         TMP_Text label = Instantiate<TMP_Text>(cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
-        label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
-        label.text = cell.coordinates.ToStringOnSeparateLines();
+        label.rectTransform.position = position;
 
+        label.rectTransform.localScale = new Vector3(label.rectTransform.localScale.x * CellSize.x, label.rectTransform.localScale.z * CellSize.y, 1f);
+        label.text = cellIndex.ToString();
     }
 
     
