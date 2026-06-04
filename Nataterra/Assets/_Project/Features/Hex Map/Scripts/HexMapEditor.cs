@@ -235,8 +235,14 @@ public class HexMapEditor : MonoBehaviour
                 buttons[i].interactable = false;
                 currentTab = (Tab)index;
 
+                // If clicked on tabs other than select
                 if (i > 0)
+                {
                     panels[i].SetActive(true);
+
+                    if (selectedCell != null)
+                        Destroy(selectedCell);
+                }
             }
             else
             {
