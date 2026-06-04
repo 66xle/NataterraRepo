@@ -34,12 +34,15 @@ public class HexMapEditor : MonoBehaviour
 
     public HexGrid hexGrid;
 
+
+
     int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
     ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
 
     Tab currentTab;
+    GameObject selectedCell;
 
-    int currentTileIndex;
+    int currentCellIndex;
     int biomeIndex;
     int resourceIndex;
     int baseIndex;
@@ -52,9 +55,6 @@ public class HexMapEditor : MonoBehaviour
         baseIndex = 0;
 
         selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
-
-
-        
     }
 
     private void Update()
@@ -70,11 +70,12 @@ public class HexMapEditor : MonoBehaviour
 
         int cellIndex = cell.index;
 
-        if (Input.GetKey(KeyCode.Mouse0))
+
+        if (Input.GetKey(KeyCode.Mouse0) && currentTab != Tab.Select || Input.GetKeyDown(KeyCode.Mouse0) && currentTab == Tab.Select)
         {
             if (Tab.Select == currentTab)
             {
-                //ShowTileDetails(cellIndex, hit.point);
+                ShowTileDetails(cellIndex);
             }
             else if (Tab.Biome == currentTab)
             {
@@ -94,50 +95,71 @@ public class HexMapEditor : MonoBehaviour
             hexGrid.RemoveCellBiome(cellIndex);
             hexGrid.RemoveCellResource(cellIndex);
             hexGrid.RemoveCellBase(cellIndex);
+
+            if (currentTab == Tab.Select)
+            {
+                SetCellToggles(cellIndex);
+
+                // When resetting current cell which is no longer a biome, so hide resource toggles
+                if (currentCellIndex == cellIndex)
+                    selectToggleGroups[1].gameObject.SetActive(false);
+            }
         }
     }
 
 
-    private void ShowTileDetails(int cellIndex, Vector3 position)
+    private void ShowTileDetails(int cellIndex)
     {
-        currentTileIndex = cellIndex;
-        panels[0].SetActive(true);
+        if (selectedCell != null)
+            Destroy(selectedCell);
 
-        HexCoordinates coordinates = hexGrid.GetHexCoordinates(position);
-        selectedTileText.text = $"Selected: {coordinates.X}, {coordinates.Z}";
+        selectedCell = hexGrid.tgs.CellDrawBorder(cellIndex, Color.blue, 1f);
+        selectedTileText.text = $"Selected: {cellIndex}";
 
+        currentCellIndex = cellIndex;
+        panels[0].SetActive(true); // Select panel
+
+        // Show resource toggles if cell is a biome, otherwise hide it
+        bool isBiome = hexGrid.IsCellABiome(cellIndex);
+        selectToggleGroups[1].gameObject.SetActive(isBiome);
+
+        SetCellToggles(cellIndex);
+    }
+
+    private void SetCellToggles(int cellIndex)
+    {
         Biome biome = hexGrid.GetCellBiome(cellIndex);
         Resource resource = hexGrid.GetCellResource(cellIndex);
         Base raceBase = hexGrid.GetCellBase(cellIndex);
 
-        selectToggleGroups[0].SetAllTogglesOff();
-        selectToggleGroups[1].SetAllTogglesOff();
-        selectToggleGroups[2].SetAllTogglesOff();
+        selectToggleGroups[0].SetAllTogglesOff(false);
+        selectToggleGroups[1].SetAllTogglesOff(false);
+        selectToggleGroups[2].SetAllTogglesOff(false);
 
         if (Biome.None != biome)
-            selectToggleGroups[0].GetComponentsInChildren<Toggle>()[(int)biome].isOn = true;
+            selectToggleGroups[0].GetComponentsInChildren<Toggle>()[(int)biome].SetIsOnWithoutNotify(true);
 
         if (Resource.None != resource)
-            selectToggleGroups[1].GetComponentsInChildren<Toggle>()[(int)resource].isOn = true;
+            selectToggleGroups[1].GetComponentsInChildren<Toggle>()[(int)resource].SetIsOnWithoutNotify(true);
 
         if (Base.None != raceBase)
-            selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)raceBase].isOn = true;
+            selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)raceBase].SetIsOnWithoutNotify(true);
     }
 
 
-    public void ChangeTileType(int typeIndex)
+    public void ChangeCellType(int typeIndex)
     { 
         if (typeIndex == 0)
         {
-            ChangeTileBase(currentTileIndex);
+            ChangeTileBiome(currentCellIndex);
         }
         else if (typeIndex == 1)
         {
-            ChangeTileResource(currentTileIndex);
+            ChangeTileResource(currentCellIndex);
         }
         else if (typeIndex == 2)
         {
-            ChangeTileBase(currentTileIndex);
+            ChangeTileBase(currentCellIndex);
         }
         else
         {
@@ -148,6 +170,14 @@ public class HexMapEditor : MonoBehaviour
     private void ChangeTileBiome(int cellIndex)
     {
         hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeColors[biomeIndex]);
+
+        if (currentTab == Tab.Select)
+        {
+            SetCellToggles(cellIndex);
+
+            // Show resource toggles
+            selectToggleGroups[1].gameObject.SetActive(true);
+        }
     }
 
     private void ChangeTileResource(int cellIndex)
@@ -162,6 +192,9 @@ public class HexMapEditor : MonoBehaviour
 
         hexGrid.RemoveCellBase(cellIndex);
         hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
+
+        if (currentTab == Tab.Select)
+            SetCellToggles(cellIndex);
     }
 
     private void ChangeTileBase(int cellIndex)
@@ -188,16 +221,9 @@ public class HexMapEditor : MonoBehaviour
         hexGrid.SetCellBase(cellIndex, baseIndex, baseObj);
 
         basesPlaced[baseIndex] = cellIndex;
-    }
 
-
-    public void DisableToggle()
-    {
-        bool isDisabled = disableToggle.isOn;
-
-        selectToggleGroups[0].gameObject.SetActive(isDisabled);
-        selectToggleGroups[1].gameObject.SetActive(isDisabled);
-        selectToggleGroups[2].gameObject.SetActive(isDisabled);
+        if (currentTab == Tab.Select)
+            SetCellToggles(cellIndex);
     }
 
     public void SelectButton(int index)

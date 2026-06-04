@@ -37,8 +37,6 @@ public class HexGrid : MonoBehaviour
 
         cells = new HexCell[tgs.cellCount];
 
-        Debug.Log(tgs.cellSize);
-
         for (int i = 0; i < tgs.cellCount; i++)
         {
             Cell cell = tgs.cells[i];
@@ -90,7 +88,7 @@ public class HexGrid : MonoBehaviour
     {
         cells[index].biome = Biome.None;
 
-        tgs.CellSetColor(index, Color.white);
+        tgs.CellClear(index);
     }
     public void RemoveCellResource(int cellIndex)
     {
