@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: db0765e6c54e2234d9644377794d9ce6
+labels:
+- cliff
+- dirt
+- prefabs
+- rockgrass
+- rocks
+- smalldetails
+- stones
+timeCreated: 1493636110
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: prefabs
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Prefabs/Prefabs_Static/RockDetailsBRHEWP.prefab
+  uploadId: 919880

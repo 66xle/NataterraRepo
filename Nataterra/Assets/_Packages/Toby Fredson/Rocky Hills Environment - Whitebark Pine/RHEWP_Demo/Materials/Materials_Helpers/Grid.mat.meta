@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5436d4dc4f40608499d93bcf4d3abe57
+timeCreated: 1544011640
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: materials
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Helpers/Grid.mat
+  uploadId: 919880

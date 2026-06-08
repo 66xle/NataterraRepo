@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: bbcb9d5b34452ae45884d89af95ea6fb
+labels:
+- helpers
+timeCreated: 1518200485
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: prefabs
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Prefabs/Prefabs_Helpers/Dirctions.prefab
+  uploadId: 919880

@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 512599429162124479bce8a91fff86a1
+labels:
+- cliff
+- dirt
+- grass
+- materials
+- rockgrass
+- rocks
+- smalldetails
+- stones
+timeCreated: 1493470349
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: materials
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Meshes/CaveTopRHEWP.mat
+  uploadId: 919880

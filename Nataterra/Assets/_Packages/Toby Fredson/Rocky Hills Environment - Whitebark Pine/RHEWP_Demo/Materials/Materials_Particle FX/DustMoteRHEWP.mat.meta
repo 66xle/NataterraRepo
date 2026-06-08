@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e27a3e2f84809914fa5bf3a7ac14ce9f
+timeCreated: 1473686037
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Particle
+    FX/DustMoteRHEWP.mat
+  uploadId: 919880
