@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 795e383430200a14bb52726e97a0e7f4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251490
+  packageName: Realistic Cliffs and Rocks
+  packageVersion: 1.1
+  assetPath: Assets/_Packages/Realistic Cliffs and Rocks/Scenes/Map_Sample/Terrain/TerrainLayers/Heather_TerrainLayer.terrainlayer
+  uploadId: 925290
