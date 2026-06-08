@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: e3ed95caed6682e4384a0b7bdee84442
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Shaders/3D
+    Clouds.shader
+  uploadId: 919880
