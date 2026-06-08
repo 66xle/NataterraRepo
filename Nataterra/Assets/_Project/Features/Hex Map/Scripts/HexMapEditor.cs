@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TGS;
+using DrawXXL;
 
 public enum Tab
 {
@@ -60,6 +61,34 @@ public class HexMapEditor : MonoBehaviour
     private void Update()
     {
         HandleInput();
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SpawnAllVertex();
+        }
+    }
+
+
+    private void SpawnAllVertex()
+    {
+        Dictionary<int, List<Vector3>> cellVertices = new Dictionary<int, List<Vector3>>();
+        DrawBasics.ToggleGlobalOverwriteFor_durationInSec(true, 10000000f);
+
+        for (int c = 0; c < hexGrid.tgs.cellCount; c++)
+        {
+            List<Vector3> verts = new List<Vector3>();
+
+            int vc = hexGrid.tgs.CellGetVertexCount(c);
+            for (int i = 0; i < vc; i++)
+            {
+                GameObject vertex = Instantiate(prefab, hexGrid.tgs.CellGetVertexPosition(c, i), Quaternion.identity);
+                DrawEngineBasics.TagGameObject(vertex);
+
+
+
+                //verts.Add(hexGrid.tgs.CellGetVertexPosition(c, i));
+            }
+        }
     }
 
     void HandleInput()
