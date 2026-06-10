@@ -1912,7 +1912,7 @@ namespace TGS {
 
         readonly HashSet<int> cachedNeighboursControl = new HashSet<int>();
 
-        void CellsFindNeighbours () {
+        public void CellsFindNeighbours () {
 
             cachedNeighboursControl.Clear();
             int cellCount = cells.Count;
