@@ -6,6 +6,7 @@ using TGS.Geom;
 using TMPro;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class HexGrid : MonoBehaviour
@@ -25,7 +26,6 @@ public class HexGrid : MonoBehaviour
     Canvas gridCanvas;
 
     public List<VertexData> vertices = new List<VertexData>();
-    public List<Vector3> vertexPositions = new List<Vector3>();
 
     public Vector2 CellSize => tgs.cellSize / 2f;
 
@@ -88,17 +88,38 @@ public class HexGrid : MonoBehaviour
         {
             tgs.cells[cellRef.Item1.index].region.points[cellRef.Item2] = new Vector2(localPos.x, localPos.y);
         }
+    }
 
-        //tgs.CellsUpdateBounds();
-        tgs.RedrawRegionFlatToppedHexagonalGrid();
+    public void RegenerateGrid(VertexData vertex)
+    {
+        tgs.RegenerateFlatToppedHexagonalGrid();
 
         foreach ((Cell, int) cellRef in vertex.cellsRef)
         {
             tgs.CellUpdateBounds(cellRef.Item1);
         }
 
-        //tgs.CellsFindNeighbours();
         tgs.RedrawCells(tgs.cells);
+    }
+
+    public void RegenerateCellSurface(VertexData vertex, Color[] biomeColors)
+    {
+        foreach ((Cell, int) cellRef in vertex.cellsRef)
+        {
+            Biome biome = GetCellBiome(cellRef.Item1.index);
+
+            Color surfaceColor = biome != Biome.None ? biomeColors[(int)biome] : Misc.ColorNull;
+
+            tgs.CellToggleRegionSurface(cellRef.Item1.index, true, surfaceColor, true);
+        }
+    }
+
+    public void ShowAllCellSurfaces()
+    {
+        foreach (Cell cell in tgs.cells)
+        {
+            tgs.CellToggleRegionSurface(cell.index, true, Misc.ColorNull, true);
+        }
     }
 
 
@@ -114,7 +135,7 @@ public class HexGrid : MonoBehaviour
     {
         cells[index].biome = biome;
 
-        tgs.CellSetColor(index, color);
+        tgs.CellToggleRegionSurface(index, true, color, true);
     }
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
@@ -182,8 +203,6 @@ public class HexGrid : MonoBehaviour
     }
 
 
-
-    
 
     public int GetCellIndex(Vector3 position)
     {

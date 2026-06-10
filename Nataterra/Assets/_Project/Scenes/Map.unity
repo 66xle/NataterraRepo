@@ -13860,7 +13860,7 @@ MonoBehaviour:
   _cellBorderColor: {r: 1, g: 1, b: 1, a: 1}
   _cellCustomBorderThickness: 0
   _cellBorderThickness: 1
-  _cellFillPadding: 0
+  _cellFillPadding: -1
   _cellTileBackgroundMode: 1
   _cellTextureMode: 0
   _cellTileScale: {x: 1, y: 1}
@@ -14878,8 +14878,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2027843338}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5714792, y: 0.036578756, z: -0.025626887, w: 0.81940037}
-  m_LocalPosition: {x: 69.904564, y: 119.51314, z: 37.37121}
+  m_LocalRotation: {x: 0.56117404, y: -0.0028568243, z: 0.0017078547, w: 0.8276912}
+  m_LocalPosition: {x: 78.8789, y: 168.56549, z: 19.59911}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15547,7 +15547,6 @@ MonoBehaviour:
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   touchedColor: {r: 1, g: 0, b: 1, a: 1}
   tgs: {fileID: 1840821379}
-  vertexPositions: []
 --- !u!4 &2139584692
 Transform:
   m_ObjectHideFlags: 0

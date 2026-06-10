@@ -1388,7 +1388,7 @@ namespace TGS {
             }
         }
 
-        public void RedrawRegionFlatToppedHexagonalGrid()
+        public void RegenerateFlatToppedHexagonalGrid()
         {
             double qx = 1.0 + (_cellColumnCount - 1.0) * 3.0 / 4.0;
             double qy = _cellRowCount + 0.5;

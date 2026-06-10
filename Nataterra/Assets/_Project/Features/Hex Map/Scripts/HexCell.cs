@@ -13,7 +13,7 @@ public class HexCell
 
     public Base raceBase = Base.None;
     public GameObject baseObj;
-
+    
     public HexCell(Cell cell)
     {
         this.cell = cell;

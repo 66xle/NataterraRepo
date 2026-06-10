@@ -96,10 +96,10 @@ public class HexMapEditor : MonoBehaviour
 
                     if (!isWithinBounds) return;
                     hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
+                    hexGrid.RegenerateGrid(selectedVertex);
+                    hexGrid.RegenerateCellSurface(selectedVertex, biomeColors);
                 }
             }
-
-            
         }
     }
 
@@ -157,10 +157,11 @@ public class HexMapEditor : MonoBehaviour
             if (i == index)
             {
                 buttons[i].interactable = false;
+                Tab previousTab = currentTab;
                 currentTab = (Tab)index;
 
                 // If clicked on tabs other than select
-                if (i > 0)
+                if (currentTab != Tab.Select)
                 {
                     if (i < panels.Count)
                         panels[i].SetActive(true);
