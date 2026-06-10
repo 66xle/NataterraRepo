@@ -1418,11 +1418,11 @@ namespace TGS {
                     double offsetY = (k % 2 == evenLayout) ? 0 : -halfStepY;
 
                     Point p1 = new Point(cell.region.points[0].x, cell.region.points[0].y);
-                    Point p2 = new Point(cell.region.points[1].x, cell.region.points[1].y);
-                    Point p3 = new Point(cell.region.points[2].x, cell.region.points[2].y);
+                    Point p2 = new Point(cell.region.points[5].x, cell.region.points[5].y);
+                    Point p3 = new Point(cell.region.points[4].x, cell.region.points[4].y);
                     Point p4 = new Point(cell.region.points[3].x, cell.region.points[3].y);
-                    Point p5 = new Point(cell.region.points[4].x, cell.region.points[4].y);
-                    Point p6 = new Point(cell.region.points[5].x, cell.region.points[5].y);
+                    Point p5 = new Point(cell.region.points[2].x, cell.region.points[2].y);
+                    Point p6 = new Point(cell.region.points[1].x, cell.region.points[1].y);
                     if (_cornerJitter > 0f)
                     {
                         double maxR = _cornerJitter * Math.Min(halfStepX, halfStepY);

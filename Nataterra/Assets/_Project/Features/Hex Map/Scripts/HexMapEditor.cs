@@ -47,7 +47,8 @@ public class HexMapEditor : MonoBehaviour
     GameObject selectedCell;
 
     int currentCellIndex;
-    int vertexIndex;
+    VertexData selectedVertex;
+
     bool isDraggingVertex;
     Vector3 currentVertexPos;
     Vector3 oldVertexPos;
@@ -83,7 +84,7 @@ public class HexMapEditor : MonoBehaviour
 
                 if (Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    hexGrid.SetVertexPosition(currentVertexPos, currentCellIndex, vertexIndex);
+                    hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
 
                     isDraggingVertex = false;
                 }
@@ -213,6 +214,7 @@ public class HexMapEditor : MonoBehaviour
 
         if (cell == null) return;
 
+
         int vc = hexGrid.tgs.CellGetVertexCount(cell.index);
 
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -228,13 +230,15 @@ public class HexMapEditor : MonoBehaviour
 
                 if (Vector3.Distance(checkPos, vertPos) < vertexDetectionRadius && Vector3.Distance(checkPos, vertPos) > -vertexDetectionRadius)
                 {
+                    // Draw axis on vertex pos
                     DrawEngineBasics.CoordinateAxesGizmo(vertPos, 10f);
 
-                    VertexData vertex = hexGrid.vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.0001f);
+                    VertexData vertex = hexGrid.vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.1f);
                     foreach ((Cell, int) cellRef in vertex.cellsRef)
                     {
                         Vector3 pos = hexGrid.tgs.CellGetCentroid(cellRef.Item1.index);
 
+                        // Draw cell position sharing vertex
                         DrawBasics.Vector(pos, pos + Vector3.up * 5f);
                     }
 
@@ -243,9 +247,7 @@ public class HexMapEditor : MonoBehaviour
                         oldVertexPos = checkPos;
                         currentVertexPos = checkPos;
 
-                        currentCellIndex = cell.index;
-                        vertexIndex = i;
-
+                        selectedVertex = vertex;
                         isDraggingVertex = true;
                     }
 

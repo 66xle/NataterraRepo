@@ -27,9 +27,6 @@ public class HexGrid : MonoBehaviour
     public List<VertexData> vertices = new List<VertexData>();
     public List<Vector3> vertexPositions = new List<Vector3>();
 
-
-    Vector3 vertexPos = Vector3.zero;
-
     public Vector2 CellSize => tgs.cellSize / 2f;
 
     void Awake()
@@ -96,17 +93,9 @@ public class HexGrid : MonoBehaviour
     }
 
 
-    public void SetVertexPosition(Vector3 position, int cellIndex, int vertexIndex)
+    public void SetVertexPosition(Vector3 position, VertexData vertex)
     {
-        Vector3 vertPos = tgs.CellGetVertexPosition(cellIndex, vertexIndex);
-
-        VertexData vertex = vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.0001f);
-
         vertex.position = position;
-
-        vertexPos = position;
-        
-        Debug.Log(vertPos + " | " + position);
 
         Vector3 localPos = tgs.transform.InverseTransformPoint(position);
 
@@ -119,7 +108,7 @@ public class HexGrid : MonoBehaviour
 
         //tgs.CellsUpdateBounds();
         tgs.RedrawRegionFlatToppedHexagonalGrid();
-        tgs.CellsFindNeighbours();
+        //tgs.CellsFindNeighbours();
         tgs.RedrawCells(tgs.cells);
     }
 
