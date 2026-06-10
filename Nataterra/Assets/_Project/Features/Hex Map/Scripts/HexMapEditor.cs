@@ -80,15 +80,26 @@ public class HexMapEditor : MonoBehaviour
             {
                 currentVertexPos = MoveVertex(currentVertexPos);
 
-                DrawMeasurements.Distance(oldVertexPos, currentVertexPos, Color.yellow);
+                bool isWithinBounds = false;
+
+                Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+                if (cell != null)
+                {
+                    isWithinBounds = selectedVertex.cellsRef.Any(c => c.Item1.index == cell.index);
+                    Color distanceColor = isWithinBounds ? Color.green : Color.red;
+                    DrawMeasurements.Distance(oldVertexPos, currentVertexPos, distanceColor);
+                }
 
                 if (Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
-
                     isDraggingVertex = false;
+
+                    if (!isWithinBounds) return;
+                    hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
                 }
             }
+
+            
         }
     }
 
