@@ -1,16 +1,19 @@
+using DrawXXL;
+using JetBrains.Annotations;
 using System.Collections.Generic;
+using System.Linq;
+using TGS;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using TGS;
 
 public enum Tab
 {
     Select = 0,
     Biome = 1,
     Resource = 2,
-    Base = 3
+    Base = 3,
+    Vertex = 4,
 }
 
 
@@ -20,7 +23,6 @@ public class HexMapEditor : MonoBehaviour
     public Color[] resourceColors;
 
     public List<Button> buttons;
-
     public List<GameObject> panels;
 
     public TMP_Text selectedTileText;
@@ -29,6 +31,8 @@ public class HexMapEditor : MonoBehaviour
     public GameObject prefab;
     public Vector3 resourceScale = Vector3.one;
     public Vector3 baseScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+    public float vertexDetectionRadius = 1f;
 
     public LayerMask hexGridLayer;
 
@@ -43,6 +47,11 @@ public class HexMapEditor : MonoBehaviour
     GameObject selectedCell;
 
     int currentCellIndex;
+    int vertexIndex;
+    bool isDraggingVertex;
+    Vector3 currentVertexPos;
+    Vector3 oldVertexPos;
+
     int biomeIndex;
     int resourceIndex;
     int baseIndex;
@@ -60,7 +69,29 @@ public class HexMapEditor : MonoBehaviour
     private void Update()
     {
         HandleInput();
+
+        if (currentTab == Tab.Vertex)
+        {
+            if (!isDraggingVertex)
+                CheckMouseNearVertex();
+
+            if (isDraggingVertex)
+            {
+                currentVertexPos = MoveVertex(currentVertexPos);
+
+                DrawMeasurements.Distance(oldVertexPos, currentVertexPos, Color.yellow);
+
+                if (Input.GetKeyUp(KeyCode.Mouse0))
+                {
+                    hexGrid.SetVertexPosition(currentVertexPos, currentCellIndex, vertexIndex);
+
+                    isDraggingVertex = false;
+                }
+            }
+        }
     }
+
+
 
     void HandleInput()
     {
@@ -107,6 +138,34 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
+    public void SelectButton(int index)
+    {
+        for (int i = 0; i < buttons.Count; i++)
+        {
+            if (i == index)
+            {
+                buttons[i].interactable = false;
+                currentTab = (Tab)index;
+
+                // If clicked on tabs other than select
+                if (i > 0)
+                {
+                    if (i < panels.Count)
+                        panels[i].SetActive(true);
+
+                    if (selectedCell != null)
+                        Destroy(selectedCell);
+                }
+            }
+            else
+            {
+                buttons[i].interactable = true;
+
+                if (i < panels.Count)
+                    panels[i].SetActive(false);
+            }
+        }
+    }
 
     private void ShowTileDetails(int cellIndex)
     {
@@ -144,6 +203,84 @@ public class HexMapEditor : MonoBehaviour
 
         if (Base.None != raceBase)
             selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)raceBase].SetIsOnWithoutNotify(true);
+    }
+
+
+
+    private void CheckMouseNearVertex()
+    {
+        Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+
+        if (cell == null) return;
+
+        int vc = hexGrid.tgs.CellGetVertexCount(cell.index);
+
+        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        {
+            for (int i = 0; i < vc; i++)
+            {
+                Vector3 vertPos = hexGrid.tgs.CellGetVertexPosition(cell.index, i);
+
+                Vector3 checkPos = hit.point;
+                checkPos.y = vertPos.y;
+
+                if (Vector3.Distance(checkPos, vertPos) < vertexDetectionRadius && Vector3.Distance(checkPos, vertPos) > -vertexDetectionRadius)
+                {
+                    DrawEngineBasics.CoordinateAxesGizmo(vertPos, 10f);
+
+                    VertexData vertex = hexGrid.vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.0001f);
+                    foreach ((Cell, int) cellRef in vertex.cellsRef)
+                    {
+                        Vector3 pos = hexGrid.tgs.CellGetCentroid(cellRef.Item1.index);
+
+                        DrawBasics.Vector(pos, pos + Vector3.up * 5f);
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.Mouse0))
+                    {
+                        oldVertexPos = checkPos;
+                        currentVertexPos = checkPos;
+
+                        currentCellIndex = cell.index;
+                        vertexIndex = i;
+
+                        isDraggingVertex = true;
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private Vector3 MoveVertex(Vector3 position)
+    {
+        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        {
+            return hit.point;
+        }
+
+        Camera cam = Camera.main;
+
+        Vector3 forward = cam.transform.forward;
+        Vector3 right = cam.transform.right;
+
+        forward.Normalize();
+        right.Normalize();
+
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        float speed = 5f;
+
+        position += right * mouseX * speed * Time.deltaTime;
+        position += forward * mouseY * speed * Time.deltaTime;
+
+        return position;
     }
 
 
@@ -226,31 +363,8 @@ public class HexMapEditor : MonoBehaviour
             SetCellToggles(cellIndex);
     }
 
-    public void SelectButton(int index)
-    {
-        for (int i = 0; i < buttons.Count; i++)
-        {
-            if (i == index)
-            {
-                buttons[i].interactable = false;
-                currentTab = (Tab)index;
+    
 
-                // If clicked on tabs other than select
-                if (i > 0)
-                {
-                    panels[i].SetActive(true);
-
-                    if (selectedCell != null)
-                        Destroy(selectedCell);
-                }
-            }
-            else
-            {
-                buttons[i].interactable = true;
-                panels[i].SetActive(false);
-            }
-        }
-    }
 
     public void SetBiome(int index)
     {

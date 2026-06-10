@@ -1,8 +1,12 @@
+using DrawXXL;
 using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+using System.Linq;
 using TGS;
+using TGS.Geom;
+using TMPro;
 using UnityEditor.Rendering;
+using UnityEngine;
+
 
 public class HexGrid : MonoBehaviour
 {
@@ -14,25 +18,29 @@ public class HexGrid : MonoBehaviour
 
     public Color defaultColor = Color.white;
     public Color touchedColor = Color.magenta;
-        
-        
+
     public TerrainGridSystem tgs;
 
     HexCell[] cells;
     Canvas gridCanvas;
-    HexMesh hexMesh;
+
+    public List<VertexData> vertices = new List<VertexData>();
+    public List<Vector3> vertexPositions = new List<Vector3>();
+
+
+    Vector3 vertexPos = Vector3.zero;
 
     public Vector2 CellSize => tgs.cellSize / 2f;
 
     void Awake()
     {
         gridCanvas = GetComponentInChildren<Canvas>();
-        hexMesh = GetComponentInChildren<HexMesh>();
     }
 
     void Start()
     {
-        tgs.Redraw();
+        tgs.SetGridType(GridTopology.Irregular);
+        tgs.Redraw(true);
         tgs.highlightMode = HighlightMode.None;
 
         cells = new HexCell[tgs.cellCount];
@@ -44,6 +52,75 @@ public class HexGrid : MonoBehaviour
             cells[i] = new HexCell(cell);
             CreateCellLabel(cell.index, tgs.CellGetPosition(cell.index));
         }
+
+        StoreVertices();
+    }
+
+    private void Update()
+    {
+        foreach (Cell cell in tgs.cells)
+        {
+            int vc = tgs.CellGetVertexCount(cell.index);
+            for (int i = 0; i < vc; i++)
+            {
+                Vector3 cellPos = tgs.CellGetVertexPosition(cell.index, i);
+
+                Debug.DrawRay(cellPos, Vector3.up * 5f, Color.yellow);
+            }
+        }
+
+
+        //Debug.DrawRay(vertexPos, Vector3.up * 20f, Color.red);
+    }
+
+    public void StoreVertices()
+    { 
+        foreach (Cell cell in tgs.cells)
+        {
+            int vc = tgs.CellGetVertexCount(cell.index);
+            for (int i = 0; i < vc; i++)
+            {
+                Vector3 cellPos = tgs.CellGetVertexPosition(cell.index, i);
+
+                VertexData existingVertex = vertices.Find(v => v.position == cellPos);
+                if (existingVertex != null)
+                {
+                    existingVertex.AddCellIndex(cell, i);
+                }
+                else
+                {
+                    vertices.Add(new VertexData(cellPos, cell, i));
+                }
+            }
+        }
+    }
+
+
+    public void SetVertexPosition(Vector3 position, int cellIndex, int vertexIndex)
+    {
+        Vector3 vertPos = tgs.CellGetVertexPosition(cellIndex, vertexIndex);
+
+        VertexData vertex = vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.0001f);
+
+        vertex.position = position;
+
+        vertexPos = position;
+        
+        Debug.Log(vertPos + " | " + position);
+
+        Vector3 localPos = tgs.transform.InverseTransformPoint(position);
+
+        foreach ((Cell, int) cellRef in vertex.cellsRef)
+        {
+            tgs.cells[cellRef.Item1.index].region.points[cellRef.Item2] = new Vector2(localPos.x, localPos.y);
+
+            //tgs.CellUpdateBounds(cellRef.Item1);
+        }
+
+        //tgs.CellsUpdateBounds();
+        tgs.RedrawRegionFlatToppedHexagonalGrid();
+        tgs.CellsFindNeighbours();
+        tgs.RedrawCells(tgs.cells);
     }
 
 

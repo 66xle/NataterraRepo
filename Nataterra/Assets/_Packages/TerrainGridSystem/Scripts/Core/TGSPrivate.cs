@@ -1388,6 +1388,121 @@ namespace TGS {
             }
         }
 
+        public void RedrawRegionFlatToppedHexagonalGrid()
+        {
+            double qx = 1.0 + (_cellColumnCount - 1.0) * 3.0 / 4.0;
+            double qy = _cellRowCount + 0.5;
+            int qy2 = _cellRowCount;
+            int qx2 = _cellColumnCount;
+
+            double stepX = 1.0 / qx;
+            double stepY = 1.0 / qy;
+
+            double halfStepX = stepX * 0.5;
+            double halfStepY = stepY * 0.5;
+            int evenLayout = _evenLayout ? 1 : 0;
+            Point[] hexPoints = new Point[6];
+
+            Segment[,,] sides = new Segment[qx2, qy2, 6]; // 0 = left-up, 1 = top, 2 = right-up, 3 = right-down, 4 = down, 5 = left-down
+            int subdivisions = goodGridCurvature > 0 ? 3 : 1;
+            int cellsCount = 0;
+            for (int j = 0; j < qy2; j++)
+            {
+                for (int k = 0; k < qx2; k++)
+                {
+                    Vector2 centroid = cells[cellsCount].region.centroid;
+
+                    Point center = new Point(centroid.x, centroid.y);
+                    Cell cell = cells[cellsCount];  
+
+                    double offsetY = (k % 2 == evenLayout) ? 0 : -halfStepY;
+
+                    Point p1 = new Point(cell.region.points[0].x, cell.region.points[0].y);
+                    Point p2 = new Point(cell.region.points[1].x, cell.region.points[1].y);
+                    Point p3 = new Point(cell.region.points[2].x, cell.region.points[2].y);
+                    Point p4 = new Point(cell.region.points[3].x, cell.region.points[3].y);
+                    Point p5 = new Point(cell.region.points[4].x, cell.region.points[4].y);
+                    Point p6 = new Point(cell.region.points[5].x, cell.region.points[5].y);
+                    if (_cornerJitter > 0f)
+                    {
+                        double maxR = _cornerJitter * Math.Min(halfStepX, halfStepY);
+                        p1 = JitterCornerFast(p1, maxR);
+                        p2 = JitterCornerFast(p2, maxR);
+                        p3 = JitterCornerFast(p3, maxR);
+                        p4 = JitterCornerFast(p4, maxR);
+                        p5 = JitterCornerFast(p5, maxR);
+                        p6 = JitterCornerFast(p6, maxR);
+                    }
+
+                    Segment leftUp = (k > 0 && offsetY < 0) ? sides[k - 1, j, 3] : new Segment(p1, p2, k == 0 || (j == qy2 - 1 && offsetY == 0));
+                    sides[k, j, 0] = leftUp;
+
+                    Segment top = new Segment(p2, p3, j == qy2 - 1);
+                    sides[k, j, 1] = top;
+
+                    Segment rightUp = new Segment(p3, p4, k == qx2 - 1 || (j == qy2 - 1 && offsetY == 0));
+                    sides[k, j, 2] = rightUp;
+
+                    Segment rightDown = (j > 0 && k < qx2 - 1 && offsetY < 0) ? sides[k + 1, j - 1, 0] : new Segment(p4, p5, (j == 0 && offsetY < 0) || k == qx2 - 1);
+                    sides[k, j, 3] = rightDown;
+
+                    Segment bottom = j > 0 ? sides[k, j - 1, 1] : new Segment(p5, p6, true);
+                    sides[k, j, 4] = bottom;
+
+                    Segment leftDown;
+                    if (offsetY < 0 && j > 0 && k > 0)
+                    {
+                        leftDown = sides[k - 1, j - 1, 2];
+                    }
+                    else if (offsetY == 0 && k > 0)
+                    {
+                        leftDown = sides[k - 1, j, 2];
+                    }
+                    else
+                    {
+                        leftDown = new Segment(p6, p1, true);
+                    }
+                    sides[k, j, 5] = leftDown;
+
+                    Region cr = cell.region;
+                    cr.segments.Clear();
+
+                    if (subdivisions > 1)
+                    {
+                        cr.segments.AddRange(top.Subdivide(subdivisions, _gridCurvature));
+                        cr.segments.AddRange(rightUp.Subdivide(subdivisions, _gridCurvature));
+                        cr.segments.AddRange(rightDown.Subdivide(subdivisions, _gridCurvature));
+                        cr.segments.AddRange(bottom.Subdivide(subdivisions, _gridCurvature));
+                        cr.segments.AddRange(leftDown.Subdivide(subdivisions, _gridCurvature));
+                        cr.segments.AddRange(leftUp.Subdivide(subdivisions, _gridCurvature));
+                        Connector connector = new Connector();
+                        connector.AddRange(cr.segments);
+                        cr.polygon = connector.ToPolygon();
+                    }
+                    else
+                    {
+                        cr.segments.Add(top);
+                        cr.segments.Add(rightUp);
+                        cr.segments.Add(rightDown);
+                        cr.segments.Add(bottom);
+                        cr.segments.Add(leftDown);
+                        cr.segments.Add(leftUp);
+                        hexPoints[0] = p1;
+                        hexPoints[1] = p6;
+                        hexPoints[2] = p5;
+                        hexPoints[3] = p4;
+                        hexPoints[4] = p3;
+                        hexPoints[5] = p2;
+                        cr.polygon = new Geom.Polygon(hexPoints); // left, left/down, right/down, right, top/right, top/left
+                    }
+                    if (cr.polygon != null)
+                    {
+                        cellsCount++;
+                    }
+                }
+            }
+        }
+
         void SetupPointyToppedHexagonalGrid () {
             double qx = _cellColumnCount + 0.5;
             double qy = 1.0 + (_cellRowCount - 1.0) * 3.0 / 4.0;
@@ -3993,6 +4108,11 @@ namespace TGS {
                 issueRedraw = RedrawType.Full;
             }
             CheckGridChanges();
+        }
+
+        public void SetGridType(GridTopology gridTopology)
+        {
+            _gridTopology = gridTopology;
         }
 
         /// <summary>
