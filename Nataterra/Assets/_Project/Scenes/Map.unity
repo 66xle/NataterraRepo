@@ -13931,7 +13931,7 @@ MonoBehaviour:
   _terrainMeshPivot: {x: 0.5, y: 0.5}
   canvasTexture: {fileID: 0}
   _transparentBackground: 0
-  _useStencilBuffer: 0
+  _useStencilBuffer: 1
   _disableMeshGeneration: 0
   _useGeometryShaders: 1
   _sortingOrder: 0
@@ -14232,6 +14232,7 @@ MonoBehaviour:
   - {r: 0.9490197, g: 0.10980393, b: 0, a: 1}
   - {r: 0.73333335, g: 0.5411765, b: 0.17254902, a: 1}
   - {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+  resourceTextures: []
   buttons:
   - {fileID: 583485687}
   - {fileID: 533615956}

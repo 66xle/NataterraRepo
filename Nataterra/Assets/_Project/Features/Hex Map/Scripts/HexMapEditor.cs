@@ -21,6 +21,7 @@ public class HexMapEditor : MonoBehaviour
 {
     public Color[] biomeColors;
     public Color[] resourceColors;
+    public Texture2D[] resourceTextures;
 
     public List<Button> buttons;
     public List<GameObject> panels;
