@@ -35,7 +35,8 @@ namespace TGS
             Cell[] cellsArray = cachedCellsArray;
             if (cellsArray == null) return null;
 
-            if (cachedGridTopology == GridTopology.Irregular) {
+
+            if (cachedGridTopology == GridTopology.Hexagonal) {
                 return new PathFinderFastIrregular(cellsArray);
             } else {
                 if ((cachedCellColumnCount & (cachedCellColumnCount - 1)) == 0) { // is power of two?
@@ -44,6 +45,17 @@ namespace TGS
                     return new PathFinderFastNonSQR(cellsArray, cachedCellColumnCount, cachedCellRowCount);
                 }
             }
+
+
+            //if (cachedGridTopology == GridTopology.Irregular) {
+            //    return new PathFinderFastIrregular(cellsArray);
+            //} else {
+            //    if ((cachedCellColumnCount & (cachedCellColumnCount - 1)) == 0) { // is power of two?
+            //        return new PathFinderFast(cellsArray, cachedCellColumnCount, cachedCellRowCount);
+            //    } else {
+            //        return new PathFinderFastNonSQR(cellsArray, cachedCellColumnCount, cachedCellRowCount);
+            //    }
+            //}
         }
 
         void ComputeRouteMatrix() {
