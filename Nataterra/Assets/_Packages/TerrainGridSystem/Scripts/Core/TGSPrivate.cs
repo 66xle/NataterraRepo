@@ -1863,7 +1863,7 @@ namespace TGS {
             }
         }
 
-        void CellUpdateBounds (Cell cell) {
+        public void CellUpdateBounds (Cell cell) {
             if (cell == null) return;
 
             if (cell.region.polygon.contours.Count == 0)

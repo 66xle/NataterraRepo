@@ -53,22 +53,6 @@ public class HexGrid : MonoBehaviour
         StoreVertices();
     }
 
-    private void Update()
-    {
-        foreach (Cell cell in tgs.cells)
-        {
-            int vc = tgs.CellGetVertexCount(cell.index);
-            for (int i = 0; i < vc; i++)
-            {
-                Vector3 cellPos = tgs.CellGetVertexPosition(cell.index, i);
-
-                Debug.DrawRay(cellPos, Vector3.up * 5f, Color.yellow);
-            }
-        }
-
-
-        //Debug.DrawRay(vertexPos, Vector3.up * 20f, Color.red);
-    }
 
     public void StoreVertices()
     { 
@@ -102,12 +86,16 @@ public class HexGrid : MonoBehaviour
         foreach ((Cell, int) cellRef in vertex.cellsRef)
         {
             tgs.cells[cellRef.Item1.index].region.points[cellRef.Item2] = new Vector2(localPos.x, localPos.y);
-
-            //tgs.CellUpdateBounds(cellRef.Item1);
         }
 
         //tgs.CellsUpdateBounds();
         tgs.RedrawRegionFlatToppedHexagonalGrid();
+
+        foreach ((Cell, int) cellRef in vertex.cellsRef)
+        {
+            tgs.CellUpdateBounds(cellRef.Item1);
+        }
+
         //tgs.CellsFindNeighbours();
         tgs.RedrawCells(tgs.cells);
     }

@@ -214,7 +214,6 @@ public class HexMapEditor : MonoBehaviour
 
         if (cell == null) return;
 
-
         int vc = hexGrid.tgs.CellGetVertexCount(cell.index);
 
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -224,6 +223,8 @@ public class HexMapEditor : MonoBehaviour
             for (int i = 0; i < vc; i++)
             {
                 Vector3 vertPos = hexGrid.tgs.CellGetVertexPosition(cell.index, i);
+
+                Debug.DrawRay(vertPos, Vector3.up * 5f, Color.yellow);
 
                 Vector3 checkPos = hit.point;
                 checkPos.y = vertPos.y;
@@ -251,7 +252,7 @@ public class HexMapEditor : MonoBehaviour
                         isDraggingVertex = true;
                     }
 
-                    break;
+                    
                 }
             }
         }
