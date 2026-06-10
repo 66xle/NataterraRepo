@@ -42,14 +42,14 @@ public class HexGrid : MonoBehaviour
 
         cells = new HexCell[tgs.cellCount];
 
-        // Cell index labels
-        //for (int i = 0; i < tgs.cellCount; i++)
-        //{
-        //    Cell cell = tgs.cells[i];
-        //
-        //    cells[i] = new HexCell(cell);
-        //    CreateCellLabel(cell.index, tgs.CellGetPosition(cell.index));
-        //}
+        
+        for (int i = 0; i < tgs.cellCount; i++)
+        {
+            Cell cell = tgs.cells[i];
+        
+            cells[i] = new HexCell(cell);
+            //CreateCellLabel(cell.index, tgs.CellGetPosition(cell.index));
+        }
 
         StoreVertices();
     }
