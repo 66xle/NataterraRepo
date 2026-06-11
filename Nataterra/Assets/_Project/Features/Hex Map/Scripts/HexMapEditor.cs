@@ -95,7 +95,7 @@ public class HexMapEditor : MonoBehaviour
                     if (!isWithinBounds) return;
                     hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
                     hexGrid.RegenerateGrid(selectedVertex);
-                    hexGrid.RegenerateCellSurface(selectedVertex, biomeTextures);
+                    hexGrid.RegenerateCellSurface(selectedVertex, biomeTextures, baseTextures);
                 }
             }
         }

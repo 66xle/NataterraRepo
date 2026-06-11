@@ -104,25 +104,38 @@ public class HexGrid : MonoBehaviour
         tgs.RedrawCells(tgs.cells);
     }
 
-    public void RegenerateCellSurface(VertexData vertex, Texture2D[] biomeTextures)
+    public void RegenerateCellSurface(VertexData vertex, Texture2D[] biomeTextures, Texture2D[] baseTextures)
     {
         foreach ((Cell, int) cellRef in vertex.cellsRef)
         {
-            Biome biome = GetCellBiome(cellRef.Item1.index);
-            Texture2D surfaceTexture = biome != Biome.None ? biomeTextures[(int)biome] : null;
+            int cellIndex = cellRef.Item1.index;
+
+            Texture2D surfaceTexture;
+
+            if (IsCellABase(cellIndex))
+            {
+                Base faction = GetCellBase(cellIndex);
+                surfaceTexture = faction != Base.None ? baseTextures[(int)faction] : null;
+            }
+            else
+            {
+                Biome biome = GetCellBiome(cellIndex);
+                surfaceTexture = biome != Biome.None ? biomeTextures[(int)biome] : null;
+            }
 
             if (surfaceTexture == null)
             {
-                tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Misc.ColorNull, true);
+                // Empty cell
+                tgs.CellToggleRegionSurface(cellIndex, true, Misc.ColorNull, true);
                 continue;
             }
 
-            tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Color.white, true, surfaceTexture);
+            // Biome or base cell
+            tgs.CellToggleRegionSurface(cellIndex, true, Color.white, true, surfaceTexture);
 
 
-            int index = cellRef.Item1.index;
-            if (DoesResourceExist(index))
-                cells[index].resourceObj.transform.position = GetCellWorldPosition(index);
+            if (DoesResourceExist(cellIndex))
+                cells[cellIndex].resourceObj.transform.position = GetCellWorldPosition(cellIndex);
         }
     }
 
@@ -145,6 +158,14 @@ public class HexGrid : MonoBehaviour
     public bool DoesResourceExist(int index)
     {
         if (cells[index].resourceObj == null)
+            return false;
+
+        return true;
+    }
+
+    public bool IsCellABase(int index)
+    {
+        if (cells[index].faction == Base.None)
             return false;
 
         return true;
