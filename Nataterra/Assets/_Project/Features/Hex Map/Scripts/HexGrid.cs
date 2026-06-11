@@ -1,4 +1,5 @@
 using DrawXXL;
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 using TGS;
@@ -107,7 +108,6 @@ public class HexGrid : MonoBehaviour
         foreach ((Cell, int) cellRef in vertex.cellsRef)
         {
             Biome biome = GetCellBiome(cellRef.Item1.index);
-
             Texture2D surfaceTexture = biome != Biome.None ? biomeTextures[(int)biome] : null;
 
             if (surfaceTexture == null)
@@ -117,6 +117,11 @@ public class HexGrid : MonoBehaviour
             }
 
             tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Color.white, true, surfaceTexture);
+
+
+            int index = cellRef.Item1.index;
+            if (DoesResourceExist(index))
+                cells[index].resourceObj.transform.position = GetCellWorldPosition(index);
         }
     }
 
@@ -132,6 +137,13 @@ public class HexGrid : MonoBehaviour
     public bool IsCellABiome(int index)
     {
         if (cells[index].biome == Biome.None)
+            return false;
+
+        return true;
+    }
+    public bool DoesResourceExist(int index)
+    {
+        if (cells[index].resourceObj == null)
             return false;
 
         return true;
@@ -227,7 +239,7 @@ public class HexGrid : MonoBehaviour
 
     public Vector3 GetCellWorldPosition(int index)
     {
-        return tgs.CellGetPosition(index);
+        return tgs.CellGetCentroid(index);
     }
 
     void CreateCellLabel(int cellIndex, Vector3 position)
