@@ -113,7 +113,7 @@ public class HexGrid : MonoBehaviour
             if (surfaceTexture == null)
             {
                 tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Misc.ColorNull, true);
-                return;
+                continue;
             }
 
             tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Color.white, true, surfaceTexture);
