@@ -23,7 +23,7 @@ public class HexGrid : MonoBehaviour
     public TerrainGridSystem tgs;
 
     HexCell[] cells;
-    Canvas gridCanvas;
+    public Canvas gridCanvas;
 
     public List<VertexData> vertices = new List<VertexData>();
 

@@ -9596,13 +9596,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1281189167}
-  m_LocalRotation: {x: 0.70710677, y: 0.00000032663803, z: -0.00000032663803, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2139584692}
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0.1}
@@ -14221,18 +14221,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fad737bc9736b94f8738fbaea42158f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HexMapEditor
-  biomeColors:
-  - {r: 0.029424524, g: 0.4264151, b: 0, a: 1}
-  - {r: 0.7960785, g: 0.098039225, b: 0.9921569, a: 1}
-  - {r: 0.29411766, g: 1, b: 0, a: 1}
-  - {r: 0, g: 0.26542306, b: 1, a: 1}
-  - {r: 0.9960785, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0.5301002, b: 0, a: 1}
+  biomeTextures:
+  - {fileID: 2800000, guid: f87a063076ee10e42ae4c6f5158622b4, type: 3}
+  - {fileID: 2800000, guid: c8e8d6dd9c257f14a83174330b5878cb, type: 3}
+  - {fileID: 2800000, guid: 2346daa63413ed347988ec15a2d699fa, type: 3}
+  - {fileID: 2800000, guid: 04ed0108b28988d49b6c004939a7fbb8, type: 3}
+  - {fileID: 2800000, guid: 9c203239d5a7c714d987c80b1e77fa74, type: 3}
+  - {fileID: 2800000, guid: e0915937a9c93e44faf9a13ee24db3ce, type: 3}
   resourceColors:
   - {r: 0.9490197, g: 0.10980393, b: 0, a: 1}
   - {r: 0.73333335, g: 0.5411765, b: 0.17254902, a: 1}
   - {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
-  resourceTextures: []
+  resourceTextures:
+  - {fileID: 2800000, guid: 9d42cc9ffcb2d154c957cc3d459d6dbb, type: 3}
+  - {fileID: 2800000, guid: 0557e7b5670e3764c952cd520898aef8, type: 3}
+  - {fileID: 2800000, guid: 894a3f834a4ab6043bc2e6cd16d55ed6, type: 3}
   buttons:
   - {fileID: 583485687}
   - {fileID: 533615956}
@@ -14247,6 +14250,7 @@ MonoBehaviour:
   selectedTileText: {fileID: 1245438758}
   disableToggle: {fileID: 0}
   prefab: {fileID: 806209074225207713, guid: 7e094eb5199093345967d5c0bec52b4d, type: 3}
+  resourceImagePrefab: {fileID: 8691468602474989349, guid: 9ed75790e6c885545a68cc82e0fb8b36, type: 3}
   resourceScale: {x: 0.5, y: 1, z: 0.5}
   baseScale: {x: 1, y: 1, z: 1}
   vertexDetectionRadius: 2
@@ -15548,6 +15552,7 @@ MonoBehaviour:
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
   touchedColor: {r: 1, g: 0, b: 1, a: 1}
   tgs: {fileID: 1840821379}
+  gridCanvas: {fileID: 0}
 --- !u!4 &2139584692
 Transform:
   m_ObjectHideFlags: 0

@@ -30,6 +30,7 @@ public class HexMapEditor : MonoBehaviour
     public Toggle disableToggle;
 
     public GameObject prefab;
+    public GameObject resourceImagePrefab;
     public Vector3 resourceScale = Vector3.one;
     public Vector3 baseScale = new Vector3(1.5f, 1.5f, 1.5f);
 
@@ -38,8 +39,6 @@ public class HexMapEditor : MonoBehaviour
     public LayerMask hexGridLayer;
 
     public HexGrid hexGrid;
-
-
 
     int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
     ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
@@ -351,9 +350,13 @@ public class HexMapEditor : MonoBehaviour
 
         Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
 
-        GameObject resourceObj = Instantiate(prefab, cellPosition, Quaternion.identity);
-        resourceObj.transform.localScale = new Vector3(resourceScale.x * hexGrid.CellSize.x, resourceScale.y, resourceScale.z * hexGrid.CellSize.y);
-        resourceObj.GetComponent<Renderer>().material.color = resourceColors[resourceIndex];
+        GameObject resourceObj = Instantiate(resourceImagePrefab);
+        resourceObj.transform.position = cellPosition;
+
+        RawImage resourceImage = resourceObj.GetComponent<RawImage>();
+        resourceImage.rectTransform.SetParent(hexGrid.gridCanvas.transform, false);
+        resourceImage.rectTransform.localScale = new Vector3(resourceImage.rectTransform.localScale.x * hexGrid.CellSize.x, resourceImage.rectTransform.localScale.z * hexGrid.CellSize.y, 1f);
+        resourceImage.texture = resourceTextures[resourceIndex];
 
         hexGrid.RemoveCellBase(cellIndex);
         hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
