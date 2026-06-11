@@ -5,7 +5,6 @@ public class HexCell
 {
     public Cell cell;
 
-    public Color color;
     public Biome biome = Biome.None;
 
     public Resource resource = Resource.None;

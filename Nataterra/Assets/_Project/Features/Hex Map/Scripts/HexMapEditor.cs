@@ -19,7 +19,7 @@ public enum Tab
 
 public class HexMapEditor : MonoBehaviour
 {
-    public Color[] biomeColors;
+    public Texture2D[] biomeTextures;
     public Color[] resourceColors;
     public Texture2D[] resourceTextures;
 
@@ -98,7 +98,7 @@ public class HexMapEditor : MonoBehaviour
                     if (!isWithinBounds) return;
                     hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
                     hexGrid.RegenerateGrid(selectedVertex);
-                    hexGrid.RegenerateCellSurface(selectedVertex, biomeColors);
+                    hexGrid.RegenerateCellSurface(selectedVertex, biomeTextures);
                 }
             }
         }
@@ -322,7 +322,7 @@ public class HexMapEditor : MonoBehaviour
 
     private void ChangeTileBiome(int cellIndex)
     {
-        hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeColors[biomeIndex]);
+        hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeTextures[biomeIndex]);
 
         if (currentTab == Tab.Select || currentTab == Tab.Biome)
         {
@@ -382,7 +382,7 @@ public class HexMapEditor : MonoBehaviour
             hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
 
         hexGrid.RemoveCellResource(cellIndex);
-        hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex, biomeColors[baseIndex]);
+        hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex, biomeTextures[baseIndex]);
         hexGrid.SetCellBase(cellIndex, baseIndex, baseObj);
 
         basesPlaced[baseIndex] = cellIndex;

@@ -102,15 +102,21 @@ public class HexGrid : MonoBehaviour
         tgs.RedrawCells(tgs.cells);
     }
 
-    public void RegenerateCellSurface(VertexData vertex, Color[] biomeColors)
+    public void RegenerateCellSurface(VertexData vertex, Texture2D[] biomeTextures)
     {
         foreach ((Cell, int) cellRef in vertex.cellsRef)
         {
             Biome biome = GetCellBiome(cellRef.Item1.index);
 
-            Color surfaceColor = biome != Biome.None ? biomeColors[(int)biome] : Misc.ColorNull;
+            Texture2D surfaceTexture = biome != Biome.None ? biomeTextures[(int)biome] : null;
 
-            tgs.CellToggleRegionSurface(cellRef.Item1.index, true, surfaceColor, true);
+            if (surfaceTexture == null)
+            {
+                tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Misc.ColorNull, true);
+                return;
+            }
+
+            tgs.CellToggleRegionSurface(cellRef.Item1.index, true, Color.white, true, surfaceTexture);
         }
     }
 
@@ -131,11 +137,11 @@ public class HexGrid : MonoBehaviour
         return true;
     }
 
-    public void SetCellBiome(int index, Biome biome, Color color)
+    public void SetCellBiome(int index, Biome biome, Texture2D texture)
     {
         cells[index].biome = biome;
 
-        tgs.CellToggleRegionSurface(index, true, color, true);
+        tgs.CellToggleRegionSurface(index, true, Color.white, true, texture);
     }
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
