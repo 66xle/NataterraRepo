@@ -10,8 +10,7 @@ public class HexCell
     public Resource resource = Resource.None;
     public GameObject resourceObj;
 
-    public Base raceBase = Base.None;
-    public GameObject baseObj;
+    public Base faction = Base.None;
     
     public HexCell(Cell cell)
     {

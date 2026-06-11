@@ -14228,14 +14228,15 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 04ed0108b28988d49b6c004939a7fbb8, type: 3}
   - {fileID: 2800000, guid: 9c203239d5a7c714d987c80b1e77fa74, type: 3}
   - {fileID: 2800000, guid: e0915937a9c93e44faf9a13ee24db3ce, type: 3}
-  resourceColors:
-  - {r: 0.9490197, g: 0.10980393, b: 0, a: 1}
-  - {r: 0.73333335, g: 0.5411765, b: 0.17254902, a: 1}
-  - {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
   resourceTextures:
   - {fileID: 2800000, guid: 9d42cc9ffcb2d154c957cc3d459d6dbb, type: 3}
   - {fileID: 2800000, guid: 0557e7b5670e3764c952cd520898aef8, type: 3}
   - {fileID: 2800000, guid: 894a3f834a4ab6043bc2e6cd16d55ed6, type: 3}
+  baseTextures:
+  - {fileID: 2800000, guid: ba0d16d8c32d1cf4cb95e77ba05284d4, type: 3}
+  - {fileID: 2800000, guid: 8752aec86d81cf342808e3846b10a8db, type: 3}
+  - {fileID: 2800000, guid: f0300e754b3b0b747987bada1d9dc9cb, type: 3}
+  - {fileID: 2800000, guid: 7a1dfa4d83743374981329ec6f08ac0d, type: 3}
   buttons:
   - {fileID: 583485687}
   - {fileID: 533615956}
@@ -14251,8 +14252,6 @@ MonoBehaviour:
   disableToggle: {fileID: 0}
   prefab: {fileID: 806209074225207713, guid: 7e094eb5199093345967d5c0bec52b4d, type: 3}
   resourceImagePrefab: {fileID: 8691468602474989349, guid: 9ed75790e6c885545a68cc82e0fb8b36, type: 3}
-  resourceScale: {x: 0.5, y: 1, z: 0.5}
-  baseScale: {x: 1, y: 1, z: 1}
   vertexDetectionRadius: 2
   hexGridLayer:
     serializedVersion: 2

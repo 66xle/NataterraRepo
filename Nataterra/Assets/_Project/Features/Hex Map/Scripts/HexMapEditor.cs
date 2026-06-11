@@ -20,8 +20,8 @@ public enum Tab
 public class HexMapEditor : MonoBehaviour
 {
     public Texture2D[] biomeTextures;
-    public Color[] resourceColors;
     public Texture2D[] resourceTextures;
+    public Texture2D[] baseTextures;
 
     public List<Button> buttons;
     public List<GameObject> panels;
@@ -31,8 +31,6 @@ public class HexMapEditor : MonoBehaviour
 
     public GameObject prefab;
     public GameObject resourceImagePrefab;
-    public Vector3 resourceScale = Vector3.one;
-    public Vector3 baseScale = new Vector3(1.5f, 1.5f, 1.5f);
 
     public float vertexDetectionRadius = 1f;
 
@@ -359,6 +357,7 @@ public class HexMapEditor : MonoBehaviour
         resourceImage.texture = resourceTextures[resourceIndex];
 
         hexGrid.RemoveCellBase(cellIndex);
+        hexGrid.SetCellBiome(cellIndex, biome, biomeTextures[(int)biome]);
         hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
 
         if (currentTab == Tab.Select)
@@ -368,10 +367,6 @@ public class HexMapEditor : MonoBehaviour
     private void ChangeTileBase(int cellIndex)
     {
         Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
-
-        GameObject baseObj = Instantiate(prefab, cellPosition, Quaternion.identity);
-        baseObj.transform.localScale = new Vector3(baseScale.x * hexGrid.CellSize.x, baseScale.y, baseScale.z * hexGrid.CellSize.y);
-        baseObj.GetComponent<Renderer>().material.color = Color.white;
 
         for (int i = 0; i < basesPlaced.Length; i++)
         {
@@ -385,8 +380,8 @@ public class HexMapEditor : MonoBehaviour
             hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
 
         hexGrid.RemoveCellResource(cellIndex);
-        hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex, biomeTextures[baseIndex]);
-        hexGrid.SetCellBase(cellIndex, baseIndex, baseObj);
+        hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex);
+        hexGrid.SetCellBase(cellIndex, (Base)baseIndex, baseTextures[baseIndex]);
 
         basesPlaced[baseIndex] = cellIndex;
 

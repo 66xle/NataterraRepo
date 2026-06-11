@@ -1,5 +1,6 @@
 using DrawXXL;
 using JetBrains.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TGS;
@@ -149,11 +150,12 @@ public class HexGrid : MonoBehaviour
         return true;
     }
 
-    public void SetCellBiome(int index, Biome biome, Texture2D texture)
+    public void SetCellBiome(int index, Biome biome, Texture2D texture = null)
     {
         cells[index].biome = biome;
 
-        tgs.CellToggleRegionSurface(index, true, Color.white, true, texture);
+        if (texture != null)
+            tgs.CellToggleRegionSurface(index, true, Color.white, true, texture);
     }
     public void SetCellResource(int index, Resource resource, GameObject resourceObj)
     {
@@ -165,17 +167,11 @@ public class HexGrid : MonoBehaviour
         cells[index].resource = resource;
         cells[index].resourceObj = resourceObj;
     }
-    public void SetCellBase(int cellIndex, int baseIndex, GameObject baseObj)
+    public void SetCellBase(int cellIndex, Base faction, Texture2D texture)
     {
-        if (cells[cellIndex].baseObj != null)
-        {
-            Destroy(cells[cellIndex].baseObj);
-        }
+        cells[cellIndex].faction = faction;
 
-        HexCell cell = cells[cellIndex];
-
-        cell.raceBase = (Base)baseIndex;
-        cell.baseObj = baseObj;
+        tgs.CellToggleRegionSurface(cellIndex, true, Color.white, true, texture);
     }
 
     public void RemoveCellBiome(int index)
@@ -197,14 +193,9 @@ public class HexGrid : MonoBehaviour
     }
     public void RemoveCellBase(int cellIndex)
     {
-        HexCell cell = cells[cellIndex];
-        if (cell.baseObj != null)
-        {
-            Destroy(cell.baseObj);
-        }
+        cells[cellIndex].faction = Base.None;
 
-        cell.raceBase = Base.None;
-        cell.baseObj = null;
+        tgs.CellClear(cellIndex);
     }
 
     public Biome GetCellBiome(int index)
@@ -217,7 +208,7 @@ public class HexGrid : MonoBehaviour
     }
     public Base GetCellBase(int index)
     {
-        return cells[index].raceBase;
+        return cells[index].faction;
     }
 
 
