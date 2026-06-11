@@ -324,18 +324,30 @@ public class HexMapEditor : MonoBehaviour
     {
         hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeColors[biomeIndex]);
 
-        if (currentTab == Tab.Select)
+        if (currentTab == Tab.Select || currentTab == Tab.Biome)
         {
             SetCellToggles(cellIndex);
 
-            // Show resource toggles
-            selectToggleGroups[1].gameObject.SetActive(true);
+            bool enableResource = true;
+
+            if (Biome.Mountain == (Biome)biomeIndex || Biome.Lake == (Biome)biomeIndex)
+            {
+                enableResource = false;
+                hexGrid.RemoveCellResource(cellIndex);
+            }
+            
+            if (currentTab == Tab.Select)
+                selectToggleGroups[1].gameObject.SetActive(enableResource);
         }
     }
 
     private void ChangeTileResource(int cellIndex)
     {
         if (!hexGrid.IsCellABiome(cellIndex)) return;
+
+        Biome biome = hexGrid.GetCellBiome(cellIndex);
+        if (biome == Biome.Mountain || biome == Biome.Lake)
+            return;
 
         Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
 
