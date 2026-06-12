@@ -44,12 +44,9 @@ public class HexGrid : MonoBehaviour
 
         cells = new HexCell[tgs.cellCount];
 
-        
         for (int i = 0; i < tgs.cellCount; i++)
         {
-            Cell cell = tgs.cells[i];
-        
-            cells[i] = new HexCell(cell);
+            cells[i] = new HexCell();
             //CreateCellLabel(cell.index, tgs.CellGetPosition(cell.index));
         }
 
