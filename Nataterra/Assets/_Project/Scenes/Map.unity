@@ -14249,7 +14249,6 @@ MonoBehaviour:
   - {fileID: 481444711}
   - {fileID: 398277397}
   selectedTileText: {fileID: 1245438758}
-  disableToggle: {fileID: 0}
   prefab: {fileID: 806209074225207713, guid: 7e094eb5199093345967d5c0bec52b4d, type: 3}
   resourceImagePrefab: {fileID: 8691468602474989349, guid: 9ed75790e6c885545a68cc82e0fb8b36, type: 3}
   vertexDetectionRadius: 2
@@ -14808,6 +14807,7 @@ GameObject:
   - component: {fileID: 2027843340}
   - component: {fileID: 2027843339}
   - component: {fileID: 2027843342}
+  - component: {fileID: 2027843343}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -15029,6 +15029,23 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+--- !u!114 &2027843343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2027843338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd89a4a67e084ee4aaa0eafd772b5319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HexEditorCamera
+  moveSpeed: 100
+  fastMoveMultiplier: 5
+  panSpeed: 50
+  lookSensitivity: 2
+  zoomSpeed: 30
 --- !u!1 &2069391329
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,7 +28,6 @@ public class HexMapEditor : MonoBehaviour
     public List<GameObject> panels;
 
     public TMP_Text selectedTileText;
-    public Toggle disableToggle;
 
     public GameObject prefab;
     public GameObject resourceImagePrefab;
