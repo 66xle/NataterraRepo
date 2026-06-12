@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class HexEditorCamera : MonoBehaviour
@@ -12,6 +13,8 @@ public class HexEditorCamera : MonoBehaviour
 
     [Header("Zoom")]
     [SerializeField] private float zoomSpeed = 20f;
+
+    public TMP_InputField inputField;
 
     private float yaw;
     private float pitch;
@@ -33,6 +36,8 @@ public class HexEditorCamera : MonoBehaviour
 
     private void HandleMovement()
     {
+        if (inputField.isFocused) return;
+
         float currentSpeed = moveSpeed;
 
         if (Input.GetKey(KeyCode.LeftControl))

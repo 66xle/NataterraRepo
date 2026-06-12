@@ -33,11 +33,15 @@ public class HexMapEditor : MonoBehaviour
     public GameObject resourceImagePrefab;
 
     public float vertexDetectionRadius = 1f;
-
     public LayerMask hexGridLayer;
-
     public HexGrid hexGrid;
 
+    // Options
+    public TMP_InputField inputField;
+    public TMP_Text errorText;
+
+
+    // Private
     int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
     ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
 
@@ -55,8 +59,12 @@ public class HexMapEditor : MonoBehaviour
     int resourceIndex;
     int baseIndex;
 
+    HexMapOptions options;
+
     void Awake()
     {
+        options = new(this);
+
         SelectButton(0);
         biomeIndex = 0;
         resourceIndex = 0;
@@ -430,5 +438,11 @@ public class HexMapEditor : MonoBehaviour
     public void SetBase(int index)
     {
         baseIndex = index;
+    }
+
+
+    public void SaveMap()
+    {
+        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells);
     }
 }

@@ -230,6 +230,10 @@ public class HexGrid : MonoBehaviour
     }
 
 
+    public HexCell[] GetHexCells()
+    {
+        return cells;
+    }
 
     public int GetCellIndex(Vector3 position)
     {
