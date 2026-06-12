@@ -5,6 +5,7 @@ using System.Linq;
 using TGS;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 public enum Tab
@@ -166,6 +167,24 @@ public class HexMapEditor : MonoBehaviour
 
                     if (selectedCell != null)
                         Destroy(selectedCell);
+                }
+
+                if (currentTab == Tab.Biome || currentTab == Tab.Resource || currentTab == Tab.Base)
+                {
+                    Toggle[] toggles = panels[index].GetComponentsInChildren<Toggle>();
+
+                    for (int t = 0; t < toggles.Length; t++)
+                    {
+                        if (!toggles[t].isOn)
+                            continue;
+
+                        if (Tab.Biome == currentTab)
+                            biomeIndex = t;
+                        else if (Tab.Resource == currentTab)
+                            resourceIndex = t;
+                        else if (Tab.Base == currentTab)
+                            baseIndex = t;
+                    }
                 }
             }
             else
@@ -370,8 +389,10 @@ public class HexMapEditor : MonoBehaviour
 
         for (int i = 0; i < basesPlaced.Length; i++)
         {
+            // Skip if base is placed
             if (basesPlaced[i] != cellIndex) continue;
 
+            // If a base is not placed set to -1
             basesPlaced[i] = -1;
         }
 
