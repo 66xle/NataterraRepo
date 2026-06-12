@@ -140,7 +140,7 @@ public class HexMapEditor : MonoBehaviour
 
             if (currentTab == Tab.Select)
             {
-                SetCellToggles(cellIndex);
+                SetSelectToggles(cellIndex);
 
                 // When resetting current cell which is no longer a biome, so hide resource toggles
                 if (currentCellIndex == cellIndex)
@@ -212,14 +212,14 @@ public class HexMapEditor : MonoBehaviour
         bool isBiome = hexGrid.IsCellABiome(cellIndex);
         selectToggleGroups[1].gameObject.SetActive(isBiome);
 
-        SetCellToggles(cellIndex);
+        SetSelectToggles(cellIndex);
     }
 
-    private void SetCellToggles(int cellIndex)
+    private void SetSelectToggles(int cellIndex)
     {
         Biome biome = hexGrid.GetCellBiome(cellIndex);
         Resource resource = hexGrid.GetCellResource(cellIndex);
-        Base raceBase = hexGrid.GetCellBase(cellIndex);
+        Base faction = hexGrid.GetCellBase(cellIndex);
 
         selectToggleGroups[0].SetAllTogglesOff(false);
         selectToggleGroups[1].SetAllTogglesOff(false);
@@ -231,8 +231,8 @@ public class HexMapEditor : MonoBehaviour
         if (Resource.None != resource)
             selectToggleGroups[1].GetComponentsInChildren<Toggle>()[(int)resource].SetIsOnWithoutNotify(true);
 
-        if (Base.None != raceBase)
-            selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)raceBase].SetIsOnWithoutNotify(true);
+        if (Base.None != faction)
+            selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)faction].SetIsOnWithoutNotify(true);
     }
 
 
@@ -338,11 +338,16 @@ public class HexMapEditor : MonoBehaviour
 
     private void ChangeTileBiome(int cellIndex)
     {
+        // Remove base
+        hexGrid.RemoveCellBase(cellIndex);
+        selectToggleGroups[2].SetAllTogglesOff(false);
+
+        // Set biome
         hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeTextures[biomeIndex]);
 
         if (currentTab == Tab.Select || currentTab == Tab.Biome)
         {
-            SetCellToggles(cellIndex);
+            SetSelectToggles(cellIndex);
 
             bool enableResource = true;
 
@@ -354,6 +359,8 @@ public class HexMapEditor : MonoBehaviour
             
             if (currentTab == Tab.Select)
                 selectToggleGroups[1].gameObject.SetActive(enableResource);
+
+            
         }
     }
 
@@ -380,7 +387,7 @@ public class HexMapEditor : MonoBehaviour
         hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
 
         if (currentTab == Tab.Select)
-            SetCellToggles(cellIndex);
+            SetSelectToggles(cellIndex);
     }
 
     private void ChangeTileBase(int cellIndex)
@@ -407,7 +414,7 @@ public class HexMapEditor : MonoBehaviour
         basesPlaced[baseIndex] = cellIndex;
 
         if (currentTab == Tab.Select)
-            SetCellToggles(cellIndex);
+            SetSelectToggles(cellIndex);
     }
 
     
