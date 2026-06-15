@@ -1855,7 +1855,7 @@ namespace TGS {
             needRefreshRouteMatrix = true;
         }
 
-        void CellsUpdateBounds () {
+        public void CellsUpdateBounds () {
             // Update cells polygon
             int count = cells.Count;
             for (int k = 0; k < count; k++) {
@@ -1875,7 +1875,7 @@ namespace TGS {
             cell.scaledCenter = GetScaledVector(cell.center);
         }
 
-        void CellsUpdateNeighbours () {
+        public void CellsUpdateNeighbours () {
             int cellCount = cells.Count;
             for (int k = 0; k < cellCount; k++) {
                 Cell cell = cells[k];

@@ -206,6 +206,35 @@ namespace TGS {
         public Cell () : this(Vector2.zero) {
         }
 
+        public Cell(Cell cell)
+        {
+            index = cell.index;
+            row = cell.row;
+            column = cell.column;
+            region = cell.region;
+
+            territoryIndex = cell.territoryIndex;
+            usedFlag = cell.usedFlag;
+            usedFlag2 = cell.usedFlag2;
+
+            visibleSelf = cell.visibleSelf;
+            visibleByRules = cell.visibleByRules;
+            visibleAlways = cell.visibleAlways;
+
+            clearance = cell.clearance;
+            tag = cell.tag;
+
+            canCross = cell.canCross;
+            group = cell.group;
+
+            // ---- arrays (shallow copy of values)
+            if (_crossCost != null)
+               _crossCost = (float[])cell._crossCost.Clone();
+
+            if (_blocksLOS != null)
+                _blocksLOS = (bool[])cell._blocksLOS.Clone();
+        }
+
         /// <summary>
         /// Returns the highest crossing cost of all side of a cell
         /// </summary>

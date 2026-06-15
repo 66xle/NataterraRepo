@@ -53,6 +53,7 @@ public class HexGrid : MonoBehaviour
         StoreVertices();
     }
 
+    
 
     public void StoreVertices()
     { 
@@ -98,6 +99,16 @@ public class HexGrid : MonoBehaviour
             tgs.CellUpdateBounds(cellRef.Item1);
         }
 
+        tgs.RedrawCells(tgs.cells);
+    }
+    public void RegenerateGrid(HexCell[] cells, List<Cell> tgsCells)
+    {
+        this.cells = cells.ToArray();
+        tgs.cells = new(tgsCells);
+
+        tgs.RegenerateFlatToppedHexagonalGrid();
+        //tgs.CellsUpdateBounds();
+        tgs.CellsUpdateNeighbours();
         tgs.RedrawCells(tgs.cells);
     }
 

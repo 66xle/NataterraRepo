@@ -445,4 +445,9 @@ public class HexMapEditor : MonoBehaviour
     {
         options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells);
     }
+
+    public void LoadMap()
+    {
+        options.LoadMap(inputField.text);
+    }
 }

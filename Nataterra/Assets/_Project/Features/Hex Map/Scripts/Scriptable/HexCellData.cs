@@ -1,19 +1,14 @@
-using TGS;
+using System;
 using UnityEngine;
 
-public class HexCell
+[Serializable]
+public class HexCellData : ScriptableObject
 {
     public Biome biome = Biome.None;
-
     public Resource resource = Resource.None;
-    public GameObject resourceObj;
-
     public Base faction = Base.None;
 
-    public HexCell () { }
-
-
-    public HexCell(HexCellData cell)
+    public HexCellData(HexCell cell)
     {
         biome = cell.biome;
         resource = cell.resource;

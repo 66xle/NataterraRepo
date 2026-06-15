@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using TGS;
 using TMPro;
 using UnityEditor;
@@ -8,9 +9,12 @@ public class HexMapOptions
 {
     HexMapEditor editor;
 
+    string path;
+
     public HexMapOptions(HexMapEditor editor)
     {
-        this.editor = editor; 
+        this.editor = editor;
+        path = "Assets/_Project/Features/Hex Map/ScriptableObjects";
     }
 
 
@@ -25,7 +29,7 @@ public class HexMapOptions
             return;
         }
 
-        MapData loadedAsset = AssetDatabase.LoadAssetAtPath($"Assets/_Project/Features/Hex Map/ScriptableObjects/{fileName}.asset", typeof(MapData)) as MapData;
+        MapData loadedAsset = AssetDatabase.LoadAssetAtPath($"{path}/{fileName}.asset", typeof(MapData)) as MapData;
 
         if (loadedAsset != null)
         {
@@ -36,14 +40,43 @@ public class HexMapOptions
         editor.errorText.text = $"Created \"{fileName}\"";
         editor.errorText.color = Color.green;
 
-        MapData mapData = new(cells, tgsCells);
-        AssetDatabase.CreateAsset(mapData, $"Assets/_Project/Features/Hex Map/ScriptableObjects/{fileName}.asset");
+        MapData mapData = ScriptableObject.CreateInstance<MapData>();
+        mapData.Initialize(cells, tgsCells);
+        AssetDatabase.CreateAsset(mapData, $"{path}/{fileName}.asset");
     }
 
-    public void LoadMap()
+    public void LoadMap(string fileName)
+    {
+        editor.errorText.text = "";
+        editor.errorText.color = Color.red;
+
+        if (string.IsNullOrEmpty(fileName) || string.IsNullOrWhiteSpace(fileName))
+        {
+            editor.errorText.text = "Field is empty";
+            return;
+        }
+
+        MapData loadedAsset = AssetDatabase.LoadAssetAtPath($"{path}/{fileName}.asset", typeof(MapData)) as MapData;
+
+        if (loadedAsset == null)
+        {
+            editor.errorText.text = $"\"{fileName}\" doesn't exist";
+            return;
+        }
+
+
+        editor.errorText.text = $"Loaded \"{fileName}\"";
+        editor.errorText.color = Color.green;
+
+
+        HexCell[] cells = loadedAsset.hexCells.Select(x => new HexCell(x)).ToArray();
+        List<Cell> tgsCells = loadedAsset.tgsCells.Select(x => new Cell(x)).ToList();
+
+        editor.hexGrid.RegenerateGrid(cells, tgsCells);
+    }
+
+    public void LoadResources()
     {
 
     }
-
-
 }
