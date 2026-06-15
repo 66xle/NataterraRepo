@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ee4e366dbc341d0489279355a87cf465
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251490
+  packageName: Realistic Cliffs and Rocks
+  packageVersion: 1.1
+  assetPath: Assets/_Packages/Realistic Cliffs and Rocks/Scenes/Map_Overview/HDRP/LightingData.asset
+  uploadId: 925290

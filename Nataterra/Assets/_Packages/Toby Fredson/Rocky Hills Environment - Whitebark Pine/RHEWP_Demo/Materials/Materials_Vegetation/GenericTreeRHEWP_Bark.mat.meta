@@ -1,0 +1,34 @@
+fileFormatVersion: 2
+guid: fb872e18ab395914ca8d9fdbf9f856dc
+labels:
+- cave
+- cliff
+- cti
+- details
+- environment
+- flowers
+- grass
+- helpers
+- leaves
+- nature
+- pbr
+- rocks
+- rockyhills
+- shader
+- stone
+- tress
+- twigs
+- wood
+timeCreated: 1542795584
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: materials
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Vegetation/GenericTreeRHEWP_Bark.mat
+  uploadId: 919880

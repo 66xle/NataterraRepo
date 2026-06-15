@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a9246080f307ebc4aa7b0736d9f9dd05
+timeCreated: 1608223944
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Vegetation/PineLeavesRHEWP.mat
+  uploadId: 919880

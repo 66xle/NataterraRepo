@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c3a9b0fff626618479376a6cb8bea69d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251490
+  packageName: Realistic Cliffs and Rocks
+  packageVersion: 1.1
+  assetPath: Assets/_Packages/Realistic Cliffs and Rocks/Scenes/Map_Overview/MainCamera.prefab
+  uploadId: 925290

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 36da336d5e887f143ba5bc463d459e2d
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Core/Pipelines/RHEWP
+    - 2022.3.1f1+ (HDRP 14+).unitypackage
+  uploadId: 919880

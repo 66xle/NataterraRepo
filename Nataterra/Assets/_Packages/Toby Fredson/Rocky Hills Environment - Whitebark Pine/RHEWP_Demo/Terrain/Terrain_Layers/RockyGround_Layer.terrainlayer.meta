@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 59f3e95d4a6d6f947b54756f951086eb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 8574412962073106934
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Terrain/Terrain_Layers/RockyGround_Layer.terrainlayer
+  uploadId: 919880

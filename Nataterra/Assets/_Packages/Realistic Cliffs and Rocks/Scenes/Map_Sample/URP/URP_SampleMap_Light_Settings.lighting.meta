@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 083d93d30e679c24f9c72575936dd8bd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251490
+  packageName: Realistic Cliffs and Rocks
+  packageVersion: 1.1
+  assetPath: Assets/_Packages/Realistic Cliffs and Rocks/Scenes/Map_Sample/URP/URP_SampleMap_Light_Settings.lighting
+  uploadId: 925290

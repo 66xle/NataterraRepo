@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 728fdf7be48dbee47a45644390d23367
+timeCreated: 1548593262
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: materials
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Particle
+    FX/CloudsB.mat
+  uploadId: 919880

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 919bbe3e3f8bb544ebd99f0271417eee
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 251490
+  packageName: Realistic Cliffs and Rocks
+  packageVersion: 1.1
+  assetPath: Assets/_Packages/Realistic Cliffs and Rocks/Scenes/Map_Sample/HDRP/HDRP_SampleMap_Light_Settings.lighting
+  uploadId: 925290

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3f8e6b8b52786854d94565dda8c49f97
+timeCreated: 1595704326
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Prefabs/Prefabs_Static/GenericCliffRHEWP_A.prefab
+  uploadId: 919880

@@ -1,0 +1,1 @@
+These prefabs are designed to work with the "Terrain Detail Paint" option. Under normal circumstances, you should use plants as tree prefabs. These prefabs are provided as an additional option and do not have LODs in order to be compatible with the detail paint system.

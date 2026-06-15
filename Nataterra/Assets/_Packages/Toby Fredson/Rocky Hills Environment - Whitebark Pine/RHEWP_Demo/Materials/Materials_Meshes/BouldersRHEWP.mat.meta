@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 1997b039e6f12a14bbebb1bea2a30e9b
+timeCreated: 1589812540
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313788
+  packageName: Rocky Hills Environment - Whitebark Pine
+  packageVersion: 1.1.0
+  assetPath: Assets/Toby Fredson/Rocky Hills Environment - Whitebark Pine/RHEWP_Demo/Materials/Materials_Meshes/BouldersRHEWP.mat
+  uploadId: 919880
