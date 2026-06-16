@@ -1418,7 +1418,9 @@ namespace TGS {
                     Point p5;
                     Point p6;
 
-                    if (tgsCells != null)
+                    bool IsLoadingData = tgsCells != null;
+
+                    if (IsLoadingData)
                     {
                         // Data to load
                         CellData data = tgsCells[cellsCount];
@@ -1491,7 +1493,7 @@ namespace TGS {
                     sides[k, j, 5] = leftDown;
 
 
-                    Region cr = tgsCells != null ? new Region(cell, false) : cell.region;
+                    Region cr = IsLoadingData ? new Region(cell, false) : cell.region;
                     cr.segments.Clear();
 
                     if (subdivisions > 1)
@@ -1524,6 +1526,12 @@ namespace TGS {
                     }
                     if (cr.polygon != null)
                     {
+                        if (IsLoadingData)
+                        {
+                            cell.region = cr;
+                            cells[cellsCount] = cell;
+                        }
+
                         cellsCount++;
                     }
                 }
