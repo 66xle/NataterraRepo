@@ -139,7 +139,7 @@ public class HexMapEditor : MonoBehaviour
                 ChangeTileBase(cellIndex);
             }
         }
-        else if (Input.GetKey(KeyCode.Mouse1))
+        else if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.LeftControl))
         {
             hexGrid.RemoveCellBiome(cellIndex);
             hexGrid.RemoveCellResource(cellIndex);
