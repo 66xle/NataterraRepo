@@ -101,13 +101,13 @@ public class HexGrid : MonoBehaviour
 
         tgs.RedrawCells(tgs.cells);
     }
-    public void RegenerateGrid(HexCell[] cells, List<Cell> tgsCells)
+    public void RegenerateGrid(MapData data)
     {
-        this.cells = cells.ToArray();
-        tgs.cells = new(tgsCells);
+        cells = data.hexCells.Select(x => new HexCell(x)).ToArray();
 
-        tgs.RegenerateFlatToppedHexagonalGrid();
-        //tgs.CellsUpdateBounds();
+
+        tgs.RegenerateFlatToppedHexagonalGrid(data.tgsCells);
+        tgs.CellsUpdateBounds();
         tgs.CellsUpdateNeighbours();
         tgs.RedrawCells(tgs.cells);
     }

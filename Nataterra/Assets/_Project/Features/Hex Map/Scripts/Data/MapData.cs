@@ -5,16 +5,16 @@ using System.Linq;
 using System;
 
 [Serializable]
-public class MapData : ScriptableObject
+public class MapData
 {
     public List<HexCellData> hexCells;
-    public List<Cell> tgsCells;
+    public List<CellData> tgsCells;
 
     // scene or prefab reference here
 
-    public void Initialize(HexCell[] cells, List<Cell> tgsCells)
+    public MapData(HexCell[] cells, List<Cell> tgsCells)
     {
         this.hexCells = cells.Select(c => new HexCellData(c)).ToList();
-        this.tgsCells = tgsCells;
+        this.tgsCells = tgsCells.Select(c => new CellData(c)).ToList();
     }
 }

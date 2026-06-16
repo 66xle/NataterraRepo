@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class HexCellData : ScriptableObject
+public class HexCellData
 {
     public Biome biome = Biome.None;
     public Resource resource = Resource.None;

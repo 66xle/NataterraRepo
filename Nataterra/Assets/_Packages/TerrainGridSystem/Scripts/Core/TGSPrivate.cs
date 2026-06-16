@@ -1388,7 +1388,7 @@ namespace TGS {
             }
         }
 
-        public void RegenerateFlatToppedHexagonalGrid()
+        public void RegenerateFlatToppedHexagonalGrid(List<CellData> tgsCells = null)
         {
             double qx = 1.0 + (_cellColumnCount - 1.0) * 3.0 / 4.0;
             double qy = _cellRowCount + 0.5;
@@ -1410,19 +1410,45 @@ namespace TGS {
             {
                 for (int k = 0; k < qx2; k++)
                 {
-                    Vector2 centroid = cells[cellsCount].region.centroid;
+                    Cell cell;
+                    Point p1;
+                    Point p2;
+                    Point p3;
+                    Point p4;
+                    Point p5;
+                    Point p6;
 
-                    Point center = new Point(centroid.x, centroid.y);
-                    Cell cell = cells[cellsCount];  
+                    if (tgsCells != null)
+                    {
+                        // Data to load
+                        CellData data = tgsCells[cellsCount];
+                        cell = new Cell(data.center);
+                        cell.index = cellsCount;
+                        cell.row = (ushort)j;
+                        cell.column = (ushort)k;
+
+                        p1 = new Point(data.points[0].x, data.points[0].y);
+                        p2 = new Point(data.points[5].x, data.points[5].y);
+                        p3 = new Point(data.points[4].x, data.points[4].y);
+                        p4 = new Point(data.points[3].x, data.points[3].y);
+                        p5 = new Point(data.points[2].x, data.points[2].y);
+                        p6 = new Point(data.points[1].x, data.points[1].y);
+                    }
+                    else
+                    {
+                        // Regenerate points
+                        cell = cells[cellsCount];
+
+                        p1 = new Point(cell.region.points[0].x, cell.region.points[0].y);
+                        p2 = new Point(cell.region.points[5].x, cell.region.points[5].y);
+                        p3 = new Point(cell.region.points[4].x, cell.region.points[4].y);
+                        p4 = new Point(cell.region.points[3].x, cell.region.points[3].y);
+                        p5 = new Point(cell.region.points[2].x, cell.region.points[2].y);
+                        p6 = new Point(cell.region.points[1].x, cell.region.points[1].y);
+                    }
 
                     double offsetY = (k % 2 == evenLayout) ? 0 : -halfStepY;
 
-                    Point p1 = new Point(cell.region.points[0].x, cell.region.points[0].y);
-                    Point p2 = new Point(cell.region.points[5].x, cell.region.points[5].y);
-                    Point p3 = new Point(cell.region.points[4].x, cell.region.points[4].y);
-                    Point p4 = new Point(cell.region.points[3].x, cell.region.points[3].y);
-                    Point p5 = new Point(cell.region.points[2].x, cell.region.points[2].y);
-                    Point p6 = new Point(cell.region.points[1].x, cell.region.points[1].y);
                     if (_cornerJitter > 0f)
                     {
                         double maxR = _cornerJitter * Math.Min(halfStepX, halfStepY);
@@ -1464,7 +1490,8 @@ namespace TGS {
                     }
                     sides[k, j, 5] = leftDown;
 
-                    Region cr = cell.region;
+
+                    Region cr = tgsCells != null ? new Region(cell, false) : cell.region;
                     cr.segments.Clear();
 
                     if (subdivisions > 1)
