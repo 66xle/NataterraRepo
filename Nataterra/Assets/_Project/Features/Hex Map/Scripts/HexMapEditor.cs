@@ -141,18 +141,23 @@ public class HexMapEditor : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.LeftControl))
         {
-            hexGrid.RemoveCellBiome(cellIndex);
-            hexGrid.RemoveCellResource(cellIndex);
-            hexGrid.RemoveCellBase(cellIndex);
+            ResetCell(cellIndex);
+        }
+    }
 
-            if (currentTab == Tab.Select)
-            {
-                SetSelectToggles(cellIndex);
+    public void ResetCell(int cellIndex)
+    {
+        hexGrid.RemoveCellBiome(cellIndex);
+        hexGrid.RemoveCellResource(cellIndex);
+        hexGrid.RemoveCellBase(cellIndex);
 
-                // When resetting current cell which is no longer a biome, so hide resource toggles
-                if (currentCellIndex == cellIndex)
-                    selectToggleGroups[1].gameObject.SetActive(false);
-            }
+        if (currentTab == Tab.Select)
+        {
+            SetSelectToggles(cellIndex);
+
+            // When resetting current cell which is no longer a biome, so hide resource toggles
+            if (currentCellIndex == cellIndex)
+                selectToggleGroups[1].gameObject.SetActive(false);
         }
     }
 
@@ -354,8 +359,6 @@ public class HexMapEditor : MonoBehaviour
 
         if (currentTab == Tab.Select || currentTab == Tab.Biome)
         {
-            SetSelectToggles(cellIndex);
-
             bool enableResource = true;
 
             if (Biome.Mountain == (Biome)biomeIndex || Biome.Lake == (Biome)biomeIndex)
@@ -365,9 +368,10 @@ public class HexMapEditor : MonoBehaviour
             }
             
             if (currentTab == Tab.Select)
+            {
+                SetSelectToggles(cellIndex);
                 selectToggleGroups[1].gameObject.SetActive(enableResource);
-
-            
+            }
         }
     }
 
@@ -425,6 +429,31 @@ public class HexMapEditor : MonoBehaviour
     }
 
     
+    public void LoadCellData(List<HexCellData> cellData)
+    {
+        hexGrid.SetCells(cellData.Select(c => new HexCell(c)).ToArray());
+
+        for (int i = 0; i < cellData.Count; i++)
+        {
+            biomeIndex = (int)cellData[i].biome;
+            resourceIndex = (int)cellData[i].resource;
+            baseIndex = (int)cellData[i].faction;
+
+            if (baseIndex != -1)
+            {
+                ChangeTileBase(i);
+            }
+            else if (biomeIndex != -1)
+            {
+                ChangeTileBiome(i);
+
+                if (resourceIndex == -1)
+                    continue;
+
+                ChangeTileResource(i);
+            }
+        }
+    }
 
 
     public void SetBiome(int index)

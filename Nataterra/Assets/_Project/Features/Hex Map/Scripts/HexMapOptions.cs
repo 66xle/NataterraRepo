@@ -75,11 +75,19 @@ public class HexMapOptions
 
         string json = File.ReadAllText(path);
         MapData mapData = JsonUtility.FromJson<MapData>(json);
-        editor.hexGrid.RegenerateGrid(mapData);
+
+        ResetCells(mapData.hexCells.Count);
+
+        editor.hexGrid.RegenerateGrid(mapData.tgsCells);
+        editor.LoadCellData(mapData.hexCells);
     }
 
-    public void LoadResources()
+    public void ResetCells(int count)
     {
-
+        for (int i = 0; i < count; i++)
+        {
+            editor.ResetCell(i);
+        }
     }
+
 }

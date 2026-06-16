@@ -7,7 +7,7 @@ public enum Biome
     Lake = 3,
     Desert = 4,
     Mountain = 5,
-    None
+    None = -1
 }
 
 public enum Resource
@@ -15,7 +15,7 @@ public enum Resource
     Meat = 0,
     Wood = 1,
     Metal = 2,
-    None
+    None = -1
 }
 
 public enum Base
@@ -24,7 +24,7 @@ public enum Base
     Velathi = 1,
     Humans = 2,
     Naga = 3,
-    None
+    None = -1
 }
 
 
