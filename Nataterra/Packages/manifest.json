@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#5.0.0",
     "com.unity.burst": "1.8.29",
     "com.unity.collab-proxy": "2.12.4",
     "com.unity.collections": "6.4.0",
