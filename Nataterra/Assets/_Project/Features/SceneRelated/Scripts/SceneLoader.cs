@@ -11,8 +11,6 @@ namespace Systems.SceneManagment
     {
         [SerializeField] SceneGroup[] sceneGroups;
         [SerializeField] SceneReference loadingScene;
-        [SerializeField] Image FadeImage;
-        [SerializeField] float FadeTime = 1f;
 
         public readonly SceneGroupManager manager = new SceneGroupManager();
 
@@ -30,6 +28,8 @@ namespace Systems.SceneManagment
 
         async void Start()
         {
+            Init = true;
+
             await LoadSceneGroup(sceneGroups[0].GroupName);
         }
 
@@ -54,11 +54,11 @@ namespace Systems.SceneManagment
                 temp.GroupName = group.GroupName;
                 temp.Scenes = new(group.Scenes);
 
-                if (Init)
-                {
-                    await SceneManager.LoadSceneAsync(loadingScene.Path, LoadSceneMode.Additive);
-                    await manager.UnloadScenes();
-                }
+                //if (Init)
+                //{
+                //    await SceneManager.LoadSceneAsync(loadingScene.Path, LoadSceneMode.Additive);
+                //    await manager.UnloadScenes();
+                //}
 
                 await manager.LoadScenes(temp, progress);
 
