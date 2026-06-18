@@ -10,10 +10,10 @@ enum GameplayState
 
 public class GameplayStateFactory
 {
-    GameplayStateMachine _content;
+    StateMachineManager _content;
     Dictionary<GameplayState, GameplayBaseState> _states = new Dictionary<GameplayState, GameplayBaseState>();
 
-    public GameplayStateFactory(GameplayStateMachine currentContext)
+    public GameplayStateFactory(StateMachineManager currentContext)
     {
         _content = currentContext;
         _states[GameplayState.Map] = new MapState(_content, this);

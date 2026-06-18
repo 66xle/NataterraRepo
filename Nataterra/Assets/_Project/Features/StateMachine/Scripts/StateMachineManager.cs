@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class GameplayStateMachine : MonoBehaviour
+public class StateMachineManager : MonoBehaviour
 {
+    public MapStateMachine MapCtx;
+    public CombatStateMachine CombatCtx;
 
     GameplayBaseState _currentState;
     GameplayStateFactory _states;

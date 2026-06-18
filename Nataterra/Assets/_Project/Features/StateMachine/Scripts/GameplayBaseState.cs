@@ -1,19 +1,31 @@
 
 public abstract class GameplayBaseState
 {
-    bool isRootState = false;
-    GameplayStateMachine _ctx;
+    bool _isRootState = false;
+    StateMachineManager _ctx;
+
     GameplayStateFactory _factory;
     GameplayBaseState _currentSuperState;
-    GameplayBaseState _currentSubState; // CHANGE TO PROTECTED LATER
+    GameplayBaseState _currentSubState;
 
-    public GameplayStateMachine Ctx { get; set; }
-    public GameplayStateMachine Factory { get; set; }
+    MapStateMachine _mapCtx;
+    CombatStateMachine _combatCtx;
 
-    public GameplayBaseState(GameplayStateMachine context, GameplayStateFactory factory)
+    public bool IsRootState { set { _isRootState = value; } }
+    public StateMachineManager Ctx { get { return _ctx; } }
+    public GameplayStateFactory Factory { get { return _factory; } }
+
+    public MapStateMachine MapCtx { get {  return _mapCtx; } }
+    public CombatStateMachine CombatCtx { get {  return _combatCtx; } }
+
+
+    public GameplayBaseState(StateMachineManager context, GameplayStateFactory factory)
     {
         _ctx = context;
         _factory = factory;
+
+        _mapCtx = context.MapCtx;
+        _combatCtx = context.CombatCtx;
     }
 
     public abstract void EnterState();
@@ -45,12 +57,12 @@ public abstract class GameplayBaseState
     {
         ExitState();
 
-        if (isRootState)
+        if (_isRootState)
             Ctx.CurrentState = newState;
 
         newState.EnterState();
 
-        if (isRootState)
+        if (_isRootState)
         {
             // new root state, substate is null
             if (_currentSubState != null && newState._currentSubState != null)
