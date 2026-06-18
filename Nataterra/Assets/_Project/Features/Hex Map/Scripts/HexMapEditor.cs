@@ -1,11 +1,15 @@
 using DrawXXL;
+using Eflatun.SceneReference;
 using JetBrains.Annotations;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TGS;
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.Analytics;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum Tab
@@ -39,6 +43,7 @@ public class HexMapEditor : MonoBehaviour
     // Options
     public TMP_InputField inputField;
     public TMP_Text errorText;
+    public TMP_Dropdown dropdown;
 
 
     // Private
@@ -60,6 +65,7 @@ public class HexMapEditor : MonoBehaviour
     int baseIndex;
 
     HexMapOptions options;
+    List<string> scenes = new();
 
     void Awake()
     {
@@ -71,6 +77,8 @@ public class HexMapEditor : MonoBehaviour
         baseIndex = 0;
 
         selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
+
+        dropdown.AddOptions(Extensions.SceneGetList());
     }
 
     private void Update()
@@ -109,6 +117,19 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
+    public void SetDropdownScene(string sceneName)
+    {
+        int index = Extensions.SceneGetInt(sceneName);
+
+        if (index == -1)
+        {
+            errorText.text = $"\"{sceneName}\" does not exist in build";
+            dropdown.value = 0;
+            return;
+        }
+
+        dropdown.value = index;
+    }
 
 
     void HandleInput()
@@ -472,7 +493,7 @@ public class HexMapEditor : MonoBehaviour
 
     public void SaveMap()
     {
-        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells);
+        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells, dropdown);
     }
 
     public void LoadMap()

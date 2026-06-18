@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using TGS;
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEditor;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class HexMapOptions
     }
 
 
-    public void SaveMap(string fileName, HexCell[] cells, List<Cell> tgsCells)
+    public void SaveMap(string fileName, HexCell[] cells, List<Cell> tgsCells, TMP_Dropdown dropdown)
     {
         editor.errorText.text = "";
         editor.errorText.color = Color.red;
@@ -31,18 +32,23 @@ public class HexMapOptions
         }
 
         string path = $"{savePath}/{fileName}.json";
-
         if (File.Exists(path))
         {
             editor.errorText.text = "Name already exists";
             return;
         }
 
+        if (dropdown.value == 0)
+        {
+            editor.errorText.text = $"Please set a valid scene!";
+            return;
+        }
+
         editor.errorText.text = $"Created \"{fileName}\"";
         editor.errorText.color = Color.green;
 
-
-        MapData mapData = new(cells, tgsCells);
+        string sceneName = dropdown.options[dropdown.value].text;
+        MapData mapData = new(cells, tgsCells, sceneName);
 
         string json = JsonUtility.ToJson(mapData, true);
         File.WriteAllText(path, json);
@@ -80,6 +86,7 @@ public class HexMapOptions
 
         editor.hexGrid.RegenerateGrid(mapData.tgsCells);
         editor.LoadCellData(mapData.hexCells);
+        editor.SetDropdownScene(mapData.sceneName);
     }
 
     public void ResetCells(int count)
