@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a065f098db9b4242a3f88e90302259d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  jsonFileName: b
+  jsonFileName: test
 --- !u!1 &981464120
 GameObject:
   m_ObjectHideFlags: 0

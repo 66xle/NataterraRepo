@@ -1,6 +1,8 @@
-using TGS;
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using TGS;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class StateMachineManager : MonoBehaviour
 {
@@ -14,14 +16,18 @@ public class StateMachineManager : MonoBehaviour
 
     TerrainGridSystem tgs;
 
+
     void Start()
     {
-        tgs = Terrain.activeTerrain.gameObject.AddComponent<TerrainGridSystem>();
-        tgs.rowCount = 8;
-        tgs.columnCount = 8;
+        tgs = Terrain.activeTerrain.gameObject.AddTerrainGridSystem();
+
         tgs.gridTopology = GridTopology.Hexagonal;
         tgs.SetGridType(GridTopology.Irregular);
+        tgs.SetGridSize(8, 8);
         tgs.ToggleTerritories(false);
+        tgs.highlightMode = HighlightMode.None;
+
+        tgs.Redraw();
 
         MapData mapData = GameManager.Instance.MapData;
 
@@ -37,4 +43,5 @@ public class StateMachineManager : MonoBehaviour
 
         _currentState.UpdateStates();
     }
+
 }

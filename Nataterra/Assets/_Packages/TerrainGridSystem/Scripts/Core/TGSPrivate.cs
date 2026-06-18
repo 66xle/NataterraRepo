@@ -1406,7 +1406,7 @@ namespace TGS {
             bool IsLoadingData = tgsCells != null;
 
             if (IsLoadingData)
-                cells = new List<Cell>(cellCount);
+                cells = new List<Cell>();
 
             Segment[,,] sides = new Segment[qx2, qy2, 6]; // 0 = left-up, 1 = top, 2 = right-up, 3 = right-down, 4 = down, 5 = left-down
             int subdivisions = goodGridCurvature > 0 ? 3 : 1;
@@ -1533,6 +1533,10 @@ namespace TGS {
                         if (IsLoadingData)
                         {
                             cell.region = cr;
+                            cells.Add(cell);
+                        }
+                        else
+                        {
                             cells[cellsCount] = cell;
                         }
 
@@ -4152,6 +4156,14 @@ namespace TGS {
         public void SetGridType(GridTopology gridTopology)
         {
             _gridTopology = gridTopology;
+        }
+
+        public void SetGridSize(int row, int column)
+        {
+            _cellRowCount = row;
+            _cellColumnCount = column;
+
+            _numCells = row * column;
         }
 
         /// <summary>
