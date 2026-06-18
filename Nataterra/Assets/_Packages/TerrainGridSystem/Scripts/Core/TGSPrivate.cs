@@ -1403,6 +1403,11 @@ namespace TGS {
             int evenLayout = _evenLayout ? 1 : 0;
             Point[] hexPoints = new Point[6];
 
+            bool IsLoadingData = tgsCells != null;
+
+            if (IsLoadingData)
+                cells = new List<Cell>(cellCount);
+
             Segment[,,] sides = new Segment[qx2, qy2, 6]; // 0 = left-up, 1 = top, 2 = right-up, 3 = right-down, 4 = down, 5 = left-down
             int subdivisions = goodGridCurvature > 0 ? 3 : 1;
             int cellsCount = 0;
@@ -1418,8 +1423,7 @@ namespace TGS {
                     Point p5;
                     Point p6;
 
-                    bool IsLoadingData = tgsCells != null;
-
+                    
                     if (IsLoadingData)
                     {
                         // Data to load

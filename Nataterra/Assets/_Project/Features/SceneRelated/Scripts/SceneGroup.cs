@@ -32,7 +32,7 @@ namespace Systems.SceneManagment
         }
     }
 
-    public enum SceneType { ActiveScene, MainMenu, UserInterface, HUD, Cinematic, Environment, Tooling }
+    public enum SceneType { ActiveScene, MainMenu, UserInterface, HUD, Cinematic, Environment, Gameplay, Tooling }
 }
 
 

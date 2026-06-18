@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,20 +53,33 @@ namespace Systems.SceneManagment
 
                 SceneGroup temp = new SceneGroup();
                 temp.GroupName = group.GroupName;
-                temp.Scenes = new(group.Scenes);
+                temp.Scenes = new();
 
-                //if (Init)
-                //{
-                //    await SceneManager.LoadSceneAsync(loadingScene.Path, LoadSceneMode.Additive);
-                //    await manager.UnloadScenes();
-                //}
+                string scene = GameManager.Instance.MapData.sceneName;
+                if (!Extensions.SceneBuildContains(scene))
+                {
+                    Debug.LogError($"SceneLoader: Scene \"{scene}\" does not exist");
+                    return;
+                }
+
+#if UNITY_EDITOR
+                if (!SceneManager.GetSceneByName(scene).isLoaded)
+#endif
+                {
+                    SceneReference sceneRef = Extensions.SceneGetReference(scene);
+                    temp.Scenes.Add(new SceneData(sceneRef, SceneType.ActiveScene));
+                }
+
+
+                
+                temp.Scenes.AddRange(group.Scenes);
 
                 await manager.LoadScenes(temp, progress);
-
+                
                 return;
             }
 
-            Debug.LogError($"Group Name does not exist: {groupName}");
+            Debug.LogError($"SceneLoader: Group \"{groupName}\" does not exist: ");
         }
     }
 
