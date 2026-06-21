@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e488d641532504d2593a73943adf301c
+timeCreated: 1468769238
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/PineNeedlesURP.mat
+  uploadId: 428775

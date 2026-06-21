@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f463f785b0e044d4a86ecbd814405b27
+timeCreated: 1468853831
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/Burning
+    Tree.prefab
+  uploadId: 428775

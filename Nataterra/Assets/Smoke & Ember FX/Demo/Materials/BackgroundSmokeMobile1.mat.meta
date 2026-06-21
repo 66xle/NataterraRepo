@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: ca0a368b71bfbac4094a6d2b769ad778
+timeCreated: 1503317936
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Demo/Materials/BackgroundSmokeMobile1.mat
+  uploadId: 462714

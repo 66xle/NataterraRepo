@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5aea363d2e15e3b42bbc7795c8fa4fdf
+timeCreated: 1503841910
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/SmokeEmberFX.txt
+  uploadId: 462714

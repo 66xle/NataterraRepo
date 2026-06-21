@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cc324137bd8084f889c30fb3b2e1c5b0
+timeCreated: 1466609993
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/CampFire/Camp
+    Fire Large.prefab
+  uploadId: 428775

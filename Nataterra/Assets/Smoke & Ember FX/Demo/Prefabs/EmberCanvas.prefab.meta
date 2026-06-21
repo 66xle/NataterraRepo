@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f6dbd0cd8db434745984fc6ec3478b7d
+timeCreated: 1503838945
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Demo/Prefabs/EmberCanvas.prefab
+  uploadId: 462714

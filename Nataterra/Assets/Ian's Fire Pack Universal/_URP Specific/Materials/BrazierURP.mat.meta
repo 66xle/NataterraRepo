@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5ce40a032d0294624a724858da54cdf6
+timeCreated: 1467649375
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/BrazierURP.mat
+  uploadId: 428775

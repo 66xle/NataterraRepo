@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7fefc15f30cd0449ba37e51ef7e2e62c
+timeCreated: 1452968665
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/Particles/TorchFlame.mat
+  uploadId: 428775

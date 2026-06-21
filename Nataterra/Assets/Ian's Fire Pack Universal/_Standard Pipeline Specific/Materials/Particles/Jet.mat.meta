@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6aa6f3bb458ed4e61b5215850aaeb9b1
+timeCreated: 1427254683
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/Particles/Jet.mat
+  uploadId: 428775

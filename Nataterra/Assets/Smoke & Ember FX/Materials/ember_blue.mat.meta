@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b4abe05cd3828af4e8f650b5d2e27d7f
+timeCreated: 1503431006
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Materials/ember_blue.mat
+  uploadId: 462714

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f6c74a06c0db4ee488422b3684bfdd15
+timeCreated: 1503413759
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Materials/ember_red.mat
+  uploadId: 462714

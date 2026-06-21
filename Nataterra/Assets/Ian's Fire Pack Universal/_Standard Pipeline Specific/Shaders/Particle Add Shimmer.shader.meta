@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 1258d5e351cba422290d146f4a9a071f
+timeCreated: 1470077651
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Shaders/Particle
+    Add Shimmer.shader
+  uploadId: 428775

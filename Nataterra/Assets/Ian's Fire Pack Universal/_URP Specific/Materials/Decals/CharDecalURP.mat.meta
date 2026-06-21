@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9e78dd899bc2b42f1ab6ab8f44a0c28b
+timeCreated: 1471035536
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Decals/CharDecalURP.mat
+  uploadId: 428775

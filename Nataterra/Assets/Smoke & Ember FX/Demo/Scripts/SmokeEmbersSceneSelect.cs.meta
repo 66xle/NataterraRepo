@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: f0fd704ed0bff254b8dedbe9a14c9d26
+timeCreated: 1503838503
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Demo/Scripts/SmokeEmbersSceneSelect.cs
+  uploadId: 462714

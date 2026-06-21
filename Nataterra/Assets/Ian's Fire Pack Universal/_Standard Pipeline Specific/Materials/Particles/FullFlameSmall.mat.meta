@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6beb7da6c6ed84b12bada4bbd5aa1a17
+timeCreated: 1452315320
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/Particles/FullFlameSmall.mat
+  uploadId: 428775

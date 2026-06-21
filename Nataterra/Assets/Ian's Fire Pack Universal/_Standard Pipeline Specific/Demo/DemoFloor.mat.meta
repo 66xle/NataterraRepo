@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b67dec39dbf1c4adc88b570167decb3b
+timeCreated: 1471293241
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Demo/DemoFloor.mat
+  uploadId: 428775

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f7501bc428620451da7c89a9cb547335
+timeCreated: 1467408525
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/CampFire/Camp
+    Fire Medium.prefab
+  uploadId: 428775
