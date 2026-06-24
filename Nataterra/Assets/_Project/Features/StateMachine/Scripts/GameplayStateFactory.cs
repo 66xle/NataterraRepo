@@ -4,7 +4,12 @@ using System.Collections.Generic;
 enum GameplayState
 {
     Map,
-    Combat
+    MovementPhase,
+    ResourcePhase,
+    CombatPhase,
+    DevelopmentPhase,
+    Combat,
+
 }
 
 
@@ -30,4 +35,23 @@ public class GameplayStateFactory
         return _states[GameplayState.Combat];
     }
 
+    public GameplayBaseState MovementPhase()
+    {
+        return _states[GameplayState.MovementPhase];
+    }
+
+    public GameplayBaseState ResourcePhase()
+    {
+        return _states[GameplayState.ResourcePhase];
+    }
+
+    public GameplayBaseState CombatPhase()
+    {
+        return _states[GameplayState.CombatPhase];
+    }
+
+    public GameplayBaseState DevelopmentPhase()
+    {
+        return _states[GameplayState.DevelopmentPhase];
+    }
 }
