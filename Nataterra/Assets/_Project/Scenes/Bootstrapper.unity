@@ -252,6 +252,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 471b4dded1d0e9840aba4beefff09ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Systems.SceneManagment.SceneLoader
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
   sceneGroups:
   - GroupName: Gameplay
     Scenes:

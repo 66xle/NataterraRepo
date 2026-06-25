@@ -1,3 +1,4 @@
+using PurrNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Systems.SceneManagment
                 var sceneData = group.Scenes[i];
                 if (reloadDupScenes == false && loadedScenes.Contains(sceneData.Name)) continue;
 
-                var operation = SceneManager.LoadSceneAsync(sceneData.Reference.Path, LoadSceneMode.Additive);
+                var operation = InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(sceneData.Reference.Name, LoadSceneMode.Additive);
 
                 operationGroup.Operations.Add(operation);
 
@@ -82,7 +83,7 @@ namespace Systems.SceneManagment
 
             foreach (var scene in scenes)
             {
-                var operation = SceneManager.UnloadSceneAsync(scene);
+                var operation = InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(scene);
                 if (operation == null) continue;
 
                 operationGroup.Operations.Add(operation);

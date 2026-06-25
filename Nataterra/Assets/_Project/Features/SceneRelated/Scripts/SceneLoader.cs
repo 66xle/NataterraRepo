@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using SceneReference = Eflatun.SceneReference.SceneReference;
+using PurrNet;
 
 namespace Systems.SceneManagment
 {
-    public class SceneLoader : MonoBehaviour
+    public class SceneLoader : NetworkBehaviour
     {
         [SerializeField] SceneGroup[] sceneGroups;
         [SerializeField] SceneReference loadingScene;
@@ -26,9 +26,10 @@ namespace Systems.SceneManagment
             manager.OnSceneGroupLoaded += () => Debug.Log("Scene group loaded");
         }
 
-
-        async void Start()
+        protected async override void OnSpawned()
         {
+            base.OnSpawned();
+
             Init = true;
 
             await LoadSceneGroup(sceneGroups[0].GroupName);
@@ -71,17 +72,20 @@ namespace Systems.SceneManagment
                 }
 
 
-                
                 temp.Scenes.AddRange(group.Scenes);
 
                 await manager.LoadScenes(temp, progress);
-                
+
+
+
                 return;
             }
 
             Debug.LogError($"SceneLoader: Group \"{groupName}\" does not exist: ");
         }
     }
+
+
 
     public class LoadingProgress : IProgress<float>
     {
