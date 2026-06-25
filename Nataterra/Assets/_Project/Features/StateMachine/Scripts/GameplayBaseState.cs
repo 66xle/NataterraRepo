@@ -1,5 +1,7 @@
 
-public abstract class GameplayBaseState
+using PurrNet;
+
+public abstract class GameplayBaseState : NetworkBehaviour
 {
     bool _isRootState = false;
     StateMachineManager _ctx;

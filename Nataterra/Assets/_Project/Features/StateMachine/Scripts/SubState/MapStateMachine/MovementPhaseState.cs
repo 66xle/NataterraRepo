@@ -22,4 +22,5 @@ public class MovementPhaseState : GameplayBaseState
     }
 
     public override void InitializeSubState() { }
+
 }
