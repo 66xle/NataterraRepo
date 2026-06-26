@@ -20,7 +20,7 @@ public class HexMapOptions
     }
 
 
-    public void SaveMap(string fileName, HexCell[] cells, List<Cell> tgsCells, TMP_Dropdown dropdown)
+    public void SaveMap(string fileName, HexCell[] cells, List<Cell> tgsCells, TMP_Dropdown dropdown, int[] bases)
     {
         editor.errorText.text = "";
         editor.errorText.color = Color.red;
@@ -47,8 +47,9 @@ public class HexMapOptions
         editor.errorText.text = $"Created \"{fileName}\"";
         editor.errorText.color = Color.green;
 
+        
         string sceneName = dropdown.options[dropdown.value].text;
-        MapData mapData = new(cells, tgsCells, sceneName);
+        MapData mapData = new(cells, tgsCells, sceneName, bases);
 
         string json = JsonUtility.ToJson(mapData, true);
         File.WriteAllText(path, json);

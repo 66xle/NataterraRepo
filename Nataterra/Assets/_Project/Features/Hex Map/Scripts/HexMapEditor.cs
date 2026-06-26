@@ -489,7 +489,7 @@ public class HexMapEditor : MonoBehaviour
 
     public void SaveMap()
     {
-        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells, dropdown);
+        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells, dropdown, basesPlaced);
     }
 
     public void LoadMap()
