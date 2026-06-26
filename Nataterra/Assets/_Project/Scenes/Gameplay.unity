@@ -187,7 +187,7 @@ GameObject:
   - component: {fileID: 333907069}
   - component: {fileID: 333907070}
   m_Layer: 0
-  m_Name: GameplayManager
+  m_Name: GameplaySystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,6 +220,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea4fdae32c9e8be47a5ab7fc4676e15f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayManager
+  UnitPrefab: {fileID: 0}
+--- !u!1 &466354474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 466354475}
+  - component: {fileID: 466354476}
+  m_Layer: 0
+  m_Name: ServerMap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &466354475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466354474}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &466354476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466354474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e17f3d890652b174ca1a0a9350ec50b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ServerManager
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
 --- !u!1 &851257857
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +371,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d4dcc372ac0a44baa039378accef3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayStateMachine
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
   MapCtx: {fileID: 1254477825}
   CombatCtx: {fileID: 1684973436}
 --- !u!1 &1254477823
@@ -363,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dcf9ca458d63249a775f9fc2fe887d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapStateMachine
+  GS: {fileID: 0}
 --- !u!1 &1517153352
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,7 +752,8 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 333907069}
+  - {fileID: 466354475}
   - {fileID: 158658645}
   - {fileID: 1517153354}
   - {fileID: 851257861}
+  - {fileID: 333907069}

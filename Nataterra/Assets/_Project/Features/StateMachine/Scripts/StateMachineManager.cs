@@ -7,6 +7,8 @@ using System.Globalization;
 using TGS;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
+using static UnityEditor.VersionControl.Asset;
 
 public class StateMachineManager : NetworkBehaviour
 {
@@ -29,7 +31,7 @@ public class StateMachineManager : NetworkBehaviour
 
         networkManager.onPlayerJoined += OnPlayerJoined;
 
-        MapCtx.Setup();
+        Setup();
     }
 
     void Update()
@@ -48,5 +50,15 @@ public class StateMachineManager : NetworkBehaviour
         _dictFaction.Add(player, faction);
 
         Debug.Log($"Player {player.id}'s Faction: {faction}");
+    }
+
+    void Setup()
+    {
+        Debug.Log("Setup");
+
+        MapCtx.Setup();
+
+        _states = new GameplayStateFactory(this);
+        _currentState = new MapState(this, _states);
     }
 }
