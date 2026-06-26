@@ -59,7 +59,9 @@ public class HexGrid : MonoBehaviour
     }
 
     public void StoreVertices()
-    { 
+    {
+        vertices.Clear();
+
         foreach (Cell cell in tgs.cells)
         {
             int vc = tgs.CellGetVertexCount(cell.index);
@@ -110,6 +112,8 @@ public class HexGrid : MonoBehaviour
         tgs.CellsUpdateBounds();
         tgs.CellsUpdateNeighbours();
         tgs.RedrawCells(tgs.cells);
+
+        StoreVertices();
     }
 
     public void RegenerateCellSurface(VertexData vertex, Texture2D[] biomeTextures, Texture2D[] baseTextures)

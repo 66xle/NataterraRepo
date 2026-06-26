@@ -1,15 +1,9 @@
 using DrawXXL;
-using Eflatun.SceneReference;
-using JetBrains.Annotations;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using TGS;
 using TMPro;
-using Unity.VectorGraphics;
 using UnityEngine;
-using UnityEngine.Analytics;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum Tab
@@ -463,6 +457,8 @@ public class HexMapEditor : MonoBehaviour
             if (baseIndex != -1)
             {
                 ChangeTileBase(i);
+
+                basesPlaced[baseIndex] = i;
             }
             else if (biomeIndex != -1)
             {

@@ -16060,9 +16060,9 @@ MonoBehaviour:
   mouseIsOver: 0
   newInHierarchy: 0
   territoryThicknessSettingMigrated: 1
-  _numCells: 64
+  _numCells: 72
   _showCells: 1
-  _cellSize: {x: 20, y: 20.000004}
+  _cellSize: {x: 17.777779, y: 20.000004}
   _cellBorderColor: {r: 1, g: 1, b: 1, a: 1}
   _cellCustomBorderThickness: 0
   _cellBorderThickness: 1
@@ -16188,7 +16188,7 @@ MonoBehaviour:
   _gridSurfaceDepthOffsetTerritory: -1
   _gridRoughness: 0
   _cellRowCount: 8
-  _cellColumnCount: 8
+  _cellColumnCount: 9
   textures:
   - {fileID: 0}
   - {fileID: 0}
