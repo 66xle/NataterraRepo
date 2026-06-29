@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class MovementPhaseState : GameplayBaseState
+public class SMM_ResourcePhaseState : GameplayBaseState
 {
-    public MovementPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
+    public SMM_ResourcePhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
-        
+
     }
 
     public override void UpdateState()
@@ -22,5 +22,4 @@ public class MovementPhaseState : GameplayBaseState
     }
 
     public override void InitializeSubState() { }
-
 }

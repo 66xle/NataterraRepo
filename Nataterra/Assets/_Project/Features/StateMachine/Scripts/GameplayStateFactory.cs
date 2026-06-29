@@ -1,4 +1,5 @@
 
+using PurrNet;
 using System.Collections.Generic;
 
 enum GameplayState
@@ -21,8 +22,8 @@ public class GameplayStateFactory
     public GameplayStateFactory(StateMachineManager currentContext)
     {
         _content = currentContext;
-        _states[GameplayState.Map] = new MapState(_content, this);
-        _states[GameplayState.Combat] = new CombatState(_content, this);
+        _states[GameplayState.Map] = new SMM_MapState(_content, this);
+        _states[GameplayState.Combat] = new SMC_CombatState(_content, this);
     }
 
     public GameplayBaseState Map()

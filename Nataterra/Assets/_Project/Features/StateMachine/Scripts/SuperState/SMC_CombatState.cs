@@ -1,11 +1,15 @@
 using UnityEngine;
 
-public class DevelopmentPhaseState : GameplayBaseState
+public class SMC_CombatState : GameplayBaseState
 {
-    public DevelopmentPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
+    public SMC_CombatState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory)
+    {
+        IsRootState = true;
+    }
+
     public override void EnterState()
     {
-
+        InitializeSubState();
     }
 
     public override void UpdateState()
@@ -20,6 +24,5 @@ public class DevelopmentPhaseState : GameplayBaseState
     {
 
     }
-
     public override void InitializeSubState() { }
 }

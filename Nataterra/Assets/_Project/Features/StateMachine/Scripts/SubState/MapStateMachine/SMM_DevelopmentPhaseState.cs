@@ -1,9 +1,8 @@
-using PurrNet;
 using UnityEngine;
 
-public class CombatPhaseState : GameplayBaseState
+public class SMM_DevelopmentPhaseState : GameplayBaseState
 {
-    public CombatPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
+    public SMM_DevelopmentPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
 

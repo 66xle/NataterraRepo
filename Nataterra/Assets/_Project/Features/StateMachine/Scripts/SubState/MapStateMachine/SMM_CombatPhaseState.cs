@@ -1,15 +1,12 @@
+using PurrNet;
 using UnityEngine;
 
-public class CombatState : GameplayBaseState
+public class SMM_CombatPhaseState : GameplayBaseState
 {
-    public CombatState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory)
-    {
-        IsRootState = true;
-    }
-
+    public SMM_CombatPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
-        InitializeSubState();
+
     }
 
     public override void UpdateState()
@@ -24,5 +21,6 @@ public class CombatState : GameplayBaseState
     {
 
     }
+
     public override void InitializeSubState() { }
 }

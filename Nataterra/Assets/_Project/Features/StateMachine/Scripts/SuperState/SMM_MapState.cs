@@ -1,8 +1,10 @@
 
 
-public class MapState : GameplayBaseState
+using PurrNet;
+
+public class SMM_MapState : GameplayBaseState
 {
-    public MapState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory)
+    public SMM_MapState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory)
     {
         IsRootState = true;
     }
@@ -24,5 +26,9 @@ public class MapState : GameplayBaseState
     {
         
     }
-    public override void InitializeSubState() { }
+
+    public override void InitializeSubState() 
+    {
+        Factory.MovementPhase();
+    }
 }

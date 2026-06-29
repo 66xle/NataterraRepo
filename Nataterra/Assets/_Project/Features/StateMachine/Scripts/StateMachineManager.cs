@@ -59,6 +59,6 @@ public class StateMachineManager : NetworkBehaviour
         MapCtx.Setup();
 
         _states = new GameplayStateFactory(this);
-        _currentState = new MapState(this, _states);
+        _currentState = new SMM_MapState(this, _states);
     }
 }
