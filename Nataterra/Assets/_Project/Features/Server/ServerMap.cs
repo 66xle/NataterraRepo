@@ -28,7 +28,7 @@ public class ServerMap : NetworkBehaviour
     {
         InstanceHandler.RegisterInstance(this);
 
-        _commandProcessor.Register<UnitSpawnCommand>(new UnitHandler(_gs, _map));
+        _commandProcessor.Register<AC_UnitSpawnCommand>(new AH_UnitHandler(_gs, _map));
     }
 
     private void OnDisable()

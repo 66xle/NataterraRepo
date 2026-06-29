@@ -25,7 +25,7 @@ public class MapStateMachine : MonoBehaviour
         SetupGrid(mapData);
         _serverMap.Init(mapData, GS);
 
-        UnitSpawnCommand command = new UnitSpawnCommand
+        AC_UnitSpawnCommand command = new AC_UnitSpawnCommand
         {
             Amount = 1,
             Faction = Base.Beasts,

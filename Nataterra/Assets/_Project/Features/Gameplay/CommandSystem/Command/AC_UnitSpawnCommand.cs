@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public struct UnitSpawnCommand : IActionCommand
+public struct AC_UnitSpawnCommand : IActionCommand
 {
     public Base Faction;
     public int Amount;

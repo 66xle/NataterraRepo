@@ -6,7 +6,7 @@ public class CommandProcessor
 {
     private Dictionary<Type, Action<IActionCommand>> _handlers = new();
 
-    public void Register<T>(IActionCommandHandler<T> handler) where T : IActionCommand
+    public void Register<T>(IActionHandler<T> handler) where T : IActionCommand
     {
         _handlers.Add(typeof(T), command => handler.Handle((T)command));
     }
