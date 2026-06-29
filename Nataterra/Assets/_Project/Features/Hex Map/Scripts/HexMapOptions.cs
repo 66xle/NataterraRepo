@@ -22,30 +22,30 @@ public class HexMapOptions
 
     public void SaveMap(string fileName, HexCell[] cells, List<Cell> tgsCells, TMP_Dropdown dropdown, int[] bases)
     {
-        editor.errorText.text = "";
-        editor.errorText.color = Color.red;
+        editor.ErrorText.text = "";
+        editor.ErrorText.color = Color.red;
 
         if (string.IsNullOrEmpty(fileName) || string.IsNullOrWhiteSpace(fileName))
         {
-            editor.errorText.text = "Field is empty";
+            editor.ErrorText.text = "Field is empty";
             return;
         }
 
         string path = $"{savePath}/{fileName}.json";
         if (File.Exists(path))
         {
-            editor.errorText.text = "Name already exists";
+            editor.ErrorText.text = "Name already exists";
             return;
         }
 
         if (dropdown.value == 0)
         {
-            editor.errorText.text = $"Please set a valid scene!";
+            editor.ErrorText.text = $"Please set a valid scene!";
             return;
         }
 
-        editor.errorText.text = $"Created \"{fileName}\"";
-        editor.errorText.color = Color.green;
+        editor.ErrorText.text = $"Created \"{fileName}\"";
+        editor.ErrorText.color = Color.green;
 
         
         string sceneName = dropdown.options[dropdown.value].text;
@@ -59,12 +59,12 @@ public class HexMapOptions
 
     public void LoadMap(string fileName)
     {
-        editor.errorText.text = "";
-        editor.errorText.color = Color.red;
+        editor.ErrorText.text = "";
+        editor.ErrorText.color = Color.red;
 
         if (string.IsNullOrEmpty(fileName) || string.IsNullOrWhiteSpace(fileName))
         {
-            editor.errorText.text = "Field is empty";
+            editor.ErrorText.text = "Field is empty";
             return;
         }
 
@@ -72,12 +72,12 @@ public class HexMapOptions
 
         if (!File.Exists(path))
         {
-            editor.errorText.text = $"\"{fileName}\" doesn't exist";
+            editor.ErrorText.text = $"\"{fileName}\" doesn't exist";
             return;
         }
 
-        editor.errorText.text = $"Loaded \"{fileName}\"";
-        editor.errorText.color = Color.green;
+        editor.ErrorText.text = $"Loaded \"{fileName}\"";
+        editor.ErrorText.color = Color.green;
 
 
         string json = File.ReadAllText(path);
@@ -85,7 +85,7 @@ public class HexMapOptions
 
         ResetCells(mapData.hexCells.Count);
 
-        editor.hexGrid.RegenerateGrid(mapData.tgsCells);
+        editor.HexGrid.RegenerateGrid(mapData.tgsCells);
         editor.LoadCellData(mapData.hexCells);
         editor.SetDropdownScene(mapData.sceneName);
     }
