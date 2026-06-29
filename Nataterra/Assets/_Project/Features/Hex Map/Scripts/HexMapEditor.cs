@@ -18,23 +18,26 @@ public enum Tab
 
 public class HexMapEditor : MonoBehaviour
 {
+    [Header("Textures")]
     public Texture2D[] biomeTextures;
     public Texture2D[] resourceTextures;
     public Texture2D[] baseTextures;
 
+    [Header("Toolbar")]
     public List<Button> buttons;
     public List<GameObject> panels;
 
+    [Header("References")]
     public TMP_Text selectedTileText;
-
     public GameObject prefab;
     public GameObject resourceImagePrefab;
 
+    [Header("Interact Options")]
     public float vertexDetectionRadius = 1f;
     public LayerMask hexGridLayer;
     public HexGrid hexGrid;
 
-    // Options
+    [Header("Save and Load UI")]
     public TMP_InputField inputField;
     public TMP_Text errorText;
     public TMP_Dropdown dropdown;
@@ -70,6 +73,7 @@ public class HexMapEditor : MonoBehaviour
         resourceIndex = 0;
         baseIndex = 0;
 
+        // Get Select panel toggle groups
         selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
 
         dropdown.AddOptions(Extensions.SceneGetList());
@@ -90,10 +94,14 @@ public class HexMapEditor : MonoBehaviour
 
                 bool isWithinBounds = false;
 
+                
                 Cell cell = hexGrid.tgs.CellGetAtMousePosition();
                 if (cell != null)
                 {
+                    // Check if vertex is in bounds
                     isWithinBounds = selectedVertex.cellsRef.Any(c => c.Item1.index == cell.index);
+
+                    // Debug distance from last position and is within bounds
                     Color distanceColor = isWithinBounds ? Color.green : Color.red;
                     DrawMeasurements.Distance(oldVertexPos, currentVertexPos, distanceColor);
                 }
@@ -103,6 +111,8 @@ public class HexMapEditor : MonoBehaviour
                     isDraggingVertex = false;
 
                     if (!isWithinBounds) return;
+
+                    // Set vertex position and update grid
                     hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
                     hexGrid.RegenerateGrid(selectedVertex);
                     hexGrid.RegenerateCellSurface(selectedVertex, biomeTextures, baseTextures);
@@ -111,19 +121,7 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
-    public void SetDropdownScene(string sceneName)
-    {
-        int index = Extensions.SceneGetInt(sceneName);
-
-        if (index == -1)
-        {
-            errorText.text = $"\"{sceneName}\" does not exist in build";
-            dropdown.value = 0;
-            return;
-        }
-
-        dropdown.value = index;
-    }
+    
 
 
     void HandleInput()
@@ -200,6 +198,7 @@ public class HexMapEditor : MonoBehaviour
                 {
                     Toggle[] toggles = panels[index].GetComponentsInChildren<Toggle>();
 
+                    // Match tabs toggles with respective index
                     for (int t = 0; t < toggles.Length; t++)
                     {
                         if (!toggles[t].isOn)
@@ -276,6 +275,7 @@ public class HexMapEditor : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
         {
+            // Loop through the cell's vertices
             for (int i = 0; i < vc; i++)
             {
                 Vector3 vertPos = hexGrid.tgs.CellGetVertexPosition(cell.index, i);
@@ -287,9 +287,10 @@ public class HexMapEditor : MonoBehaviour
 
                 if (Vector3.Distance(checkPos, vertPos) < vertexDetectionRadius && Vector3.Distance(checkPos, vertPos) > -vertexDetectionRadius)
                 {
-                    // Draw axis on vertex pos
+                    // Debug draw axis on vertex position
                     DrawEngineBasics.CoordinateAxesGizmo(vertPos, 10f);
 
+                    // Get matching vertex in hexGrid
                     VertexData vertex = hexGrid.vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.1f);
                     foreach ((Cell, int) cellRef in vertex.cellsRef)
                     {
@@ -443,7 +444,31 @@ public class HexMapEditor : MonoBehaviour
             SetSelectToggles(cellIndex);
     }
 
-    
+
+    public void SetBiome(int index)
+    {
+        biomeIndex = index;
+    }
+    public void SetResource(int index)
+    {
+        resourceIndex = index;
+    }
+    public void SetBase(int index)
+    {
+        baseIndex = index;
+    }
+
+
+    public void SaveMap()
+    {
+        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells, dropdown, basesPlaced);
+    }
+
+    public void LoadMap()
+    {
+        options.LoadMap(inputField.text);
+    }
+
     public void LoadCellData(List<HexCellData> cellData)
     {
         hexGrid.SetCells(cellData.Select(c => new HexCell(c)).ToArray());
@@ -472,28 +497,17 @@ public class HexMapEditor : MonoBehaviour
         }
     }
 
+    public void SetDropdownScene(string sceneName)
+    {
+        int index = Extensions.SceneGetInt(sceneName);
 
-    public void SetBiome(int index)
-    {
-        biomeIndex = index;
-    }
-    public void SetResource(int index)
-    {
-        resourceIndex = index;
-    }
-    public void SetBase(int index)
-    {
-        baseIndex = index;
-    }
+        if (index == -1)
+        {
+            errorText.text = $"\"{sceneName}\" does not exist in build";
+            dropdown.value = 0;
+            return;
+        }
 
-
-    public void SaveMap()
-    {
-        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells, dropdown, basesPlaced);
-    }
-
-    public void LoadMap()
-    {
-        options.LoadMap(inputField.text);
+        dropdown.value = index;
     }
 }
