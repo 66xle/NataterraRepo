@@ -1,3 +1,4 @@
+using Eflatun.SceneReference;
 using PurrNet;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,12 @@ namespace Systems.SceneManagment
 
         SceneGroup ActiveSceneGroup;
 
-        public async Task LoadScenes(SceneGroup group, IProgress<float> progress, bool reloadDupScenes = false)
+        public async Task LoadScenes(SceneGroup group, List<SceneReference> scenesToIgnore, IProgress<float> progress, bool reloadDupScenes = false)
         {
             ActiveSceneGroup = group;
             var loadedScenes = new List<string>();
 
-            await UnloadScenes();
+            await UnloadScenes(scenesToIgnore);
 
             int sceneCount = SceneManager.sceneCount;
 
@@ -62,7 +63,7 @@ namespace Systems.SceneManagment
             OnSceneGroupLoaded.Invoke();
         }
 
-        public async Task UnloadScenes()
+        public async Task UnloadScenes(List<SceneReference> scenesToIgnore)
         {
             var scenes = new List<string>();
             var activeScene = SceneManager.GetActiveScene().name;
@@ -75,7 +76,18 @@ namespace Systems.SceneManagment
                 if (!sceneAt.isLoaded) continue;
 
                 var sceneName = sceneAt.name;
-                if (sceneName.Equals(activeScene) || sceneName == "Bootstrapper" || sceneName == "LoadingScene") continue;
+
+                bool isMatch = false;
+                foreach (SceneReference sceneRef in scenesToIgnore)
+                {
+                    if (sceneRef.Name == sceneName)
+                    {
+                        isMatch = true;
+                        break;
+                    }
+                }
+
+                if (isMatch) continue;
                 scenes.Add(sceneName);
             }
 

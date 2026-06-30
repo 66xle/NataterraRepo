@@ -5,12 +5,14 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using SceneReference = Eflatun.SceneReference.SceneReference;
 using PurrNet;
+using System.Collections.Generic;
 
 namespace Systems.SceneManagment
 {
     public class SceneLoader : NetworkBehaviour
     {
         [SerializeField] SceneGroup[] sceneGroups;
+        [SerializeField] List<SceneReference> scenesToIgnore;
         [SerializeField] SceneReference loadingScene;
 
         public readonly SceneGroupManager manager = new SceneGroupManager();
@@ -74,7 +76,7 @@ namespace Systems.SceneManagment
 
                 temp.Scenes.AddRange(group.Scenes);
 
-                await manager.LoadScenes(temp, progress);
+                await manager.LoadScenes(temp, scenesToIgnore, progress, true);
 
 
 
