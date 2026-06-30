@@ -12,11 +12,17 @@ public class MapData
     public string sceneName;
     public int[] bases;
 
-    public MapData(HexCell[] cells, List<Cell> tgsCells, string sceneName, int[] bases)
+    public int row;
+    public int column;
+
+    public MapData(HexCell[] cells, List<Cell> tgsCells, string sceneName, int[] bases, int row, int column)
     {
         this.hexCells = cells.Select(c => new HexCellData(c)).ToList();
         this.tgsCells = tgsCells.Select(c => new CellData(c)).ToList();
         this.sceneName = sceneName;
         this.bases = bases;
+
+        this.row = row;
+        this.column = column;
     }
 }

@@ -13,10 +13,14 @@ public class HexMapOptions
 
     string savePath;
 
+    TerrainGridSystem TGS;
+
     public HexMapOptions(HexMapEditor editor)
     {
         this.editor = editor;
         savePath = "Assets/_Project/Features/Hex Map/JsonData";
+
+        TGS = TerrainGridSystem.instance;
     }
 
 
@@ -49,7 +53,7 @@ public class HexMapOptions
 
         
         string sceneName = dropdown.options[dropdown.value].text;
-        MapData mapData = new(cells, tgsCells, sceneName, bases);
+        MapData mapData = new(cells, tgsCells, sceneName, bases, TGS.rowCount, TGS.columnCount);
 
         string json = JsonUtility.ToJson(mapData, true);
         File.WriteAllText(path, json);

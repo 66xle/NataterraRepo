@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MapStateMachine : MonoBehaviour
 {
+    [Header("References")]
     public GameplaySystem GS;
 
     TerrainGridSystem _tgs;
@@ -41,7 +42,7 @@ public class MapStateMachine : MonoBehaviour
 
         _tgs.gridTopology = GridTopology.Hexagonal;
         _tgs.SetGridType(GridTopology.Irregular);
-        _tgs.SetGridSize(8, 8);
+        _tgs.SetGridSize(mapData.row, mapData.column);
         _tgs.ToggleTerritories(false);
         _tgs.highlightMode = HighlightMode.None;
 
