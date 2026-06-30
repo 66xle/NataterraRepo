@@ -4,17 +4,6 @@ using System.Collections.Generic;
 using TGS;
 using System.Windows.Input;
 
-public struct ServerMapWrapper
-{
-    private List<HexCellData> _hexCells;
-    private int[] _basesPlaced;
-
-    public ServerMapWrapper(List<HexCellData> hexCells, int[] basesPlaced)
-    {
-        _hexCells = hexCells;
-        _basesPlaced = basesPlaced;
-    }
-}
 
 
 public class ServerMap : NetworkBehaviour
