@@ -1,5 +1,6 @@
 using PurrNet;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using TGS;
 using UnityEngine;
 
@@ -10,8 +11,35 @@ public class MapStateMachine : MonoBehaviour
 
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
+    List<HexCellState> _state;
 
     public void Setup()
+    {
+        MapData mapData = GameManager.Instance.MapData;
+
+        _state = new();
+        foreach (HexCellData data in mapData.hexCells)
+        {
+            _state.Add(new HexCellState(data));
+        }
+
+        SetupGrid(mapData);
+        SetupServerMap(mapData);
+    }
+
+    public void SpawnUnits()
+    {
+        AC_UnitRecruitCommand command = new AC_UnitRecruitCommand
+        {
+            Amount = 1,
+            Faction = Base.Beasts,
+            Unit = Unit.Woodcutter
+        };
+
+        _serverMap.HandleCommand(command);
+    }
+
+    void SetupServerMap(MapData mapData)
     {
         if (!InstanceHandler.TryGetInstance(out ServerMap serverMap))
         {
@@ -20,20 +48,7 @@ public class MapStateMachine : MonoBehaviour
         }
 
         _serverMap = serverMap;
-
-        MapData mapData = GameManager.Instance.MapData;
-
-        SetupGrid(mapData);
-        _serverMap.Init(mapData, GS);
-
-        AC_UnitSpawnCommand command = new AC_UnitSpawnCommand
-        {
-            Amount = 1,
-            Faction = Base.Beasts,
-            Unit = Unit.Woodcutter
-        };
-
-        _serverMap.HandleCommand(command);
+        _serverMap.Init(new ServerMapWrapper(_state, mapData.bases), GS);
     }
 
     void SetupGrid(MapData mapData)

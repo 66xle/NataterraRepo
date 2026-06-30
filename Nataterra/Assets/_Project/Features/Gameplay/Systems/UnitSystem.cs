@@ -1,13 +1,23 @@
-using TGS;
 using UnityEngine;
 
-public class UnitSystem : GameplaySystem
+public class UnitSystem : MonoBehaviour
 {
+    GameplaySystem _gs;
 
-    public void RecruitUnit(Base faction, int amount, Unit unit, int cellIndex)
+    private void Start()
     {
-        Vector3 spawnPosition = _tgs.CellGetPosition(cellIndex);
+        _gs = GetComponentInParent<GameplaySystem>();
+    }
 
-        Instantiate(UnitPrefab, spawnPosition, Quaternion.identity);
+
+
+    public void RecruitUnit(int amount, Unit unit, int cellIndex)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            Vector3 spawnPosition = _gs.TGS.CellGetPosition(cellIndex);
+
+            Instantiate(_gs.UnitPrefab, spawnPosition, Quaternion.identity);
+        }
     }
 }

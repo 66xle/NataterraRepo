@@ -5,7 +5,6 @@ using TGS;
 using System.Windows.Input;
 
 
-
 public class ServerMap : NetworkBehaviour
 {
     ServerMapWrapper _map;
@@ -16,8 +15,6 @@ public class ServerMap : NetworkBehaviour
     private void OnEnable()
     {
         InstanceHandler.RegisterInstance(this);
-
-        _commandProcessor.Register<AC_UnitSpawnCommand>(new AH_UnitHandler(_gs, _map));
     }
 
     private void OnDisable()
@@ -25,10 +22,12 @@ public class ServerMap : NetworkBehaviour
         InstanceHandler.UnregisterInstance<ServerMap>();
     }
 
-    public void Init(MapData mapData, GameplaySystem GS)
+    public void Init(ServerMapWrapper wrapper, GameplaySystem GS)
     {
+        _map = wrapper;
         _gs = GS;
-        _map = new ServerMapWrapper(mapData.hexCells, mapData.bases);
+
+        _commandProcessor.Register<AC_UnitRecruitCommand>(new AH_UnitHandler(_gs, _map));
     }
 
     public void HandleCommand(IActionCommand command)

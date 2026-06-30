@@ -11,4 +11,10 @@ public class ServerMapWrapper
         _state = state;
         _basesPlaced = basesPlaced;
     }
+
+
+    public int GetBaseCellIndex(Base faction)
+    {
+        return _basesPlaced[(int)faction];
+    }
 }
