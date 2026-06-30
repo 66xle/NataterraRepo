@@ -1,8 +1,10 @@
 using Eflatun.SceneReference;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
 
 public static class Extensions
@@ -68,5 +70,37 @@ public static class Extensions
         }
 
         return scenes;
+    }
+
+
+    public static bool Contains<T, TKey>(List<T> list, TKey value, Func<T, TKey> selector)
+    {
+        var comparer = EqualityComparer<TKey>.Default;
+
+        foreach (T item in list)
+        {
+            if (!comparer.Equals(selector(item), value))
+                continue;
+
+            return true;
+        }
+
+        return false;
+    }
+    public static bool Contains<T, TKey>(List<T> list, TKey value, Func<T, TKey> selector, out T found)
+    {
+        var comparer = EqualityComparer<TKey>.Default;
+
+        foreach (T item in list)
+        {
+            if (!comparer.Equals(selector(item), value)) 
+                continue;
+
+            found = item;
+            return true;
+        }
+
+        found = default;
+        return false;
     }
 }

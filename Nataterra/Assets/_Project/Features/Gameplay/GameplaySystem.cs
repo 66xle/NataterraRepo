@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PurrNet;
 using TGS;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class GameplaySystem : NetworkBehaviour
 {
     public GameObject UnitPrefab;
+    public MapStateMachine MSM;
 
     public UnitSystem UnitSystem { get; private set; }
 
@@ -26,5 +28,14 @@ public class GameplaySystem : NetworkBehaviour
         UnitSystem = GetComponentInChildren<UnitSystem>();
 
         TGS = TerrainGridSystem.instance;
+    }
+
+    [ObserversRpc(bufferLast:true)]
+    public void SetLocalChanges(List<StateChange> changes)
+    {
+        foreach (StateChange state in changes)
+        {
+            MSM.SetCellState(state.State, state.CellIndex);
+        }
     }
 }

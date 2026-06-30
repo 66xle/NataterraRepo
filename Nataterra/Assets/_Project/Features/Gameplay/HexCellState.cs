@@ -1,17 +1,20 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HexCellState
 {
-    public Biome biome = Biome.None;
-    public Resource resource = Resource.None;
-    public Base faction = Base.None;
+    public Biome Biome = Biome.None;
+    public Resource Resource = Resource.None;
+    public Base Faction = Base.None;
 
-    public Group group;
+    public List<Group> listOfGroups;
 
     public HexCellState(HexCellData cell)
     {
-        biome = cell.biome;
-        resource = cell.resource;
-        faction = cell.faction;
+        Biome = cell.biome;
+        Resource = cell.resource;
+        Faction = cell.faction;
+
+        listOfGroups = new();
     }
 }

@@ -50,6 +50,7 @@ public class StateMachineManager : NetworkBehaviour
         _dictFaction.Add(player, faction);
 
         Debug.Log($"Player {player.id}'s Faction: {faction}");
+        MapCtx.SpawnUnits();
     }
 
     void Setup()
@@ -59,8 +60,6 @@ public class StateMachineManager : NetworkBehaviour
         MapCtx.Setup();
 
         SceneInitialize.Instance.Invoke();
-
-        MapCtx.SpawnUnits();
 
         _states = new GameplayStateFactory(this);
         _currentState = new SMM_MapState(this, _states);

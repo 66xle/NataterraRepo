@@ -231,6 +231,7 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   UnitPrefab: {fileID: 6562541755985119412, guid: b6ad794cd1c70b248aa417b21034400e, type: 3}
+  MSM: {fileID: 1254477825}
 --- !u!1 &466354474
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,6 +481,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61dcf9ca458d63249a775f9fc2fe887d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapStateMachine
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
   GS: {fileID: 333907070}
 --- !u!1 &1517153352
 GameObject:

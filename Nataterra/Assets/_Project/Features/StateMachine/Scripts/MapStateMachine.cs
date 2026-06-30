@@ -4,7 +4,7 @@ using System.Security.Cryptography.X509Certificates;
 using TGS;
 using UnityEngine;
 
-public class MapStateMachine : MonoBehaviour
+public class MapStateMachine : NetworkBehaviour
 {
     [Header("References")]
     public GameplaySystem GS;
@@ -27,7 +27,8 @@ public class MapStateMachine : MonoBehaviour
         SetupServerMap(mapData);
     }
 
-    public void SpawnUnits()
+    [ServerRpc]
+    public void SpawnUnits(RPCInfo info = default)
     {
         AC_UnitRecruitCommand command = new AC_UnitRecruitCommand
         {
@@ -69,4 +70,11 @@ public class MapStateMachine : MonoBehaviour
         _tgs.RedrawCells(_tgs.cells);
     }
 
+    
+    public void SetCellState(HexCellState cellState, int cellIndex)
+    {
+        _state[cellIndex] = cellState;
+
+        Debug.Log(cellState.listOfGroups[0].Amount + "x " + cellState.listOfGroups[0].Unit.ToString());
+    }
 }
