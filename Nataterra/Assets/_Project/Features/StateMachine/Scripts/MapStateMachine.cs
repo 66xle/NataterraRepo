@@ -13,11 +13,15 @@ public class MapStateMachine : NetworkBehaviour
     ServerMap _serverMap;
     List<HexCellState> _state;
 
-    public void Setup()
-    {
-        MapData mapData = GameManager.Instance.MapData;
+    FactionSettings _settings;
+    Dictionary<UnitType, UnitData> _dictOfUnits;
 
+    public void Setup(Dictionary<UnitType, UnitData> dictUnits)
+    {
+        _dictOfUnits = dictUnits;
         _state = new();
+
+        MapData mapData = GameManager.Instance.MapData;
         foreach (HexCellData data in mapData.hexCells)
         {
             _state.Add(new HexCellState(data));
@@ -25,19 +29,6 @@ public class MapStateMachine : NetworkBehaviour
 
         SetupGrid(mapData);
         SetupServerMap(mapData);
-    }
-
-    [ServerRpc]
-    public void SpawnUnits(RPCInfo info = default)
-    {
-        AC_UnitRecruitCommand command = new AC_UnitRecruitCommand
-        {
-            Amount = 1,
-            Faction = Base.Beasts,
-            Unit = Unit.Woodcutter
-        };
-
-        _serverMap.HandleCommand(command);
     }
 
     void SetupServerMap(MapData mapData)
@@ -48,8 +39,9 @@ public class MapStateMachine : NetworkBehaviour
             return;
         }
 
+        ServerMapWrapper wrapper = new ServerMapWrapper(_state, mapData.bases, _dictOfUnits);
         _serverMap = serverMap;
-        _serverMap.Init(new ServerMapWrapper(_state, mapData.bases), GS);
+        _serverMap.Init(wrapper, GS);
     }
 
     void SetupGrid(MapData mapData)
@@ -70,11 +62,26 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.RedrawCells(_tgs.cells);
     }
 
-    
+
+    public void SetFactionSetting(FactionSettings settings)
+    {
+        _settings = settings;
+        _serverMap.SetFactionSetting(settings);
+    }
+
+    [ServerRpc]
+    public void SpawnStartingUnits(Base faction, RPCInfo info = default)
+    {
+        AC_InitialUnitSpawnCommand command = new AC_InitialUnitSpawnCommand
+        {
+            Faction = faction
+        };
+
+        _serverMap.HandleCommand(command);
+    }
+
     public void SetCellState(HexCellState cellState, int cellIndex)
     {
         _state[cellIndex] = cellState;
-
-        Debug.Log(cellState.listOfGroups[0].Amount + "x " + cellState.listOfGroups[0].Unit.ToString());
     }
 }

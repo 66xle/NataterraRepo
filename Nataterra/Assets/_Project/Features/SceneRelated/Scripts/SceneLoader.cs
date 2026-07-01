@@ -18,7 +18,6 @@ namespace Systems.SceneManagment
         public readonly SceneGroupManager manager = new SceneGroupManager();
 
         private float targetProgress;
-        private bool Init = false;
         [HideInInspector] public bool IsLoading = false;
 
         private void Awake()
@@ -28,11 +27,10 @@ namespace Systems.SceneManagment
             manager.OnSceneGroupLoaded += () => Debug.Log("Scene group loaded");
         }
 
+
         protected async override void OnSpawned()
         {
             base.OnSpawned();
-
-            Init = true;
 
             await LoadSceneGroup(sceneGroups[0].GroupName);
         }

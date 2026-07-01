@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TGS;
 using System.Windows.Input;
+using System;
 
 
 public class ServerMap : NetworkBehaviour
@@ -28,11 +29,15 @@ public class ServerMap : NetworkBehaviour
         _gs = GS;
 
         _commandProcessor.Register<AC_UnitRecruitCommand>(new AH_UnitHandler(_gs, _map));
+        _commandProcessor.Register<AC_InitialUnitSpawnCommand>(new AH_UnitHandler(_gs, _map));
     }
 
     public void HandleCommand(IActionCommand command)
     {
         _commandProcessor.Process(command);
     }
-
+    public void SetFactionSetting(FactionSettings settings)
+    {
+        _map.SetFactionSettings(settings);
+    }
 }

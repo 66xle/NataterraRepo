@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
@@ -5,5 +6,5 @@ using UnityEngine;
 public class FactionSettings
 {
     public Base Faction;
-    public int StartingUnits;
+    public List<UnitType> StartingUnits;
 }

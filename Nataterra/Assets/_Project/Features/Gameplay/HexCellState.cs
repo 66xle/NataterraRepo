@@ -7,7 +7,7 @@ public class HexCellState
     public Resource Resource = Resource.None;
     public Base Faction = Base.None;
 
-    public List<Group> listOfGroups;
+    public Dictionary<UnitType, Group> DictOfGroups;
 
     public HexCellState(HexCellData cell)
     {
@@ -15,6 +15,6 @@ public class HexCellState
         Resource = cell.resource;
         Faction = cell.faction;
 
-        listOfGroups = new();
+        DictOfGroups = new();
     }
 }

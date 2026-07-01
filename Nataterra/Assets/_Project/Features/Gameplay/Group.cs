@@ -1,13 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
+
 
 public class Group 
 {
-    public Unit Unit;
-    public int Amount;
+    public List<Unit> ListOfUnits;
 
-    public Group(Unit unit, int amount)
+    public Group(Unit unit)
     {
-        Unit = unit;
-        Amount = amount;
+        ListOfUnits = new List<Unit>() { unit };
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitSystem : MonoBehaviour
@@ -10,14 +11,15 @@ public class UnitSystem : MonoBehaviour
     }
 
 
-
-    public void RecruitUnit(int amount, Unit unit, int cellIndex)
+    public void SpawnUnit(List<GameObject> prefabs, int cellIndex, List<StateChange> changes)
     {
-        for (int i = 0; i < amount; i++)
+        _gs.SetLocalChanges(changes);
+
+        foreach (GameObject unitObj in prefabs)
         {
             Vector3 spawnPosition = _gs.TGS.CellGetPosition(cellIndex);
 
-            Instantiate(_gs.UnitPrefab, spawnPosition, Quaternion.identity);
+            Instantiate(unitObj, spawnPosition, Quaternion.identity);
         }
     }
 }

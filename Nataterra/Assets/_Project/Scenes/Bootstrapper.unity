@@ -163,7 +163,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a065f098db9b4242a3f88e90302259d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
   jsonFileName: bases
+  listOfFactions:
+  - {fileID: 11400000, guid: f88616fb5e630de42accfac0b3e4ae49, type: 2}
+  - {fileID: 11400000, guid: e0c677f8d8bfa8f4b87057598200321e, type: 2}
 --- !u!1 &455178485
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,6 +220,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f3bd8853330e94782ad2099a66f773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneInitialize
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
 --- !u!1 &981464120
 GameObject:
   m_ObjectHideFlags: 0
@@ -252,6 +273,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a716148a605971748b0681a6560623fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bootstrapper
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
 --- !u!1 &1026779973
 GameObject:
   m_ObjectHideFlags: 0

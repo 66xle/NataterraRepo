@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc07e6b9bcac717468ef94e3d71788af, type: 3}
   m_Name: Velathi
   m_EditorClassIdentifier: Assembly-CSharp::FactionData
-  Faction: 1
-  StartingUnits: 3
+  Settings:
+    Faction: 1
+    StartingUnits: c8000000c8000000c8000000
   ListOfUnits:
   - {fileID: 11400000, guid: f3454bd6da45a464b97befbb88ef192b, type: 2}

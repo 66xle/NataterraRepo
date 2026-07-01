@@ -2,28 +2,24 @@ using System.IO;
 using UnityEditor;
 using UnityEditorInternal.VR;
 using UnityEngine;
-using TGS;
-using PurrNet;
+using System.Collections.Generic;
 
 
 public class GameManager : Singleton<GameManager>
 {
-    public string jsonFileName;
+    [SerializeField] string jsonFileName;
+    [SerializeField] List<FactionData> listOfFactions;
+
 
     MapData _mapData;
 
     public MapData MapData { get { return _mapData; } }
+    public List<FactionData> ListOfFactions { get { return listOfFactions; } }
 
-    protected override void OnSpawned()
+    private void Start()
     {
-        base.OnSpawned();
-
-        if (!isServer)
-            return;
-
         LoadMapData();
     }
-
 
     public void LoadMapData()
     {

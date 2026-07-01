@@ -1,4 +1,3 @@
-using DrawXXL;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,29 +21,57 @@ public class ServerMapWrapper
 
     private List<int> _stateChanges;
 
-    public ServerMapWrapper(List<HexCellState> state, int[] basesPlaced)
+    private FactionSettings _factionSettings;
+    private Dictionary<UnitType, UnitData> _dictUnits;
+
+    public FactionSettings FactionSetting { get { return _factionSettings; } }
+
+    public ServerMapWrapper(List<HexCellState> state, int[] basesPlaced, Dictionary<UnitType, UnitData> dictUnits)
     {
         _state = state;
         _basesPlaced = basesPlaced;
+        _dictUnits = dictUnits;
         _stateChanges = new();
     }
 
-    public void AddUnit(Unit unit, int amount, int cellIndex)
+    public void SetFactionSettings(FactionSettings factionSettings)
     {
-        if (!_stateChanges.Contains(cellIndex))
-        {
-            _stateChanges.Add(cellIndex);
-        }
-
-        // If unit is in group
-        if (Extensions.Contains(_state[cellIndex].listOfGroups, unit, g => g.Unit, out Group group))
-        {
-            group.Amount += amount;
-            return;
-        }
-
-        _state[cellIndex].listOfGroups.Add(new Group(unit, amount));
+        _factionSettings = factionSettings;
     }
+
+    public GameObject AddUnit(UnitType type, int cellIndex, bool stateChange = true)
+    {
+        if (stateChange)
+            AddStateChange(cellIndex);
+
+        UnitData unitData = GetUnitData(type);
+        Unit unit = new Unit(unitData);
+
+        if (_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
+        {
+            group.ListOfUnits.Add(unit);
+            return unitData.Prefab;
+        }
+
+        _state[cellIndex].DictOfGroups.Add(type, new Group(unit));
+        return unitData.Prefab;
+    }
+
+    public List<GameObject> AddUnit(List<UnitType> types, int cellIndex)
+    {
+        AddStateChange(cellIndex);
+
+        List<GameObject> tempObjs = new();
+
+        foreach (UnitType unit in types)
+        {
+            GameObject unitObj = AddUnit(unit, cellIndex, false);
+            tempObjs.Add(unitObj);
+        }
+
+        return tempObjs;
+    }
+
 
 
     public List<StateChange> GetStateChanges()
@@ -63,5 +90,25 @@ public class ServerMapWrapper
     public int GetBaseCellIndex(Base faction)
     {
         return _basesPlaced[(int)faction];
+    }
+
+
+    private void AddStateChange(int cellIndex)
+    {
+        if (!_stateChanges.Contains(cellIndex))
+        {
+            _stateChanges.Add(cellIndex);
+        }
+    }
+
+    private UnitData GetUnitData(UnitType type)
+    {
+        if (!_dictUnits.TryGetValue(type, out UnitData data))
+        {
+            Debug.LogError($"{type} data does not exist in database");
+            return null;
+        }
+
+        return data;
     }
 }

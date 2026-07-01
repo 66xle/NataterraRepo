@@ -8,6 +8,7 @@ using TGS;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.LowLevel;
+using static Unity.Cinemachine.CinemachineTriggerAction;
 using static UnityEditor.VersionControl.Asset;
 
 public class StateMachineManager : NetworkBehaviour
@@ -20,7 +21,6 @@ public class StateMachineManager : NetworkBehaviour
 
     public GameplayBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
 
-    List<Base> bases = new List<Base>{ Base.Beasts, Base.Velathi };
     Dictionary<PlayerID, Base> _dictFaction = new();
 
     protected override void OnSpawned()
@@ -43,25 +43,54 @@ public class StateMachineManager : NetworkBehaviour
 
     void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
     {
-        if (asServer) return;
+        if (!asServer) return;
 
-        Base faction = bases[(int)player.id.value - 1];
+        if (isReconnect)
+        {
+            Debug.Log($"Player {player.id} reconnected.");
+            return;
+        }
 
-        _dictFaction.Add(player, faction);
+        List<FactionData> factions = GameManager.Instance.ListOfFactions;
 
-        Debug.Log($"Player {player.id}'s Faction: {faction}");
-        MapCtx.SpawnUnits();
+        FactionData data = factions[(int)player.id.value - 1];
+
+        _dictFaction.Add(player, data.Settings.Faction);
+
+        Debug.Log($"Player {player.id}'s Faction: {data.Settings.Faction}");
+
+        MapCtx.SetFactionSetting(data.Settings);
+        MapCtx.SpawnStartingUnits(data.Settings.Faction);
     }
 
     void Setup()
     {
         Debug.Log("Setup");
 
-        MapCtx.Setup();
+        CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits);
+
+        MapCtx.Setup(dictUnits);
 
         SceneInitialize.Instance.Invoke();
 
         _states = new GameplayStateFactory(this);
         _currentState = new SMM_MapState(this, _states);
+    }
+
+    void CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits)
+    {
+        Dictionary<UnitType, UnitData> units = new();
+
+        List<FactionData> listOfFactions = GameManager.Instance.ListOfFactions;
+
+        foreach (FactionData faction in listOfFactions)
+        {
+            foreach (UnitData unit in faction.ListOfUnits)
+            {
+                units.Add(unit.Unit, unit);
+            }
+        }
+
+        dictUnits = units;
     }
 }

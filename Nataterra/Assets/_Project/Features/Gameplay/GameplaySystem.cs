@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GameplaySystem : NetworkBehaviour
 {
-    public GameObject UnitPrefab;
     public MapStateMachine MSM;
 
     public UnitSystem UnitSystem { get; private set; }
