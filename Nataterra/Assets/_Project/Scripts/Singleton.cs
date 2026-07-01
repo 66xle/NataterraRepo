@@ -1,6 +1,7 @@
+using PurrNet;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+public class Singleton<T> : NetworkBehaviour where T : NetworkBehaviour
 {
     public static T Instance { get; protected set; }
 

@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditorInternal.VR;
 using UnityEngine;
 using TGS;
+using PurrNet;
 
 
 public class GameManager : Singleton<GameManager>
@@ -13,10 +14,13 @@ public class GameManager : Singleton<GameManager>
 
     public MapData MapData { get { return _mapData; } }
 
-
-
-    void Start()
+    protected override void OnSpawned()
     {
+        base.OnSpawned();
+
+        if (!isServer)
+            return;
+
         LoadMapData();
     }
 
