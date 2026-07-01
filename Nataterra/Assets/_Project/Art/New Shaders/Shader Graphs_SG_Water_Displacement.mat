@@ -13,6 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _DISABLE_SSR_TRANSPARENT
+  - _ENABLE_FOG_ON_TRANSPARENT
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -34,6 +35,14 @@ Material:
     m_TexEnvs:
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 3e552570850914a19b1aa562f78a1aa8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TidalMap:
+        m_Texture: {fileID: 2800000, guid: 276f3e0091ea34870a84004b98521ee7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterNormal2:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -65,24 +74,25 @@ Material:
     - _DstBlend: 10
     - _DstBlend2: 10
     - _EnableBlendModePreserveSpecularLighting: 1
-    - _EnableFogOnTransparent: 0
+    - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
     - _MaterialID: 1
     - _MaterialTypeMask: 2
+    - _OceanSize: 6000
     - _OpaqueCullMode: 2
     - _PerPixelSorting: 0
-    - _PrimaryHeight: 0.11
-    - _PrimaryScale: 4.68
-    - _PrimarySpeed: 1.66
+    - _PrimaryHeight: 1.88
+    - _PrimaryScale: 3.59
+    - _PrimarySpeed: 0.79
     - _RayTracing: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
     - _RefractionModel: 0
     - _RenderQueueType: 4
     - _RequireSplitLighting: 0
-    - _SecondaryHeight: 0.06
-    - _SecondaryScale: 0.6
-    - _SecondarySpeed: 0.25
+    - _SecondaryHeight: 0.132
+    - _SecondaryScale: 1.2
+    - _SecondarySpeed: 0.81
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 0
@@ -115,17 +125,18 @@ Material:
     - _WarpScale: 3
     - _WarpSpeed: 0.08
     - _WarpStrength: 0.35
-    - _ZTestDepthEqualForOpaque: 4
+    - _ZTestDepthEqualForOpaque: 2
     - _ZTestGBuffer: 4
-    - _ZTestTransparent: 4
+    - _ZTestTransparent: 2
     - _ZWrite: 0
     m_Colors:
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _OceanCentre: {r: 5.5, g: 35.4, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
-    - _SecondaryDirection: {r: -0.4, g: 1, b: 0, a: 0}
-    - _TextureScale: {r: 22.27, g: 20, b: 0, a: 0}
-    - _WaterColor: {r: 0.18876821, g: 0.2535181, b: 0.39622638, a: 1}
+    - _SecondaryDirection: {r: 0.7, g: 1, b: 0, a: 0}
+    - _TextureScale: {r: 23.1, g: 22.8, b: 0, a: 0}
+    - _WaterColor: {r: 0.18876815, g: 0.25351804, b: 0.39622632, a: 0.9882353}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3608272976891153017
