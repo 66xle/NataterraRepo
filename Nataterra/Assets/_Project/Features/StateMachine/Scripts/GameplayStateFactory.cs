@@ -23,7 +23,14 @@ public class GameplayStateFactory
     {
         _content = currentContext;
         _states[GameplayState.Map] = new SMM_MapState(_content, this);
+        _states[GameplayState.MovementPhase] = new SMM_MovementPhaseState(_content, this);
+        _states[GameplayState.ResourcePhase] = new SMM_ResourcePhaseState(_content, this);
+        _states[GameplayState.CombatPhase] = new SMM_CombatPhaseState(_content, this);
+        _states[GameplayState.DevelopmentPhase] = new SMM_DevelopmentPhaseState(_content, this);
+
         _states[GameplayState.Combat] = new SMC_CombatState(_content, this);
+
+
     }
 
     public GameplayBaseState Map()

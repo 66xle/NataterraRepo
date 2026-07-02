@@ -1,5 +1,6 @@
 
 using PurrNet;
+using TGS;
 
 public abstract class GameplayBaseState : NetworkBehaviour
 {
@@ -12,6 +13,10 @@ public abstract class GameplayBaseState : NetworkBehaviour
 
     MapStateMachine _mapCtx;
     CombatStateMachine _combatCtx;
+
+    TerrainGridSystem _tgs;
+
+    public TerrainGridSystem TGS { get { return _tgs; } }
 
     public bool IsRootState { set { _isRootState = value; } }
     public StateMachineManager Ctx { get { return _ctx; } }
@@ -28,6 +33,8 @@ public abstract class GameplayBaseState : NetworkBehaviour
 
         _mapCtx = context.MapCtx;
         _combatCtx = context.CombatCtx;
+
+        _tgs = TerrainGridSystem.instance;
     }
 
     public abstract void EnterState();

@@ -49,13 +49,13 @@ public class MapStateMachine : NetworkBehaviour
         _tgs = Terrain.activeTerrain.gameObject.AddTerrainGridSystem();
 
         _tgs.gridTopology = GridTopology.Hexagonal;
-        _tgs.SetGridType(GridTopology.Irregular);
         _tgs.SetGridSize(mapData.row, mapData.column);
-        _tgs.ToggleTerritories(false);
+        _tgs.SetNumTerritories(0, false);
         _tgs.highlightMode = HighlightMode.None;
 
         _tgs.Redraw();
 
+        _tgs.SetGridType(GridTopology.Irregular);
         _tgs.RegenerateFlatToppedHexagonalGrid(mapData.tgsCells);
         _tgs.CellsUpdateBounds();
         _tgs.CellsUpdateNeighbours();

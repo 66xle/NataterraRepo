@@ -5,14 +5,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using TGS;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using static Unity.Cinemachine.CinemachineTriggerAction;
 using static UnityEditor.VersionControl.Asset;
 
 public class StateMachineManager : NetworkBehaviour
 {
+#if UNITY_EDITOR
+    [Header("Debugging")]
+    public TMP_Text CellLabelPrefab;
+    public Canvas GridCanvas;
+    public bool ShowCellIndex = false;
+#endif
+
+    [Header("References")]
     public MapStateMachine MapCtx;
     public CombatStateMachine CombatCtx;
 
@@ -22,6 +32,17 @@ public class StateMachineManager : NetworkBehaviour
     public GameplayBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
 
     Dictionary<PlayerID, Base> _dictFaction = new();
+
+
+    public Action OnClickEvent;
+
+
+    Vector2 _mousePosition;
+    public Vector2 MousePosition { get { return _mousePosition; } }
+
+    bool _inputClick;
+    public bool InputClick { get { return _inputClick; } }
+
 
     protected override void OnSpawned()
     {
@@ -73,8 +94,17 @@ public class StateMachineManager : NetworkBehaviour
 
         SceneInitialize.Instance.Invoke();
 
+
         _states = new GameplayStateFactory(this);
         _currentState = new SMM_MapState(this, _states);
+        _currentState.EnterState();
+
+#if UNITY_EDITOR
+        if (ShowCellIndex)
+        {
+            CreateCellLabel();
+        }
+#endif
     }
 
     void CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits)
@@ -93,4 +123,29 @@ public class StateMachineManager : NetworkBehaviour
 
         dictUnits = units;
     }
+
+
+    public void OnClick(InputAction.CallbackContext context)
+    {
+        OnClickEvent?.Invoke();
+    }
+
+#if UNITY_EDITOR
+
+    void CreateCellLabel()
+    {
+        for (int i = 0; i < TerrainGridSystem.instance.cellCount; i++)
+        {
+            int cellIndex = TerrainGridSystem.instance.cells[i].index;
+            Vector3 position = TerrainGridSystem.instance.CellGetPosition(cellIndex);
+
+            TMP_Text label = Instantiate<TMP_Text>(CellLabelPrefab);
+            label.rectTransform.SetParent(GridCanvas.transform, false);
+            label.rectTransform.position = position;
+
+            label.rectTransform.localScale = new Vector3(label.rectTransform.localScale.x * TerrainGridSystem.instance.cellSize.x, label.rectTransform.localScale.z * TerrainGridSystem.instance.cellSize.y, 1f);
+            label.text = cellIndex.ToString();
+        }
+    }
+#endif
 }
