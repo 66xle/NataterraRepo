@@ -539,6 +539,7 @@ MonoBehaviour:
   _directChildren: []
   CellLabelPrefab: {fileID: 2403201192737324145, guid: b5d7ae7adcdf3804685d0ee8f65e1d7a, type: 3}
   GridCanvas: {fileID: 1120748878}
+  ShowCellIndex: 0
   MapCtx: {fileID: 1254477825}
   CombatCtx: {fileID: 1684973436}
 --- !u!114 &1165569205

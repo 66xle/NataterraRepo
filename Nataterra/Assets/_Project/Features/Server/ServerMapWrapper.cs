@@ -45,7 +45,7 @@ public class ServerMapWrapper
             AddStateChange(cellIndex);
 
         UnitData unitData = GetUnitData(type);
-        Unit unit = new Unit(unitData);
+        Unit unit = new Unit(unitData, cellIndex);
 
         if (_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
         {

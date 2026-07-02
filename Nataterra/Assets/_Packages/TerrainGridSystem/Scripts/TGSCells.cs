@@ -755,6 +755,22 @@ namespace TGS {
             return row * _cellColumnCount + column;
         }
 
+        int CellGetIndexHex(int row, int column, bool clampToBorders = true)
+        {
+            if (clampToBorders)
+            {
+                row = Mathf.Clamp(row, 0, _cellRowCount - 1);
+                column = Mathf.Clamp(column, 0, _cellColumnCount - 1);
+            }
+            else
+            {
+                row = (row + _cellRowCount) % _cellRowCount;
+                column = (column + _cellColumnCount) % _cellColumnCount;
+            }
+
+            return row * _cellColumnCount + column;
+        }
+
 
         /// <summary>
         /// Returns the cell index of a cell at a given position (in local or world space) in the grid
@@ -2058,6 +2074,53 @@ namespace TGS {
             }
             return cc;
         }
+
+        public List<int> CellGetNeighboursWithinRangeHex(int cellIndex, int minSteps, int maxSteps, int cellGroupMask = -1, float maxCost = -1, bool includeInvisibleCells = true, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool cellGroupMaskExactComparison = false, CellFilterDelegate filter = null)
+        {
+            if (cellIndex < 0 || cellIndex >= cells.Count)
+                return null;
+            minSteps = Mathf.Max(1, minSteps);
+            Cell cell = cells[cellIndex];
+            List<int> cc = new List<int>();
+            GridDistanceFunction distanceFunction;
+
+            // Use Hex
+            distanceFunction = CellGetHexagonDistance;
+
+            for (int x = cell.column - maxSteps; x <= cell.column + maxSteps; x++)
+            {
+                if (x < 0 || x >= _cellColumnCount)
+                    continue;
+                for (int y = cell.row - maxSteps; y <= cell.row + maxSteps; y++)
+                {
+                    if (y < 0 || y >= _cellRowCount)
+                        continue;
+                    if (x == cell.column && y == cell.row)
+                        continue;
+
+                    // Use Hex
+                    int ci = CellGetIndexHex(y, x);
+
+
+                    if (!includeInvisibleCells && !CellIsVisible(ci)) continue;
+                    if (filter != null && !filter(ci)) continue;
+                    if (distanceFunction(cellIndex, ci) <= maxSteps)
+                    {
+                        List<int> steps = FindPath(cellIndex, ci, maxCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, cellGroupMaskExactComparison: cellGroupMaskExactComparison);
+                        if (steps != null)
+                        {
+                            int stepsCount = steps.Count;
+                            if (stepsCount >= minSteps)
+                            {
+                                cc.Add(ci);
+                            }
+                        }
+                    }
+                }
+            }
+            return cc;
+        }
+
 
         /// <summary>
         /// Adds surrounding cells to a list of given cells

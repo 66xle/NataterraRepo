@@ -1,6 +1,7 @@
 using PurrNet;
+using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using System.Linq;
 using TGS;
 using UnityEngine;
 
@@ -15,6 +16,17 @@ public class MapStateMachine : NetworkBehaviour
 
     FactionSettings _settings;
     Dictionary<UnitType, UnitData> _dictOfUnits;
+
+
+    Cell _selectedCell;
+    GameObject _movementBorder;
+
+    public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
+    public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
+
+    public Action<List<Unit>> OnSelectUnit;
+
+
 
     public void Setup(Dictionary<UnitType, UnitData> dictUnits)
     {
@@ -83,5 +95,21 @@ public class MapStateMachine : NetworkBehaviour
     public void SetCellState(HexCellState cellState, int cellIndex)
     {
         _state[cellIndex] = cellState;
+    }
+
+
+
+    public bool UnitExistOnCell(int cellIndex)
+    {
+        return _state[cellIndex].DictOfGroups.Count == 0 ? false : true;
+    }
+
+
+
+    public List<Unit> GetUnitList(int cellIndex)
+    {
+        List<UnitType> unitTypes = _state[cellIndex].DictOfGroups.Keys.ToList();
+
+        return _state[cellIndex].DictOfGroups[unitTypes[0]].ListOfUnits;
     }
 }
