@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   Unit: 200
   Prefab: {fileID: 6562541755985119412, guid: 2d3774447a3ec4b488e82dd9c72e18b7, type: 3}
+  Attack: 2
+  Armour: 0
+  Health: 6
+  Initiative: 1
+  Group: 3
+  Movement: 2
