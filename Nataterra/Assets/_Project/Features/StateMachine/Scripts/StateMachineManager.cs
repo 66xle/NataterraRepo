@@ -127,6 +127,9 @@ public class StateMachineManager : NetworkBehaviour
 
     public void OnClick(InputAction.CallbackContext context)
     {
+        if (!context.performed)
+            return;
+
         OnClickEvent?.Invoke();
     }
 

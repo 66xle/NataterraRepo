@@ -933,7 +933,7 @@
                     "name": "",
                     "id": "63a6f4c9-fc8a-4910-aa19-092cd5b65962",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Click",

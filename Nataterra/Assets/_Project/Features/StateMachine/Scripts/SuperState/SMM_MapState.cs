@@ -54,7 +54,6 @@ public class SMM_MapState : GameplayBaseState
 
             TGS.CellDestroyBorder(_selectedCell.index);
             _selectedCell = null;
-            return;
         }
 
         if (cell == null)
