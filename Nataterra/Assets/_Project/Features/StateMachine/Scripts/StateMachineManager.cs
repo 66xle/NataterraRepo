@@ -34,16 +34,6 @@ public class StateMachineManager : NetworkBehaviour
     Dictionary<PlayerID, Base> _dictFaction = new();
 
 
-    public Action OnClickEvent;
-
-
-    Vector2 _mousePosition;
-    public Vector2 MousePosition { get { return _mousePosition; } }
-
-    bool _inputClick;
-    public bool InputClick { get { return _inputClick; } }
-
-
     protected override void OnSpawned()
     {
         base.OnSpawned();
@@ -122,15 +112,6 @@ public class StateMachineManager : NetworkBehaviour
         }
 
         dictUnits = units;
-    }
-
-
-    public void OnClick(InputAction.CallbackContext context)
-    {
-        if (!context.performed)
-            return;
-
-        OnClickEvent?.Invoke();
     }
 
 #if UNITY_EDITOR

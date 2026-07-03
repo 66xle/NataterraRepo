@@ -11,17 +11,11 @@ public class CameraController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] float moveSpeed = 10f;
 
-    Vector2 moveInput;
     public Collider boundingCollider;
 
 
     Terrain terrain;
 
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
 
     void Start()
     {
@@ -39,6 +33,8 @@ public class CameraController : MonoBehaviour
 
         forward.Normalize();
         right.Normalize();
+
+        Vector2 moveInput = InputManager.Instance.MoveInput;
 
         Vector3 move = (forward * moveInput.y + right * moveInput.x).normalized;
 

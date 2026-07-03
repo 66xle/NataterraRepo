@@ -13,7 +13,7 @@ public class SMM_MapState : GameplayBaseState
     {
         IsRootState = true;
 
-        Ctx.OnClickEvent += InputCellSelection;
+        InputManager.Instance.OnClickEvent += InputCellSelection;
     }
 
     public override void EnterState()
