@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08955cbb794b9614fb19a34a6b706a3c, type: 3}
   m_Name: Hunter
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  Unit: 200
+  UnitType: 200
   Prefab: {fileID: 6562541755985119412, guid: 2d3774447a3ec4b488e82dd9c72e18b7, type: 3}
   Attack: 2
   Armour: 0

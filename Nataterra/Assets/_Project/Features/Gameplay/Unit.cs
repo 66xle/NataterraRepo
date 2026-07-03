@@ -4,9 +4,10 @@ using UnityEngine;
 public class Unit
 {
     public string GUID { get; private set; }
+    public UnitType UnitType { get; private set; }
 
     public int CellOrigin { get; private set; }
-    public int CurrentMovement { get; private set; }
+    public int CurrentMovement;
 
 
     public int Attack { get; private set; }
@@ -21,6 +22,7 @@ public class Unit
     public Unit(UnitData data, int cellOrigin)
     {
         GUID = Guid.NewGuid().ToString();
+        UnitType = data.UnitType;
 
         Attack = data.Attack;
         Armour = data.Armour;

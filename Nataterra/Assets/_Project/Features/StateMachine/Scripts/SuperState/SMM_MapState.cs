@@ -56,7 +56,7 @@ public class SMM_MapState : GameplayBaseState
 
             if (MapCtx.MovementBorder != null)
             {
-                MapCtx.CellsWithinMovement.Clear();
+                MapCtx.MovementResult = null;
                 Destroy(MapCtx.MovementBorder);
             }
 

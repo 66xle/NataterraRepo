@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08955cbb794b9614fb19a34a6b706a3c, type: 3}
   m_Name: Woodcutter
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  Unit: 100
+  UnitType: 100
   Prefab: {fileID: 6562541755985119412, guid: b6ad794cd1c70b248aa417b21034400e, type: 3}
   Attack: 2
   Armour: 0

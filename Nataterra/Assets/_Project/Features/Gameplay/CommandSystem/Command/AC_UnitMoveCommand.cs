@@ -1,9 +1,10 @@
-using UnityEngine;
+using System.Collections.Generic;
 
-public class AC_UnitMoveCommand : IActionCommand
+public struct AC_UnitMoveCommand : IActionCommand
 {
-    public int CurrentIndex;
-    public int TargetIndex;
+    public List<UnitType> ListOfUnitType;
+    public List<string> ListOfUnitGUID;
 
-    public int OriginIndex;
+    public int SelectedIndex;
+    public int Destination;
 }

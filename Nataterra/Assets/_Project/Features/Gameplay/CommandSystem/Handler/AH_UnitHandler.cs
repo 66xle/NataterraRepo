@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_UnitInitialSpawnCommand>
+public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_UnitInitialSpawnCommand>, IActionHandler<AC_UnitMoveCommand>
 {
     GameplaySystem _gs;
     ServerMapWrapper _map;
@@ -41,5 +41,38 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         List<GameObject> unitObjs = _map.AddUnit(units, cellIndex);
 
         _gs.UnitSystem.SpawnUnit(unitObjs, cellIndex, _map.GetStateChanges());
+    }
+
+    public void Handle(AC_UnitMoveCommand command)
+    {
+        List<Unit> selectedUnits = _map.GetUnits(command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
+
+        if (selectedUnits == null)
+            return;
+
+        int origin = _gs.MSM.GetOrigin(selectedUnits, command.SelectedIndex);
+
+        int lowestMovement = _gs.MSM.GetLowestMovement(selectedUnits);
+        if (lowestMovement == 0)
+        {
+            // No movement message
+            return;
+        }
+
+        DijkstraResult result = _gs.MSM.CalculateMovementRange(origin, lowestMovement);
+
+        if (!result.Contains(command.Destination))
+        {
+            // Invalid destination
+            return;
+        }
+
+        List<int> path = result.BuildPath(command.Destination);
+        int cost = result.GetDestinationCost(command.Destination);
+
+        _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, cost);
+
+        
+
     }
 }

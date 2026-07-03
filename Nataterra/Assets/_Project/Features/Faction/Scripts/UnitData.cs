@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Unit", menuName = "Scriptable/Unit Data", order = 2)]
 public class UnitData : ScriptableObject
 {
-    public UnitType Unit;
+    public UnitType UnitType;
     public GameObject Prefab;
 
     public int Attack;

@@ -107,7 +107,7 @@ public class StateMachineManager : NetworkBehaviour
         {
             foreach (UnitData unit in faction.ListOfUnits)
             {
-                units.Add(unit.Unit, unit);
+                units.Add(unit.UnitType, unit);
             }
         }
 

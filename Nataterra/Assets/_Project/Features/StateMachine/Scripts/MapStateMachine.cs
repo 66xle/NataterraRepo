@@ -19,15 +19,22 @@ public class MapStateMachine : NetworkBehaviour
 
 
     Cell _selectedCell;
+    List<Unit> _selectedUnits;
+
     GameObject _movementBorder;
     HashSet<int> _cellsWithinMovement;
 
+    DijkstraResult _movementResult;
+
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
+    public List<Unit> SelectedUnits { get { return _selectedUnits; } set { _selectedUnits = value; } }
     public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
-    public HashSet<int> CellsWithinMovement { get { return _cellsWithinMovement; } set { _cellsWithinMovement = value; } }
+    public DijkstraResult MovementResult { get { return _movementResult; } set { _movementResult = value; } }
 
 
     public Action<List<Unit>> OnSelectUnit;
+
+    
 
 
 
@@ -77,7 +84,6 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.RedrawCells(_tgs.cells);
     }
 
-
     public void SetFactionSetting(FactionSettings settings)
     {
         _settings = settings;
@@ -95,6 +101,31 @@ public class MapStateMachine : NetworkBehaviour
         _serverMap.HandleCommand(command);
     }
 
+    [ServerRpc]
+    public void SendMoveCommand(int destination)
+    {
+        List<string> guids = new();
+        List<UnitType> type = new();
+        foreach (Unit unit in SelectedUnits)
+        {
+            guids.Add(unit.GUID);
+            type.Add(unit.UnitType);
+        }
+
+        // Send Command
+        AC_UnitMoveCommand command = new AC_UnitMoveCommand()
+        {
+            ListOfUnitType = type,
+            ListOfUnitGUID = guids,
+            SelectedIndex = SelectedCell.index,
+            Destination = destination
+        };
+
+        _serverMap.HandleCommand(command);
+    }
+
+
+
     public void SetCellState(HexCellState cellState, int cellIndex)
     {
         _state[cellIndex] = cellState;
@@ -107,12 +138,109 @@ public class MapStateMachine : NetworkBehaviour
         return _state[cellIndex].DictOfGroups.Count == 0 ? false : true;
     }
 
-
-
     public List<Unit> GetUnitList(int cellIndex)
     {
         List<UnitType> unitTypes = _state[cellIndex].DictOfGroups.Keys.ToList();
 
         return _state[cellIndex].DictOfGroups[unitTypes[0]].ListOfUnits;
     }
+
+
+    public int GetOrigin(List<Unit> units, int selectedIndex)
+    {
+        int origin = units[0].CellOrigin;
+
+        for (int i = 1; i < units.Count; i++)
+        {
+            if (units[i].CellOrigin != origin)
+                return selectedIndex;
+        }
+
+        return origin;
+    }
+
+    public int GetLowestMovement(List<Unit> units)
+    {
+        int currentMovement = units[0].CurrentMovement;
+
+        // Get the lowest avaliable movement
+        for (int i = 1; i < units.Count; i++)
+        {
+            if (units[i].CurrentMovement < currentMovement)
+                currentMovement = units[i].CurrentMovement;
+        }
+
+        return currentMovement;
+    }
+
+    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement)
+    {
+        DijkstraResult result = new DijkstraResult();
+
+        List<int> open = new();
+
+        open.Add(startCell);
+
+        result.Cost[startCell] = 0;
+        result.Parent[startCell] = -1;
+
+        while (open.Count > 0)
+        {
+            // Find the node with the lowest cost
+            int current = open[0];
+
+            for (int i = 1; i < open.Count; i++)
+            {
+                if (result.Cost[open[i]] < result.Cost[current])
+                    current = open[i];
+            }
+
+            open.Remove(current);
+
+            int currentCost = result.Cost[current];
+
+            Cell cell = _tgs.cells[current];
+
+            foreach (Cell neighbour in cell.neighbours)
+            {
+                if (!CanEnter(neighbour))
+                    continue;
+
+                int newCost = currentCost + GetMovementCost(neighbour);
+
+                if (newCost > maxMovement)
+                    continue;
+
+                if (!result.Cost.TryGetValue(neighbour.index, out int oldCost) ||
+                    newCost < oldCost)
+                {
+                    result.Cost[neighbour.index] = newCost;
+                    result.Parent[neighbour.index] = current;
+
+                    if (!open.Contains(neighbour.index))
+                        open.Add(neighbour.index);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private bool CanEnter(Cell cell)
+    {
+        if (!cell.canCross)
+            return false;
+
+        return true;
+    }
+
+    private int GetMovementCost(Cell cell)
+    {
+        // Check if ground or flying type
+
+        // If ground check if cell is a mountain
+
+        return 1;
+    }
+
 }

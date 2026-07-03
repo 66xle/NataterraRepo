@@ -1,3 +1,4 @@
+using PurrNet;
 using System.Collections.Generic;
 using System.Linq;
 using TGS;
@@ -38,29 +39,22 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
     private void ShowUnitMovementRange(List<Unit> units)
     {
-        int currentMovement = units[0].CurrentMovement;
+        int origin = MapCtx.GetOrigin(units, MapCtx.SelectedCell.index);
 
-        // Get the lowest avaliable movement
-        for (int i = 1; i < units.Count; i++)
-        {
-            if (units[i].CurrentMovement < currentMovement)
-                currentMovement = units[i].CurrentMovement;
-        }
+        int lowestMovement = MapCtx.GetLowestMovement(units);
 
-        if (currentMovement == 0)
+        if (lowestMovement == 0)
         {
             // No movement message
             return;
         }
 
-        
+        MapCtx.SelectedUnits = units;
 
-        DijkstraResult result = MapCtx.GS.CalculateMovementRange(MapCtx.SelectedCell.index, currentMovement);
+        DijkstraResult result = MapCtx.CalculateMovementRange(origin, lowestMovement);
+        MapCtx.MovementResult = result;
 
-        List<int> cellsInRange = result.Cost.Keys.ToList();
-        //List<int> cellsInRange = TGS.CellGetNeighboursWithinRangeHex(MapCtx.SelectedCell.index, 1, currentMovement);
-
-        MapCtx.CellsWithinMovement = cellsInRange.ToHashSet();
+        List<int> cellsInRange = result.GetIndexList();
 
         Debug.Log($"Number of cells in range: {cellsInRange.Count}");
 
@@ -73,19 +67,22 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
     private void MoveUnit()
     {
-        if (MapCtx.CellsWithinMovement.Count == 0)
+        if (MapCtx.MovementResult == null)
             return;
 
         Cell cell = TGS.CellGetAtMousePosition();
-        if (cell == null) return;
 
-        if (!MapCtx.CellsWithinMovement.Contains(cell.index))
+        if (cell == null) 
+            return;
+
+        if (!MapCtx.MovementResult.Contains(cell.index))
         {
-            // Display UI error message 
+            // Display UI invalid destination
             return;
         }
-        
-        // Send Command
 
+        MapCtx.SendMoveCommand(cell.index);
     }
+
+    
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DijkstraResult
@@ -24,5 +25,21 @@ public class DijkstraResult
         path.Reverse();
 
         return path;
+    }
+
+    public int GetDestinationCost(int destination)
+    {
+        return Cost[destination];
+    }
+
+
+    public List<int> GetIndexList()
+    {
+        return Cost.Keys.ToList();
+    }
+
+    public bool Contains(int index)
+    {
+        return Cost.ContainsKey(index);
     }
 }

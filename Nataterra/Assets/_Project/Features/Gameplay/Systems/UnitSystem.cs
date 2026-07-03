@@ -22,4 +22,9 @@ public class UnitSystem : MonoBehaviour
             Instantiate(unitObj, spawnPosition, Quaternion.identity);
         }
     }
+
+    public void MoveUnit()
+    {
+
+    }
 }
