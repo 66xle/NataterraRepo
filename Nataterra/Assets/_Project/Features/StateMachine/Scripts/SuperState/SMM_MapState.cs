@@ -7,27 +7,30 @@ using UnityEngine;
 
 public class SMM_MapState : GameplayBaseState
 {
-    
-
     public SMM_MapState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory)
     {
         IsRootState = true;
-
-        InputManager.Instance.OnClickEvent += InputCellSelection;
     }
 
     public override void EnterState()
     {
+        InputManager.Instance.OnLeftClickEvent += InputCellSelection;
+
         InitializeSubState();
     }
 
     public override void UpdateState()
     {
+        InputCellSelection();
+
         CheckSwitchState();
     }
 
     public override void FixedUpdateState() { }
-    public override void ExitState() { }
+    public override void ExitState() 
+    {
+        InputManager.Instance.OnLeftClickEvent -= InputCellSelection;
+    }
 
     public override void CheckSwitchState()
     {
@@ -36,10 +39,9 @@ public class SMM_MapState : GameplayBaseState
 
     public override void InitializeSubState() 
     {
-        Factory.MovementPhase();
+        SetSubState(Factory.MovementPhase());
+        CurrentSubState.EnterState();
     }
-
-
 
     public void InputCellSelection()
     {
@@ -53,8 +55,12 @@ public class SMM_MapState : GameplayBaseState
                 return;
 
             if (MapCtx.MovementBorder != null)
+            {
+                MapCtx.CellsWithinMovement.Clear();
                 Destroy(MapCtx.MovementBorder);
+            }
 
+            // Selected cell
             TGS.CellDestroyBorder(MapCtx.SelectedCell.index);
             MapCtx.SelectedCell = null;
         }

@@ -29,7 +29,7 @@ public class ServerMap : NetworkBehaviour
         _gs = GS;
 
         _commandProcessor.Register<AC_UnitRecruitCommand>(new AH_UnitHandler(_gs, _map));
-        _commandProcessor.Register<AC_InitialUnitSpawnCommand>(new AH_UnitHandler(_gs, _map));
+        _commandProcessor.Register<AC_UnitInitialSpawnCommand>(new AH_UnitHandler(_gs, _map));
     }
 
     public void HandleCommand(IActionCommand command)

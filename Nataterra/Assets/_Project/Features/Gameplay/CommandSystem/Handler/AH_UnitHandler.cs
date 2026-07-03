@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_InitialUnitSpawnCommand>
+public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_UnitInitialSpawnCommand>
 {
     GameplaySystem _gs;
     ServerMapWrapper _map;
@@ -32,7 +32,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         Debug.Log("Unit Spawned");
     }
 
-    public void Handle(AC_InitialUnitSpawnCommand command)
+    public void Handle(AC_UnitInitialSpawnCommand command)
     {
         int cellIndex = _map.GetBaseCellIndex(command.Faction);
 

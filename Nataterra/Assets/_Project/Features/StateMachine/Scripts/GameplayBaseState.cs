@@ -26,6 +26,9 @@ public abstract class GameplayBaseState : NetworkBehaviour
     public CombatStateMachine CombatCtx { get {  return _combatCtx; } }
 
 
+    public GameplayBaseState CurrentSubState { get { return _currentSubState; } }
+
+
     public GameplayBaseState(StateMachineManager context, GameplayStateFactory factory)
     {
         _ctx = context;

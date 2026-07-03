@@ -20,9 +20,12 @@ public class MapStateMachine : NetworkBehaviour
 
     Cell _selectedCell;
     GameObject _movementBorder;
+    HashSet<int> _cellsWithinMovement;
 
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
     public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
+    public HashSet<int> CellsWithinMovement { get { return _cellsWithinMovement; } set { _cellsWithinMovement = value; } }
+
 
     public Action<List<Unit>> OnSelectUnit;
 
@@ -84,7 +87,7 @@ public class MapStateMachine : NetworkBehaviour
     [ServerRpc]
     public void SpawnStartingUnits(Base faction, RPCInfo info = default)
     {
-        AC_InitialUnitSpawnCommand command = new AC_InitialUnitSpawnCommand
+        AC_UnitInitialSpawnCommand command = new AC_UnitInitialSpawnCommand
         {
             Faction = faction
         };

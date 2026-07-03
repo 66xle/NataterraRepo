@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using Unity.VisualScripting.ReorderableList;
 
 public class InputManager : Singleton<InputManager>
 {
@@ -8,7 +9,8 @@ public class InputManager : Singleton<InputManager>
 
     public Vector2 MoveInput { get { return _moveInput; } }
 
-    public Action OnClickEvent;
+    public Action OnLeftClickEvent;
+    public Action OnRightClickEvent;
 
 
     public void OnMove(InputAction.CallbackContext context)
@@ -16,11 +18,19 @@ public class InputManager : Singleton<InputManager>
         _moveInput = context.ReadValue<Vector2>();
     }
 
-    public void OnClick(InputAction.CallbackContext context)
+    public void OnLeftClick(InputAction.CallbackContext context)
     {
         if (!context.performed)
             return;
 
-        OnClickEvent?.Invoke();
+        OnLeftClickEvent?.Invoke();
+    }
+
+    public void OnRightClick(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+
+        OnRightClickEvent?.Invoke();
     }
 }

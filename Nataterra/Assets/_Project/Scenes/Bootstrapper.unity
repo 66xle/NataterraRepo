@@ -390,7 +390,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 965203586}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnClick
+        m_MethodName: OnLeftClick
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -402,6 +402,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d1eb49d0-d1de-4f21-945b-3dd36371ee2c
     m_ActionName: 'Camera/Click[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 965203586}
+        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_MethodName: OnRightClick
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ecce9ee2-1bd7-4a4c-b369-450b1d516cc8
+    m_ActionName: 'Camera/RightClick[/Mouse/rightButton]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Camera
