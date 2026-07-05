@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7470402658062481490
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Editor::UnityEditor.Rendering.HighDefinition.AssetVersion
+  version: 13
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: DISTANT_SG_WaterDisplacement_AshwaterIsle
+  m_Shader: {fileID: -6465566751694194690, guid: 81cec7af9704a4dce807ce725221d9d7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _DISABLE_DECALS
+  - _DISABLE_SSR_TRANSPARENT
+  - _ENABLE_FOG_ON_TRANSPARENT
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3004
+  stringTagMap:
+    MotionVector: User
+    RenderType: Transparent
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  - TransparentDepthPostpass
+  - TransparentBackface
+  - RayTracingPrepass
+  - TransparentDepthPrepass
+  m_LockedProperties: _ExcludeFromTUAndAA
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 3e552570850914a19b1aa562f78a1aa8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_cedcfd31c2b84b36849c68abbd710008_Texture_1_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TidalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WaterNormal2:
+        m_Texture: {fileID: 2800000, guid: 598cbd39e0b9d41c1b5799b2bcb5e6d5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddPrecomputedVelocity: 0
+    - _AlphaCutoffEnable: 0
+    - _AlphaDstBlend: 10
+    - _AlphaSrcBlend: 1
+    - _BlendMode: 0
+    - _ColourEnd: -3.68
+    - _ColourStart: 0.77
+    - _ConservativeDepthOffsetEnable: 0
+    - _CullMode: 2
+    - _CullModeForward: 2
+    - _DeepwaterAlpha: 0.94
+    - _DepthOffsetEnable: 0
+    - _DoubleSidedEnable: 0
+    - _DoubleSidedGIMode: 0
+    - _DoubleSidedNormalMode: 2
+    - _DstBlend: 10
+    - _DstBlend2: 10
+    - _EnableBlendModePreserveSpecularLighting: 1
+    - _EnableFogOnTransparent: 1
+    - _ExcludeFromTUAndAA: 0
+    - _FresnelPower: 4.88
+    - _GrazingColourStrength: 0.21
+    - _GrazingOpacityStrength: 0.79
+    - _MaterialID: 1
+    - _MaterialTypeMask: 2
+    - _OceanSize: 600
+    - _OpaqueCullMode: 2
+    - _PerPixelSorting: 0
+    - _PrimaryHeight: 1.58
+    - _PrimaryScale: 1.5
+    - _PrimarySpeed: 0.79
+    - _RayTracing: 0
+    - _ReceivesSSR: 1
+    - _ReceivesSSRTransparent: 0
+    - _RefractionModel: 0
+    - _RenderQueueType: 4
+    - _RequireSplitLighting: 0
+    - _SecondaryHeight: -0.1
+    - _SecondaryScale: 0.02
+    - _SecondarySpeed: 0.81
+    - _ShoreColourIntensity: 0.47
+    - _ShoreColourStrength: 0.98
+    - _ShoreLineAlpha: 0
+    - _ShorelineAlphaBlend: 1
+    - _SrcBlend: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 0
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 2
+    - _StencilRefMV: 32
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 9
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 15
+    - _StencilWriteMaskMV: 41
+    - _SupportDecals: 0
+    - _SurfaceType: 1
+    - _TransmissionEnable: 1
+    - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 2
+    - _TransparentDepthPostpassEnable: 0
+    - _TransparentDepthPrepassEnable: 0
+    - _TransparentSortPriority: 4
+    - _TransparentWritingMotionVec: 0
+    - _TransparentZWrite: 0
+    - _UseShadowThreshold: 0
+    - _WarpScale: 3
+    - _WarpSpeed: 0.08
+    - _WarpStrength: 0.35
+    - _ZTestDepthEqualForOpaque: 2
+    - _ZTestGBuffer: 4
+    - _ZTestTransparent: 2
+    - _ZWrite: 0
+    m_Colors:
+    - _DeepWaterColour: {r: 0.10746708, g: 0.1417319, b: 0.3301887, a: 1}
+    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GrazingWaterColour: {r: 0.22352943, g: 0.47058824, b: 0.4473488, a: 1}
+    - _OceanCentre: {r: 5.5, g: 35.4, b: 0, a: 0}
+    - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
+    - _SecondaryDirection: {r: 0.7, g: 1, b: 0, a: 0}
+    - _ShoreWaterColour: {r: 0.45683515, g: 0.5114633, b: 0.5471698, a: 1}
+    - _TextureScale: {r: 73.3, g: 75.2, b: 0, a: 0}
+    - _WaterAlpha: {r: 0.8207547, g: 0.8207547, b: 0.8207547, a: 0.99607843}
+    - _WaterColor: {r: 0.19215687, g: 0.22745098, b: 0.2627451, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

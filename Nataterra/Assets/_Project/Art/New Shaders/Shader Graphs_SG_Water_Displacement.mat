@@ -24,11 +24,11 @@ Material:
     MotionVector: User
     RenderType: Transparent
   disabledShaderPasses:
-  - TransparentDepthPrepass
+  - MOTIONVECTORS
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
-  - MOTIONVECTORS
+  - TransparentDepthPrepass
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -120,7 +120,7 @@ Material:
     - _TransparentDepthPrepassEnable: 0
     - _TransparentSortPriority: 0
     - _TransparentWritingMotionVec: 0
-    - _TransparentZWrite: 0
+    - _TransparentZWrite: 1
     - _UseShadowThreshold: 0
     - _WarpScale: 3
     - _WarpSpeed: 0.08
@@ -128,14 +128,14 @@ Material:
     - _ZTestDepthEqualForOpaque: 2
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 2
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _OceanCentre: {r: 5.5, g: 35.4, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
     - _SecondaryDirection: {r: 0.7, g: 1, b: 0, a: 0}
-    - _TextureScale: {r: 23.1, g: 22.8, b: 0, a: 0}
+    - _TextureScale: {r: 20.72, g: 12.6, b: 0, a: 0}
     - _WaterColor: {r: 0.18876815, g: 0.25351804, b: 0.39622632, a: 0.9882353}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
