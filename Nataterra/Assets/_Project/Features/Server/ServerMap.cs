@@ -11,6 +11,8 @@ public class ServerMap : NetworkBehaviour
     ServerMapWrapper _map;
     GameplaySystem _gs;
 
+    public ServerMapWrapper Map { get { return _map; } }
+
     private CommandProcessor _commandProcessor = new();
 
     private void OnEnable()
@@ -36,9 +38,5 @@ public class ServerMap : NetworkBehaviour
     public void HandleCommand(IActionCommand command)
     {
         _commandProcessor.Process(command);
-    }
-    public void SetFactionSetting(FactionSettings settings)
-    {
-        _map.SetFactionSettings(settings);
     }
 }

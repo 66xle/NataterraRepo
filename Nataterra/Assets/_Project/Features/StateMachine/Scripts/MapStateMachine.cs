@@ -51,6 +51,8 @@ public class MapStateMachine : NetworkBehaviour
 
         SetupGrid(mapData);
         SetupServerMap(mapData);
+
+        SetupDataToClients(_serverMap);
     }
 
     void SetupServerMap(MapData mapData)
@@ -61,7 +63,9 @@ public class MapStateMachine : NetworkBehaviour
             return;
         }
 
-        ServerMapWrapper wrapper = new ServerMapWrapper(_state, mapData.bases, _dictOfUnits);
+        List<FactionData> factionData = GameManager.Instance.ListOfFactions;
+
+        ServerMapWrapper wrapper = new ServerMapWrapper(_state, _tgs.cells, mapData.bases, factionData, _dictOfUnits);
         _serverMap = serverMap;
         _serverMap.Init(wrapper, GS);
     }
@@ -84,10 +88,15 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.RedrawCells(_tgs.cells);
     }
 
-    public void SetFactionSetting(FactionSettings settings)
+
+    [ObserversRpc(bufferLast: true)]
+    void SetupDataToClients(ServerMap serverMap)
     {
-        _settings = settings;
-        _serverMap.SetFactionSetting(settings);
+        _state = serverMap.Map.State;
+        _dictOfUnits = serverMap.Map.DictOfUnits;
+
+        if (_tgs == null)
+            _tgs = TerrainGridSystem.instance;
     }
 
     [ServerRpc]

@@ -31,17 +31,19 @@ public class StateMachineManager : NetworkBehaviour
 
     public GameplayBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
 
-    Dictionary<PlayerID, Base> _dictFaction = new();
+    //Dictionary<PlayerID, Base> _dictFaction = new();
 
-
-    protected override void OnSpawned()
+    protected override void OnSpawned(bool asServer)
     {
         base.OnSpawned();
 
-        if (!isServer) return;
+        if (!asServer)
+        {
+            OnPlayerJoined();
+            return;
+        }
 
-        networkManager.onPlayerJoined += OnPlayerJoined;
-
+        // server setup
         Setup();
     }
 
@@ -52,9 +54,23 @@ public class StateMachineManager : NetworkBehaviour
         _currentState.UpdateStates();
     }
 
+
+    void OnPlayerJoined()
+    {
+        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
+
+        List<FactionData> factions = GameManager.Instance.ListOfFactions;
+        FactionData data = factions[(int)playerID.id.value - 1];
+
+        //_dictFaction.Add(player, data.Settings.Faction);
+
+        Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
+
+        MapCtx.SpawnStartingUnits(data.Settings.Faction);
+    }
     void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
     {
-        if (!asServer) return;
+        if (asServer) return;
 
         if (isReconnect)
         {
@@ -63,14 +79,12 @@ public class StateMachineManager : NetworkBehaviour
         }
 
         List<FactionData> factions = GameManager.Instance.ListOfFactions;
-
         FactionData data = factions[(int)player.id.value - 1];
 
-        _dictFaction.Add(player, data.Settings.Faction);
+        //_dictFaction.Add(player, data.Settings.Faction);
 
         Debug.Log($"Player {player.id}'s Faction: {data.Settings.Faction}");
 
-        MapCtx.SetFactionSetting(data.Settings);
         MapCtx.SpawnStartingUnits(data.Settings.Faction);
     }
 
@@ -84,10 +98,7 @@ public class StateMachineManager : NetworkBehaviour
 
         SceneInitialize.Instance.Invoke();
 
-
-        _states = new GameplayStateFactory(this);
-        _currentState = new SMM_MapState(this, _states);
-        _currentState.EnterState();
+        SetupStateMachine();
 
 #if UNITY_EDITOR
         if (ShowCellIndex)
@@ -95,6 +106,14 @@ public class StateMachineManager : NetworkBehaviour
             CreateCellLabel();
         }
 #endif
+    }
+
+    [ObserversRpc(bufferLast:true)]
+    void SetupStateMachine()
+    {
+        _states = new GameplayStateFactory(this);
+        _currentState = new SMM_MapState(this, _states);
+        _currentState.EnterState();
     }
 
     void CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits)

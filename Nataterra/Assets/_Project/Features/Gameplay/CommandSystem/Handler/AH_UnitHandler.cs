@@ -37,7 +37,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         int cellIndex = _map.GetBaseCellIndex(command.Faction);
 
         // Get Starting Unit
-        List<UnitType> units = _map.FactionSetting.StartingUnits;
+        List<UnitType> units = _map.FactionSettings[command.Faction].StartingUnits;
         List<GameObject> unitObjs = _map.AddUnit(units, cellIndex);
 
         _gs.UnitSystem.SpawnUnit(unitObjs, cellIndex, _map.GetStateChanges());

@@ -1,7 +1,6 @@
 using PurrNet.Packing;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
+using TGS;
 using UnityEngine;
 
 public struct StateChange
@@ -20,26 +19,33 @@ public struct StateChange
 public class ServerMapWrapper
 {
     private List<HexCellState> _state;
+    private List<Cell> _cells;
     private int[] _basesPlaced;
 
     private List<int> _stateChanges;
 
-    private FactionSettings _factionSettings;
-    private Dictionary<UnitType, UnitData> _dictUnits;
 
-    public FactionSettings FactionSetting { get { return _factionSettings; } }
+    private Dictionary<Base, FactionSettings> _factionSettings;
+    private Dictionary<UnitType, UnitData> _dictOfUnits;
 
-    public ServerMapWrapper(List<HexCellState> state, int[] basesPlaced, Dictionary<UnitType, UnitData> dictUnits)
+    public List<HexCellState> State { get { return _state; } }
+    public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
+    public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
+
+    public ServerMapWrapper(List<HexCellState> state, List<Cell> cells, int[] basesPlaced, List<FactionData> factionData, Dictionary<UnitType, UnitData> dictOfUnits)
     {
         _state = state;
+        _cells = cells;
         _basesPlaced = basesPlaced;
-        _dictUnits = dictUnits;
+        _dictOfUnits = dictOfUnits;
         _stateChanges = new();
-    }
+        _factionSettings = new();
 
-    public void SetFactionSettings(FactionSettings factionSettings)
-    {
-        _factionSettings = factionSettings;
+        foreach (FactionData data in factionData)
+        {
+            FactionSettings setting = data.Settings;
+            _factionSettings.Add(setting.Faction, setting);
+        }
     }
 
     public GameObject AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
@@ -140,6 +146,11 @@ public class ServerMapWrapper
         return state;
     }
 
+    public List<Cell> GetCells()
+    {
+        return _cells;
+    }
+
     public int GetBaseCellIndex(Base faction)
     {
         return _basesPlaced[(int)faction];
@@ -180,7 +191,7 @@ public class ServerMapWrapper
 
     private UnitData GetUnitData(UnitType type)
     {
-        if (!_dictUnits.TryGetValue(type, out UnitData data))
+        if (!_dictOfUnits.TryGetValue(type, out UnitData data))
         {
             Debug.LogError($"{type} data does not exist in database");
             return null;
