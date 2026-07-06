@@ -14,15 +14,12 @@ public class MapStateMachine : NetworkBehaviour
     ServerMap _serverMap;
     List<HexCellState> _state;
 
-    FactionSettings _settings;
     Dictionary<UnitType, UnitData> _dictOfUnits;
-
 
     Cell _selectedCell;
     List<Unit> _selectedUnits;
 
     GameObject _movementBorder;
-    HashSet<int> _cellsWithinMovement;
 
     DijkstraResult _movementResult;
 
@@ -35,9 +32,6 @@ public class MapStateMachine : NetworkBehaviour
     public Action<List<Unit>> OnSelectUnit;
 
     
-
-
-
     public void Setup(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
@@ -182,7 +176,7 @@ public class MapStateMachine : NetworkBehaviour
         return currentMovement;
     }
 
-    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement)
+    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells)
     {
         DijkstraResult result = new DijkstraResult();
 
@@ -208,7 +202,7 @@ public class MapStateMachine : NetworkBehaviour
 
             int currentCost = result.Cost[current];
 
-            Cell cell = _tgs.cells[current];
+            Cell cell = cells[current];
 
             foreach (Cell neighbour in cell.neighbours)
             {

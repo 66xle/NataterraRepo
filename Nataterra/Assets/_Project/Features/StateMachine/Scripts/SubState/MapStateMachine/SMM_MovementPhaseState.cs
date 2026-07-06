@@ -51,7 +51,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
         MapCtx.SelectedUnits = units;
 
-        DijkstraResult result = MapCtx.CalculateMovementRange(origin, lowestMovement);
+        DijkstraResult result = MapCtx.CalculateMovementRange(origin, lowestMovement, TGS.cells);
         MapCtx.MovementResult = result;
 
         List<int> cellsInRange = result.GetIndexList();

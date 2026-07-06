@@ -59,7 +59,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
             return;
         }
 
-        DijkstraResult result = _gs.MSM.CalculateMovementRange(origin, lowestMovement);
+        DijkstraResult result = _gs.MSM.CalculateMovementRange(origin, lowestMovement, _map.GetCells());
 
         if (!result.Contains(command.Destination))
         {
