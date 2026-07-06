@@ -219,7 +219,7 @@ Material:
     - _Offset: {r: 1, g: 1, b: 0, a: 0}
     - _OffsetCover: {r: 1, g: 1, b: 0, a: 0}
     - _RockAlbedoColor: {r: 1, g: 1, b: 1, a: 0}
-    - _RockColor: {r: 0.5660378, g: 0.54791737, b: 0.51530796, a: 0}
+    - _RockColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 0}
     - _RockOffset: {r: 7.05, g: 1, b: 0, a: 0}
     - _RockTiling: {r: 6, g: 6, b: 0, a: 0}
     - _Tiling: {r: 8, g: 8, b: 0, a: 0}

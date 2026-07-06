@@ -94,7 +94,7 @@ Material:
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
     - _CullModeForward: 2
-    - _DeepwaterAlpha: 0.87
+    - _DeepwaterAlpha: 1
     - _DepthOffsetEnable: 0
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
@@ -105,10 +105,14 @@ Material:
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
     - _FresnelPower: 4.88
+    - _FresnelSmoothness: 0.44
+    - _GrazingColourPower: 3
     - _GrazingColourStrength: 0.21
+    - _GrazingDepthStrength: 11.88
     - _GrazingOpacityStrength: 0.79
     - _MaterialID: 1
     - _MaterialTypeMask: 2
+    - _NormalMap2Scaling: 58.5
     - _OceanSize: 661.4
     - _OpaqueCullMode: 2
     - _PerPixelSorting: 0
@@ -161,6 +165,7 @@ Material:
     - _DeepWaterColour: {r: 0.10746708, g: 0.1417319, b: 0.3301887, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GrazingDarkColour: {r: 0.16313627, g: 0.23336497, b: 0.24528292, a: 1}
     - _GrazingWaterColour: {r: 0.22352943, g: 0.47058824, b: 0.4473488, a: 1}
     - _OceanCentre: {r: 22.1, g: 19.42, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
