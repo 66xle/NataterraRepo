@@ -1,3 +1,4 @@
+using PurrNet;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,21 +11,29 @@ public class UnitSystem : MonoBehaviour
         _gs = GetComponentInParent<GameplaySystem>();
     }
 
-
-    public void SpawnUnit(List<GameObject> prefabs, int cellIndex, List<StateChange> changes)
+    public void SpawnUnit(List<GameObject> prefabs, List<string> GUIDs, int cellIndex, List<StateChange> changes)
     {
         _gs.SetLocalChanges(changes);
 
-        foreach (GameObject unitObj in prefabs)
+        for (int i = 0; i < prefabs.Count; i++)
         {
             Vector3 spawnPosition = _gs.TGS.CellGetPosition(cellIndex);
 
-            Instantiate(unitObj, spawnPosition, Quaternion.identity);
+            GameObject newUnit = Instantiate(prefabs[i], spawnPosition, Quaternion.identity);
+
+            _gs.MSM.AddUnitObject(GUIDs[i], newUnit);
         }
     }
 
-    public void MoveUnit()
+    public void MoveUnit(List<string> GUIDs, int destination, List<StateChange> changes)
     {
+        _gs.SetLocalChanges(changes);
 
+        foreach (string guid in GUIDs)
+        {
+            GameObject moveUnit = _gs.MSM.GetUnitObject(guid);
+
+            moveUnit.transform.position = _gs.TGS.CellGetPosition(destination);
+        }
     }
 }

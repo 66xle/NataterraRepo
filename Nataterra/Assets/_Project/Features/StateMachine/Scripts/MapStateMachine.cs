@@ -13,6 +13,7 @@ public class MapStateMachine : NetworkBehaviour
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
     List<HexCellState> _state;
+    Dictionary<string, GameObject> _unitObjects;
 
     Dictionary<UnitType, UnitData> _dictOfUnits;
 
@@ -36,6 +37,7 @@ public class MapStateMachine : NetworkBehaviour
     {
         _dictOfUnits = dictUnits;
         _state = new();
+        _unitObjects = new();
 
         MapData mapData = GameManager.Instance.MapData;
         foreach (HexCellData data in mapData.hexCells)
@@ -86,7 +88,7 @@ public class MapStateMachine : NetworkBehaviour
     [ObserversRpc(bufferLast: true)]
     void SetupDataToClients(ServerMap serverMap)
     {
-        _state = serverMap.Map.State;
+        _state = serverMap.Map.GetNewState();
         _dictOfUnits = serverMap.Map.DictOfUnits;
 
         if (_tgs == null)
@@ -135,6 +137,15 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
+    public void AddUnitObject(string guid, GameObject obj)
+    {
+        _unitObjects.Add(guid, obj);
+    }
+
+    public GameObject GetUnitObject(string guid)
+    {
+        return _unitObjects[guid];
+    }
 
     public bool UnitExistOnCell(int cellIndex)
     {
@@ -149,21 +160,28 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
-    public int GetOrigin(List<Unit> units, int selectedIndex)
+    public int GetOrigin(List<Unit> units, int selectedIndex, out bool IsOrigin)
     {
         int origin = units[0].CellOrigin;
+        IsOrigin = true;
 
         for (int i = 1; i < units.Count; i++)
         {
-            if (units[i].CellOrigin != origin)
-                return selectedIndex;
+            if (units[i].CellOrigin == origin)
+                continue;
+
+            IsOrigin = false;
+            return selectedIndex;
         }
 
         return origin;
     }
 
-    public int GetLowestMovement(List<Unit> units)
+    public int GetLowestMovement(List<Unit> units, bool isOrigin)
     {
+        if (isOrigin)
+            return units[0].Movement;
+
         int currentMovement = units[0].CurrentMovement;
 
         // Get the lowest avaliable movement

@@ -20,7 +20,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         int cellIndex = _map.GetBaseCellIndex(command.Faction);
 
         // server update map
-        _map.AddUnit(command.Unit, cellIndex);
+        _map.AddUnit(command.Unit, cellIndex, out string GUID);
        
 
         // send data to clients map
@@ -38,21 +38,21 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
 
         // Get Starting Unit
         List<UnitType> units = _map.FactionSettings[command.Faction].StartingUnits;
-        List<GameObject> unitObjs = _map.AddUnit(units, cellIndex);
+        List<GameObject> unitObjs = _map.AddUnit(units, cellIndex, out List<string> GUIDs);
 
-        _gs.UnitSystem.SpawnUnit(unitObjs, cellIndex, _map.GetStateChanges());
+        _gs.UnitSystem.SpawnUnit(unitObjs, GUIDs, cellIndex, _map.GetStateChanges());
     }
 
     public void Handle(AC_UnitMoveCommand command)
     {
         List<Unit> selectedUnits = _map.GetUnits(command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
 
-        if (selectedUnits == null)
+        if (selectedUnits == null || selectedUnits.Count != command.ListOfUnitGUID.Count)
             return;
 
-        int origin = _gs.MSM.GetOrigin(selectedUnits, command.SelectedIndex);
+        int origin = _gs.MSM.GetOrigin(selectedUnits, command.SelectedIndex, out bool IsOrigin);
 
-        int lowestMovement = _gs.MSM.GetLowestMovement(selectedUnits);
+        int lowestMovement = _gs.MSM.GetLowestMovement(selectedUnits, IsOrigin);
         if (lowestMovement == 0)
         {
             // No movement message
@@ -67,12 +67,11 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
             return;
         }
 
-        List<int> path = result.BuildPath(command.Destination);
+        List<int> path = result.BuildPath(command.Destination); // Not used for now
         int cost = result.GetDestinationCost(command.Destination);
 
         _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, cost);
 
-        
-
+        _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination, _map.GetStateChanges());
     }
 }

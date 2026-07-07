@@ -39,9 +39,9 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
     private void ShowUnitMovementRange(List<Unit> units)
     {
-        int origin = MapCtx.GetOrigin(units, MapCtx.SelectedCell.index);
+        int origin = MapCtx.GetOrigin(units, MapCtx.SelectedCell.index, out bool IsOrigin);
 
-        int lowestMovement = MapCtx.GetLowestMovement(units);
+        int lowestMovement = MapCtx.GetLowestMovement(units, IsOrigin);
 
         if (lowestMovement == 0)
         {
@@ -82,6 +82,12 @@ public class SMM_MovementPhaseState : GameplayBaseState
         }
 
         MapCtx.SendMoveCommand(cell.index);
+
+        MapCtx.MovementResult = null;
+        Destroy(MapCtx.MovementBorder);
+
+        TGS.CellDestroyBorder(MapCtx.SelectedCell.index);
+        MapCtx.SelectedCell = null;
     }
 
     

@@ -28,7 +28,6 @@ public class ServerMapWrapper
     private Dictionary<Base, FactionSettings> _factionSettings;
     private Dictionary<UnitType, UnitData> _dictOfUnits;
 
-    public List<HexCellState> State { get { return _state; } }
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
 
@@ -48,7 +47,7 @@ public class ServerMapWrapper
         }
     }
 
-    public GameObject AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
+    public GameObject AddUnit(UnitType type, int cellIndex, out string GUID, Unit unit = null, bool stateChange = true)
     {
         if (stateChange)
             AddStateChange(cellIndex);
@@ -58,6 +57,7 @@ public class ServerMapWrapper
         if (unit == null)
             unit = new Unit(unitData, cellIndex);
 
+        GUID = unit.GUID;
 
         if (_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
         {
@@ -69,18 +69,22 @@ public class ServerMapWrapper
         return unitData.Prefab;
     }
 
-    public List<GameObject> AddUnit(List<UnitType> types, int cellIndex)
+    public List<GameObject> AddUnit(List<UnitType> types, int cellIndex, out List<string> GUIDs)
     {
         AddStateChange(cellIndex);
 
         List<GameObject> tempObjs = new();
+        List<string> tempGUIDS = new();
+
 
         foreach (UnitType unit in types)
         {
-            GameObject unitObj = AddUnit(unit, cellIndex, null, false);
+            GameObject unitObj = AddUnit(unit, cellIndex, out string guid, null, false);
+            tempGUIDS.Add(guid);
             tempObjs.Add(unitObj);
         }
 
+        GUIDs = tempGUIDS;
         return tempObjs;
     }
 
@@ -127,7 +131,7 @@ public class ServerMapWrapper
             }
 
             // add them to map
-            AddUnit(unit.UnitType, destination, unit, false);
+            AddUnit(unit.UnitType, destination, out string GUID, unit, false);
         }
     }
 
@@ -139,7 +143,7 @@ public class ServerMapWrapper
 
         foreach (int index in _stateChanges)
         {
-            state.Add(new StateChange(_state[index], index));
+            state.Add(new StateChange(new HexCellState(_state[index]), index));
         }
 
         _stateChanges.Clear();
@@ -180,6 +184,16 @@ public class ServerMapWrapper
         return units;
     }
 
+    public List<HexCellState> GetNewState()
+    {
+        List<HexCellState> tempState = new();
+        foreach (HexCellState state in _state)
+        {
+            tempState.Add(new HexCellState(state));
+        }
+
+        return tempState;
+    }
 
     private void AddStateChange(int cellIndex)
     {

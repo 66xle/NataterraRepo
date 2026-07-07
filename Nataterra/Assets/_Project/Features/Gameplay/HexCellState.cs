@@ -17,4 +17,13 @@ public class HexCellState
 
         DictOfGroups = new();
     }
+
+    public HexCellState(HexCellState state)
+    {
+        Biome = state.Biome;
+        Resource = state.Resource;
+        Faction = state.Faction;
+
+        DictOfGroups = state.DictOfGroups;
+    }
 }
