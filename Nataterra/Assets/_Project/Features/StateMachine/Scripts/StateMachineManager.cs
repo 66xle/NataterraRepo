@@ -37,10 +37,11 @@ public class StateMachineManager : NetworkBehaviour
     {
         base.OnSpawned();
 
-        if (!asServer)
+        if (asServer || !isHost)
         {
             OnPlayerJoined();
-            return;
+
+            if (!asServer) return;
         }
 
         // server setup
@@ -57,6 +58,11 @@ public class StateMachineManager : NetworkBehaviour
 
     void OnPlayerJoined()
     {
+        MapCtx.SetupClient(CreateDictDatabase());
+
+        if (isServer) return;
+
+
         PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
 
         List<FactionData> factions = GameManager.Instance.ListOfFactions;
@@ -67,6 +73,11 @@ public class StateMachineManager : NetworkBehaviour
         Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
 
         MapCtx.SpawnStartingUnits(data.Settings.Faction);
+
+
+        _states = new GameplayStateFactory(this);
+        _currentState = new SMM_MapState(this, _states);
+        _currentState.EnterState();
     }
     void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
     {
@@ -89,16 +100,10 @@ public class StateMachineManager : NetworkBehaviour
     }
 
     void Setup()
-    {
+    { 
         Debug.Log("Setup");
 
-        CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits);
-
-        MapCtx.Setup(dictUnits);
-
-        SceneInitialize.Instance.Invoke();
-
-        SetupStateMachine();
+        MapCtx.SetupServer();
 
 #if UNITY_EDITOR
         if (ShowCellIndex)
@@ -106,17 +111,10 @@ public class StateMachineManager : NetworkBehaviour
             CreateCellLabel();
         }
 #endif
+
     }
 
-    [ObserversRpc(bufferLast:true)]
-    void SetupStateMachine()
-    {
-        _states = new GameplayStateFactory(this);
-        _currentState = new SMM_MapState(this, _states);
-        _currentState.EnterState();
-    }
-
-    void CreateDictDatabase(out Dictionary<UnitType, UnitData> dictUnits)
+    Dictionary<UnitType, UnitData> CreateDictDatabase()
     {
         Dictionary<UnitType, UnitData> units = new();
 
@@ -130,7 +128,7 @@ public class StateMachineManager : NetworkBehaviour
             }
         }
 
-        dictUnits = units;
+        return units;
     }
 
 #if UNITY_EDITOR

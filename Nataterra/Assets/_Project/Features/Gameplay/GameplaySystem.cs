@@ -10,18 +10,7 @@ public class GameplaySystem : NetworkBehaviour
 
     public TerrainGridSystem TGS { get; private set; }
 
-
-    private void OnEnable()
-    {
-        SceneInitialize.Instance.Subscribe(Init);
-    }
-
-    private void OnDisable()
-    {
-        SceneInitialize.Instance.Unsubscribe(Init);
-    }
-
-    private void Init()
+    public void Setup()
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
 

@@ -32,12 +32,10 @@ public class MapStateMachine : NetworkBehaviour
 
     public Action<List<Unit>> OnSelectUnit;
 
-    
-    public void Setup(Dictionary<UnitType, UnitData> dictUnits)
+
+    public void SetupServer()
     {
-        _dictOfUnits = dictUnits;
         _state = new();
-        _unitObjects = new();
 
         MapData mapData = GameManager.Instance.MapData;
         foreach (HexCellData data in mapData.hexCells)
@@ -45,10 +43,19 @@ public class MapStateMachine : NetworkBehaviour
             _state.Add(new HexCellState(data));
         }
 
-        SetupGrid(mapData);
         SetupServerMap(mapData);
+        SetupSendServerDataToClients(_serverMap.Map.GetNewState());
+    }
 
-        SetupDataToClients(_serverMap);
+    public void SetupClient(Dictionary<UnitType, UnitData> dictUnits)
+    {
+        _dictOfUnits = dictUnits;
+        _unitObjects = new();
+
+        MapData mapData = GameManager.Instance.MapData;
+        SetupGrid(mapData);
+
+        GS.Setup();
     }
 
     void SetupServerMap(MapData mapData)
@@ -86,14 +93,12 @@ public class MapStateMachine : NetworkBehaviour
 
 
     [ObserversRpc(bufferLast: true)]
-    void SetupDataToClients(ServerMap serverMap)
+    void SetupSendServerDataToClients(List<HexCellState> state)
     {
-        _state = serverMap.Map.GetNewState();
-        _dictOfUnits = serverMap.Map.DictOfUnits;
-
-        if (_tgs == null)
-            _tgs = TerrainGridSystem.instance;
+        _state = state;
     }
+
+
 
     [ServerRpc]
     public void SpawnStartingUnits(Base faction, RPCInfo info = default)
@@ -141,6 +146,7 @@ public class MapStateMachine : NetworkBehaviour
     {
         _unitObjects.Add(guid, obj);
     }
+
 
     public GameObject GetUnitObject(string guid)
     {
@@ -193,6 +199,8 @@ public class MapStateMachine : NetworkBehaviour
 
         return currentMovement;
     }
+
+
 
     public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells)
     {
@@ -247,7 +255,7 @@ public class MapStateMachine : NetworkBehaviour
         return result;
     }
 
-    private bool CanEnter(Cell cell)
+    bool CanEnter(Cell cell)
     {
         if (!cell.canCross)
             return false;
@@ -255,7 +263,7 @@ public class MapStateMachine : NetworkBehaviour
         return true;
     }
 
-    private int GetMovementCost(Cell cell)
+    int GetMovementCost(Cell cell)
     {
         // Check if ground or flying type
 
