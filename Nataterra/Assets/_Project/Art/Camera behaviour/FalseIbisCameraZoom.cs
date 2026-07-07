@@ -8,6 +8,13 @@ public class FalseIbisCameraZoom : MonoBehaviour
     [SerializeField] private float zoomSmoothing = 8f;
     [SerializeField] private float zoomVelocityDamping = 12f;
 
+    [Header("Global Orbit Distance")]
+    [SerializeField] private bool useOrbitDistanceScroll = true;
+    [SerializeField] private float orbitDistanceScrollSpeed = 3f;
+    [SerializeField] private float minOrbitDistanceOffset = -15f;
+    [SerializeField] private float maxOrbitDistanceOffset = 35f;
+    [Range(0f, 1f)] [SerializeField] private float orbitDistanceScrollZoomThreshold = 0.98f;
+
     [Header("Zoom Soft Zones")]
     [SerializeField] private bool useSoftZones = true;
     [SerializeField] private float softZoneWidth = 0.12f;
@@ -20,15 +27,12 @@ public class FalseIbisCameraZoom : MonoBehaviour
 
     public float TargetZoom { get; private set; } = 0.5f;
     public float CurrentZoom { get; private set; } = 0.5f;
-
-    public bool HadInputThisFrame { get; private set; }
+    public float OrbitDistanceOffset { get; private set; }
 
     private float zoomVelocity;
 
     public void Tick(float deltaTime)
     {
-        HadInputThisFrame = false;
-
         HandleInput();
         ApplyZoom(deltaTime);
     }
@@ -42,14 +46,32 @@ public class FalseIbisCameraZoom : MonoBehaviour
 
         float direction = -Mathf.Sign(scroll);
 
+        bool scrollingOut = direction > 0f;
+        bool scrollingIn = direction < 0f;
+
+        if (useOrbitDistanceScroll)
+        {
+            if (scrollingOut && TargetZoom >= orbitDistanceScrollZoomThreshold)
+            {
+                OrbitDistanceOffset += orbitDistanceScrollSpeed;
+                OrbitDistanceOffset = Mathf.Clamp(OrbitDistanceOffset, minOrbitDistanceOffset, maxOrbitDistanceOffset);
+                return;
+            }
+
+            if (scrollingIn && OrbitDistanceOffset > 0.01f)
+            {
+                OrbitDistanceOffset -= orbitDistanceScrollSpeed;
+                OrbitDistanceOffset = Mathf.Clamp(OrbitDistanceOffset, minOrbitDistanceOffset, maxOrbitDistanceOffset);
+                return;
+            }
+        }
+
         zoomVelocity += direction * zoomSpeed * zoomStepScale;
-        HadInputThisFrame = true;
     }
 
     private void ApplyZoom(float deltaTime)
     {
         float resistance = useSoftZones ? GetSoftZoneResistance(TargetZoom) : 1f;
-
         zoomVelocity *= resistance;
 
         TargetZoom += zoomVelocity;
@@ -90,12 +112,5 @@ public class FalseIbisCameraZoom : MonoBehaviour
         float curveValue = softZoneCurve.Evaluate(t);
 
         return Mathf.Lerp(1f - softZoneStrength, 1f, curveValue);
-    }
-
-    public void SetZoomImmediate(float zoom)
-    {
-        TargetZoom = Mathf.Clamp01(zoom);
-        CurrentZoom = TargetZoom;
-        zoomVelocity = 0f;
     }
 }

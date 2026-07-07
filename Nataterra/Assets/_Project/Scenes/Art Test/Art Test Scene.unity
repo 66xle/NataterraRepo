@@ -16723,6 +16723,7 @@ Transform:
   - {fileID: 1405516583}
   - {fileID: 1461167425}
   - {fileID: 2047051253}
+  - {fileID: 797150357}
   - {fileID: 932891736}
   - {fileID: 1051098569}
   - {fileID: 1026262491}
@@ -17532,6 +17533,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1764e275d179aff4cb3e954522de02ac, type: 3}
+--- !u!1 &797150356
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 797150357}
+  m_Layer: 0
+  m_Name: MapCentreFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &797150357
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797150356}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -28.870499, y: 6.45866, z: -64.66467}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 703047458}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &801019349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30812,9 +30844,13 @@ GameObject:
   - component: {fileID: 1617853386}
   - component: {fileID: 1617853387}
   - component: {fileID: 1617853390}
+  - component: {fileID: 1617853392}
   - component: {fileID: 1617853391}
   - component: {fileID: 1617853389}
   - component: {fileID: 1617853388}
+  - component: {fileID: 1617853393}
+  - component: {fileID: 1617853395}
+  - component: {fileID: 1617853394}
   m_Layer: 0
   m_Name: FalseIbisCameraRig
   m_TagString: Untagged
@@ -30858,14 +30894,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1617853385}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62da0e5d5e0c143f598a73761a8f6732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraLens
   useFovCurve: 1
-  closeFov: 58
-  farFov: 42
+  closeFov: 42.2
+  farFov: 29
   fovCurve:
     serializedVersion: 2
     m_Curve:
@@ -30878,6 +30914,15 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
+    - serializedVersion: 3
+      time: 0.655498
+      value: 0.37534252
+      inSlope: 1.4902383
+      outSlope: 1.4902383
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 1
@@ -30966,6 +31011,15 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.17704387
+      value: 0.3713056
+      inSlope: 2.032506
+      outSlope: 2.032506
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.06605793
+    - serializedVersion: 3
       time: 1
       value: 1
       inSlope: 0
@@ -30977,13 +31031,56 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  closeHeight: 3
-  farHeight: 80
-  closeDistanceBack: 5
-  farDistanceBack: 22
-  closePitch: 12
+  closeHeight: 4
+  farHeight: 140
+  closeDistanceBack: 16.5
+  farDistanceBack: 0
+  closePitch: -40
   farPitch: 40
   lookAheadDistance: 4
+  globalOrbitBlendStartZoom: 0.75
+  globalOrbitBlendFullZoom: 1
+  globalOrbitBlendCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.31653124
+      value: 0.60989165
+      inSlope: 1.2102656
+      outSlope: 1.2102656
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  globalOrbitBlendSmoothing: 2
+  globalOrbitExitSmoothing: 1.5
+  forcePureOrbitAtFullZoom: 0
+  pureOrbitZoomThreshold: 0.985
+  pureOrbitBlendThreshold: 0.995
+  globalOrbitDistance: 170
+  globalOrbitHeightOffset: 0
+  minimumHeightAboveFocus: 4
 --- !u!114 &1617853390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30997,9 +31094,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraZoom
   zoomSpeed: 1
-  zoomStepScale: 0.01
+  zoomStepScale: 0.03
   zoomSmoothing: 8
   zoomVelocityDamping: 12
+  useOrbitDistanceScroll: 1
+  orbitDistanceScrollSpeed: 2.23
+  minOrbitDistanceOffset: -15
+  maxOrbitDistanceOffset: 32.4
+  orbitDistanceScrollZoomThreshold: 1
   useSoftZones: 1
   softZoneWidth: 0.12
   softZoneStrength: 0.65
@@ -31047,8 +31149,80 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
-  heightAboveGround: 0
+  heightAboveGround: 1.5
   terrainFollowSmoothing: 8
+--- !u!114 &1617853392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617853385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be7e74ea1938c4e0e8debaef4053d1d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraMovement
+  moveSpeed: 18
+  fastMoveMultiplier: 4
+  movementSmoothing: 10
+  useEdgeScroll: 1
+  edgeSize: 16
+  disableMovementInGlobalOrbit: 1
+--- !u!114 &1617853393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617853385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ed9da7d6cfc44d76a18046a8445f983, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraRotation
+  keyboardRotationSpeed: 90
+  useMiddleMouseRotation: 1
+  mouseRotationSpeed: 3
+  rotationSmoothing: 14
+  globalOrbitKeyboardYawSpeed: 65
+  globalOrbitMouseYawSpeed: 3
+  globalOrbitMousePitchSpeed: 1.5
+  globalOrbitPitchSmoothing: 10
+  defaultGlobalOrbitPitch: 45
+  minGlobalOrbitPitch: 0
+  maxGlobalOrbitPitch: 78
+--- !u!114 &1617853394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617853385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a412f30026d421caca1110d8c52ac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraModeResolver
+  globalOrbitZoomThreshold: 0.9
+  strategyZoomThreshold: 0.72
+  driveZoomThreshold: 0.07
+--- !u!114 &1617853395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617853385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcc45ae83959a48d58df3dd36c601dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraFocus
+  worldCentreFocus: {fileID: 797150357}
+  selectionFocus: {fileID: 0}
+  selectionFocusOffset: {x: 0, y: 0, z: 0}
+  clearSelectionFocusInGlobalOrbit: 1
 --- !u!1 &1621182066
 GameObject:
   m_ObjectHideFlags: 0
