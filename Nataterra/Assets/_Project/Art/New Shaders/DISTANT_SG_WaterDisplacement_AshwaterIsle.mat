@@ -85,6 +85,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AlphaClipping: 0.5
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
@@ -105,10 +106,14 @@ Material:
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
     - _FresnelPower: 4.88
+    - _FresnelSmoothness: 0
+    - _GrazingColourPower: 3
     - _GrazingColourStrength: 0.21
+    - _GrazingDepthStrength: 0.2
     - _GrazingOpacityStrength: 0.79
     - _MaterialID: 1
     - _MaterialTypeMask: 2
+    - _NormalMap2Scaling: 1
     - _OceanSize: 600
     - _OpaqueCullMode: 2
     - _PerPixelSorting: 0
@@ -161,6 +166,7 @@ Material:
     - _DeepWaterColour: {r: 0.10746708, g: 0.1417319, b: 0.3301887, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GrazingDarkColour: {r: 0.16313627, g: 0.23336497, b: 0.24528292, a: 1}
     - _GrazingWaterColour: {r: 0.22352943, g: 0.47058824, b: 0.4473488, a: 1}
     - _OceanCentre: {r: 5.5, g: 35.4, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}

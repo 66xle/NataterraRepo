@@ -13,8 +13,8 @@ TagManager:
   - UI
   - Hex Grid
   - AlwaysVisibleUI
-  - 
-  - 
+  - CameraCollision
+  - CameraSelection
   - 
   - 
   - 

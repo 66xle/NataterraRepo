@@ -36,15 +36,14 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3004
+  m_CustomRenderQueue: 3005
   stringTagMap:
     MotionVector: User
     RenderType: Transparent
   disabledShaderPasses:
   - MOTIONVECTORS
-  - TransparentDepthPostpass
-  - TransparentBackface
   - RayTracingPrepass
+  - TransparentBackface
   - TransparentDepthPrepass
   m_LockedProperties: _ExcludeFromTUAndAA
   m_SavedProperties:
@@ -85,6 +84,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AlphaClipping: 0.5
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
@@ -105,7 +105,7 @@ Material:
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
     - _FresnelPower: 4.88
-    - _FresnelSmoothness: 0.44
+    - _FresnelSmoothness: 0.3
     - _GrazingColourPower: 3
     - _GrazingColourStrength: 0.21
     - _GrazingDepthStrength: 11.88
@@ -148,11 +148,11 @@ Material:
     - _TransmissionEnable: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
-    - _TransparentDepthPostpassEnable: 0
+    - _TransparentDepthPostpassEnable: 1
     - _TransparentDepthPrepassEnable: 0
-    - _TransparentSortPriority: 4
+    - _TransparentSortPriority: 5
     - _TransparentWritingMotionVec: 0
-    - _TransparentZWrite: 0
+    - _TransparentZWrite: 1
     - _UseShadowThreshold: 0
     - _WarpScale: 3
     - _WarpSpeed: 0.08
@@ -160,7 +160,7 @@ Material:
     - _ZTestDepthEqualForOpaque: 2
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 2
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - _DeepWaterColour: {r: 0.10746708, g: 0.1417319, b: 0.3301887, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}

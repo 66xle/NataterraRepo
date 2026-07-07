@@ -33,6 +33,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _AlphaMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 3e552570850914a19b1aa562f78a1aa8, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -60,13 +64,17 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _AlphaClipping: 0.5
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _BlendMode: 0
+    - _ColourEnd: 0.75
+    - _ColourStart: 0.15
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
     - _CullModeForward: 2
+    - _DeepwaterAlpha: 0
     - _DepthOffsetEnable: 0
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
@@ -76,8 +84,15 @@ Material:
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
+    - _FresnelPower: 3
+    - _FresnelSmoothness: 0
+    - _GrazingColourPower: 3
+    - _GrazingColourStrength: 0.5
+    - _GrazingDepthStrength: 0.2
+    - _GrazingOpacityStrength: 0.25
     - _MaterialID: 1
     - _MaterialTypeMask: 2
+    - _NormalMap2Scaling: 1
     - _OceanSize: 6000
     - _OpaqueCullMode: 2
     - _PerPixelSorting: 0
@@ -93,6 +108,10 @@ Material:
     - _SecondaryHeight: 0.132
     - _SecondaryScale: 1.2
     - _SecondarySpeed: 0.81
+    - _ShoreColourIntensity: 1
+    - _ShoreColourStrength: 1
+    - _ShoreLineAlpha: 1
+    - _ShorelineAlphaBlend: 1
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 0
@@ -130,11 +149,15 @@ Material:
     - _ZTestTransparent: 2
     - _ZWrite: 1
     m_Colors:
+    - _DeepWaterColour: {r: 0.07863114, g: 0.15100846, b: 0.29245278, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GrazingDarkColour: {r: 0.16313627, g: 0.23336497, b: 0.24528292, a: 1}
+    - _GrazingWaterColour: {r: 0.07355819, g: 0.17924526, b: 0.13724366, a: 1}
     - _OceanCentre: {r: 5.5, g: 35.4, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
     - _SecondaryDirection: {r: 0.7, g: 1, b: 0, a: 0}
+    - _ShoreWaterColour: {r: 0.20719117, g: 0.36498156, b: 0.45283014, a: 1}
     - _TextureScale: {r: 20.72, g: 12.6, b: 0, a: 0}
     - _WaterColor: {r: 0.18876815, g: 0.25351804, b: 0.39622632, a: 0.9882353}
   m_BuildTextureStacks: []

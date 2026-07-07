@@ -703,16 +703,16 @@ MonoBehaviour:
     m_Value: 3
   rayTracing:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 1.51
+    m_Value: 2.6
   directLightingStrength:
     m_OverrideState: 1
     m_Value: 0.537
   radius:
     m_OverrideState: 1
-    m_Value: 0.72
+    m_Value: 0.57
   spatialBilateralAggressiveness:
     m_OverrideState: 1
     m_Value: 0.15
@@ -1205,7 +1205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 384c4d03a551c44448145f4093304119, type: 3}
   m_Name: ScreenSpaceReflection
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.ScreenSpaceReflection
-  active: 0
+  active: 1
   quality:
     m_OverrideState: 0
     m_Value: 1
@@ -1219,23 +1219,23 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 1
   m_MinSmoothness:
-    m_OverrideState: 0
-    m_Value: 0.793
+    m_OverrideState: 1
+    m_Value: 0.306
   m_SmoothnessFadeStart:
-    m_OverrideState: 0
-    m_Value: 0.793
+    m_OverrideState: 1
+    m_Value: 0.997
   reflectSky:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   usedAlgorithm:
     m_OverrideState: 0
     m_Value: 0
   depthBufferThickness:
     m_OverrideState: 1
-    m_Value: 0.01
+    m_Value: 0.267
   screenFadeDistance:
     m_OverrideState: 1
-    m_Value: 0.819
+    m_Value: 0.2
   accumulationFactor:
     m_OverrideState: 0
     m_Value: 0.75
@@ -1659,7 +1659,7 @@ MonoBehaviour:
     m_Value: 1200
   altitudeRange:
     m_OverrideState: 1
-    m_Value: 2000
+    m_Value: 7874
   fadeInMode:
     m_OverrideState: 0
     m_Value: 0
@@ -1691,7 +1691,7 @@ MonoBehaviour:
     m_Value: 0
   m_CloudPreset:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 4
   cumulusMap:
     m_OverrideState: 0
     m_Value: {fileID: 0}
@@ -1839,10 +1839,10 @@ MonoBehaviour:
     m_Value: 0.4
   shapeFactor:
     m_OverrideState: 1
-    m_Value: 0.9
+    m_Value: 0.926
   shapeScale:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: 4.86
   shapeOffset:
     m_OverrideState: 0
     m_Value: {x: 0, y: 0, z: 0}
