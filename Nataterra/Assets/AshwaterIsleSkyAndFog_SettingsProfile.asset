@@ -702,17 +702,17 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 3
   rayTracing:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 2.6
+    m_Value: 0.97
   directLightingStrength:
     m_OverrideState: 1
     m_Value: 0.537
   radius:
     m_OverrideState: 1
-    m_Value: 0.57
+    m_Value: 2.41
   spatialBilateralAggressiveness:
     m_OverrideState: 1
     m_Value: 0.15
@@ -1352,7 +1352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f034cba68ab55e046ae1445a42f18c0e, type: 3}
   m_Name: IndirectLightingController
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   indirectDiffuseLightingMultiplier:
     m_OverrideState: 1
     m_Value: 1.8
@@ -1402,7 +1402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1bfcd0f0fa7b8468f281d6bbbaf320, type: 3}
   m_Name: LensDistortion
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.LensDistortion
-  active: 1
+  active: 0
   intensity:
     m_OverrideState: 1
     m_Value: 0.42
