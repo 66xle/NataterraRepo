@@ -9971,6 +9971,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 475035673921974791, guid: f5f245436acbed1429d909b45bdab5b5, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 679830884273110539, guid: f5f245436acbed1429d909b45bdab5b5, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -23132,7 +23136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1171159900
 Transform:
   m_ObjectHideFlags: 0
@@ -23229,7 +23233,7 @@ MonoBehaviour:
   m_EvsmLightLeakBias: 0
   m_EvsmVarianceBias: 0.00001
   m_EvsmBlurPasses: 0
-  m_LightlayersMask: 1
+  m_LightlayersMask: 2
   m_LinkShadowLayers: 1
   m_ShadowNearPlane: 0.1
   m_BlockerSampleCount: 24
@@ -23338,7 +23342,7 @@ Light:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingLayerMask: 1
+  m_RenderingLayerMask: 2
   m_Lightmapping: 4
   m_LightShadowCasterMode: 2
   m_AreaSize: {x: 1, y: 1}
@@ -31095,8 +31099,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FalseIbisCameraZoom
   zoomSpeed: 1
   zoomStepScale: 0.03
-  zoomSmoothing: 8
-  zoomVelocityDamping: 12
+  zoomSmoothing: 4
+  zoomVelocityDamping: 4
   useOrbitDistanceScroll: 1
   orbitDistanceScrollSpeed: 2.23
   minOrbitDistanceOffset: -15
@@ -33531,6 +33535,10 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 64af3252f3caa43a5b3e592c019672ed, type: 3}
       propertyPath: m_CastShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 64af3252f3caa43a5b3e592c019672ed, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 64af3252f3caa43a5b3e592c019672ed, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
