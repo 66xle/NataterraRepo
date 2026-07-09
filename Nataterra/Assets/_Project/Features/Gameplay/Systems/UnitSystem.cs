@@ -2,15 +2,16 @@ using PurrNet;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitSystem : MonoBehaviour
+public class UnitSystem : NetworkBehaviour
 {
     GameplaySystem _gs;
 
-    private void Start()
+    private void Awake()
     {
         _gs = GetComponentInParent<GameplaySystem>();
     }
 
+    [ObserversRpc(bufferLast:true)]
     public void SpawnUnit(List<GameObject> prefabs, List<string> GUIDs, int cellIndex, List<StateChange> changes)
     {
         _gs.SetLocalChanges(changes);
@@ -25,6 +26,7 @@ public class UnitSystem : MonoBehaviour
         }
     }
 
+    [ObserversRpc]
     public void MoveUnit(List<string> GUIDs, int destination, List<StateChange> changes)
     {
         _gs.SetLocalChanges(changes);

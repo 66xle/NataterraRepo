@@ -37,14 +37,15 @@ public class StateMachineManager : NetworkBehaviour
     {
         base.OnSpawned();
 
-        if (asServer || !isHost)
+        if (!asServer)
         {
-            OnPlayerJoined();
+            if (!isHost)
+                MapCtx.SetupClient(CreateDictDatabase());
 
-            if (!asServer) return;
+            OnPlayerJoined();
+            return;
         }
 
-        // server setup
         Setup();
     }
 
@@ -58,11 +59,6 @@ public class StateMachineManager : NetworkBehaviour
 
     void OnPlayerJoined()
     {
-        MapCtx.SetupClient(CreateDictDatabase());
-
-        if (isServer) return;
-
-
         PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
 
         List<FactionData> factions = GameManager.Instance.ListOfFactions;
@@ -71,6 +67,8 @@ public class StateMachineManager : NetworkBehaviour
         //_dictFaction.Add(player, data.Settings.Faction);
 
         Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
+
+
 
         MapCtx.SpawnStartingUnits(data.Settings.Faction);
 
@@ -103,7 +101,7 @@ public class StateMachineManager : NetworkBehaviour
     { 
         Debug.Log("Setup");
 
-        MapCtx.SetupServer();
+        MapCtx.SetupServer(CreateDictDatabase());
 
 #if UNITY_EDITOR
         if (ShowCellIndex)

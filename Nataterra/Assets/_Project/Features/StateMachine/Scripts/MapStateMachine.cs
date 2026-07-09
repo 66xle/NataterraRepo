@@ -2,6 +2,7 @@ using PurrNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TGS;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class MapStateMachine : NetworkBehaviour
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
     List<HexCellState> _state;
-    Dictionary<string, GameObject> _unitObjects;
+    Dictionary<string, GameObject> _unitObjects = new();
 
     Dictionary<UnitType, UnitData> _dictOfUnits;
 
@@ -33,8 +34,9 @@ public class MapStateMachine : NetworkBehaviour
     public Action<List<Unit>> OnSelectUnit;
 
 
-    public void SetupServer()
+    public void SetupServer(Dictionary<UnitType, UnitData> dictUnits)
     {
+        _dictOfUnits = dictUnits;
         _state = new();
 
         MapData mapData = GameManager.Instance.MapData;
@@ -43,14 +45,16 @@ public class MapStateMachine : NetworkBehaviour
             _state.Add(new HexCellState(data));
         }
 
+        SetupGrid(mapData);
+
+        GS.Setup();
         SetupServerMap(mapData);
-        SetupSendServerDataToClients(_serverMap.Map.GetNewState());
     }
 
-    public void SetupClient(Dictionary<UnitType, UnitData> dictUnits)
+    public async void SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
-        _unitObjects = new();
+        _state = await RequestServerState();
 
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
@@ -92,12 +96,18 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
-    [ObserversRpc(bufferLast: true)]
-    void SetupSendServerDataToClients(List<HexCellState> state)
+
+    [ServerRpc]
+    async Task<List<HexCellState>> RequestServerState(RPCInfo info = default)
+    {
+        return _serverMap.Map.GetNewState();
+    }
+
+    [TargetRpc]
+    void SetClientState(PlayerID playerID, List<HexCellState> state)
     {
         _state = state;
     }
-
 
 
     [ServerRpc]
