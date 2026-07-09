@@ -53,8 +53,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: b9ddf95d055664d4cb2d50d9d565194a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DetailNormal:
+        m_Texture: {fileID: 2800000, guid: 598cbd39e0b9d41c1b5799b2bcb5e6d5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamMask:
+        m_Texture: {fileID: 2800000, guid: bbb413aea341a4604a9abc096db43ed7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 3e552570850914a19b1aa562f78a1aa8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapB:
+        m_Texture: {fileID: 2800000, guid: fb1ef077a179b46c99adab907c79e818, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_cedcfd31c2b84b36849c68abbd710008_Texture_1_Texture2D:
@@ -94,8 +106,11 @@ Material:
     - _ConservativeDepthOffsetEnable: 0
     - _CullMode: 2
     - _CullModeForward: 2
-    - _DeepwaterAlpha: 1
+    - _DeepwaterAlpha: 1.69
     - _DepthOffsetEnable: 0
+    - _DetailNormalScaling: 18
+    - _DetailNormalStrength: 0.73
+    - _DetailNormalWarpStrength: 0.13
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
@@ -104,15 +119,21 @@ Material:
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
-    - _FresnelPower: 4.88
+    - _FoamEnd: 1.66
+    - _FoamPower: 0.7
+    - _FoamStart: -0.04
+    - _FoamStrength: 0.79
+    - _FresnelPower: 7.7
     - _FresnelSmoothness: 0.3
     - _GrazingColourPower: 3
     - _GrazingColourStrength: 0.21
     - _GrazingDepthStrength: 11.88
-    - _GrazingOpacityStrength: 0.79
+    - _GrazingOpacityStrength: 0.6
+    - _IslandSize: 558.6
     - _MaterialID: 1
     - _MaterialTypeMask: 2
-    - _NormalMap2Scaling: 58.5
+    - _NormalMap2Scaling: 9.59
+    - _NormalMapBBlend: -30.43
     - _OceanSize: 661.4
     - _OpaqueCullMode: 2
     - _PerPixelSorting: 0
@@ -128,10 +149,12 @@ Material:
     - _SecondaryHeight: 0.132
     - _SecondaryScale: 1.2
     - _SecondarySpeed: 0.81
+    - _ShoreAlphaStrength: 1
     - _ShoreColourIntensity: 0.47
     - _ShoreColourStrength: 0.98
-    - _ShoreLineAlpha: 0.2
+    - _ShoreLineAlpha: 0.41
     - _ShorelineAlphaBlend: 1
+    - _ShorelineDepthFadeDistance: 0
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 0
@@ -153,20 +176,25 @@ Material:
     - _TransparentSortPriority: 5
     - _TransparentWritingMotionVec: 0
     - _TransparentZWrite: 1
+    - _UseDetailNormal: 1
     - _UseShadowThreshold: 0
     - _WarpScale: 3
     - _WarpSpeed: 0.08
     - _WarpStrength: 0.35
+    - _WildNormalStrength: -6.69
     - _ZTestDepthEqualForOpaque: 2
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 2
     - _ZWrite: 1
     m_Colors:
     - _DeepWaterColour: {r: 0.10746708, g: 0.1417319, b: 0.3301887, a: 1}
-    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
+    - _DetailNormalNoiseTiling: {r: 20, g: 2, b: 0, a: 0}
+    - _DoubleSidedConstants: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColour: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
     - _GrazingDarkColour: {r: 0.16313627, g: 0.23336497, b: 0.24528292, a: 1}
     - _GrazingWaterColour: {r: 0.22352943, g: 0.47058824, b: 0.4473488, a: 1}
+    - _IslandCentre: {r: -8.4, g: 49.66, b: 0, a: 0}
     - _OceanCentre: {r: 22.1, g: 19.42, b: 0, a: 0}
     - _PrimaryDirection: {r: 0.31, g: 0.24, b: 0, a: 0}
     - _SecondaryDirection: {r: 0.7, g: 1, b: 0, a: 0}

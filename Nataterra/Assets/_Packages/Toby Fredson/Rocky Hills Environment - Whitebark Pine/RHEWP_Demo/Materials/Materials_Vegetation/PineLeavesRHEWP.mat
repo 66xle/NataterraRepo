@@ -155,7 +155,7 @@ Material:
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _AmbientOcclusion: 1
-    - _AmbientOcclusionIntensity: 1
+    - _AmbientOcclusionIntensity: 0.996
     - _AnimateNormal: 0
     - _BendAmount: 1
     - _BlendMode: 0
@@ -206,7 +206,7 @@ Material:
     - _MobileShadingWorldUp: 0
     - _Mode: 0
     - _NormalBackFaceFixBranch: 0
-    - _NormalIntenisty: 2
+    - _NormalIntenisty: 7.85
     - _NormalIntensity: 1
     - _NormalizeSeasons: 0
     - _OcclusionStrength: 1
@@ -226,7 +226,7 @@ Material:
     - _SeasonChangeGlobal: -2
     - _SelfShadingVertexColor: 1
     - _Shininess: 0.1
-    - _SmoothnessIntensity: 1
+    - _SmoothnessIntensity: 0.609
     - _SmoothnessTextureChannel: 0
     - _SpecularBias: 1
     - _SpecularHighlights: 1
@@ -265,7 +265,7 @@ Material:
     - _TransStrength: 1
     - _Translucency: 1
     - _TranslucencyInt: 1
-    - _TranslucencyPower: 2
+    - _TranslucencyPower: 6.27
     - _TranslucencyRange: 0
     - _TranslucencyStrength: 1
     - _TranslucencyTreeTangents: 1

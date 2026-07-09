@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4170643737722440613
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Editor::UnityEditor.Rendering.HighDefinition.AssetVersion
+  version: 13
+  hdPluginSubTargetMaterialVersions:
+    m_Keys: []
+    m_Values: 
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shader Graphs_SG_Water_RadialTest
+  m_Shader: {fileID: -6465566751694194690, guid: bc1e16866a868494bb77e774f4561362, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ENABLE_FOG_ON_TRANSPARENT
+  - _SURFACE_TYPE_TRANSPARENT
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    MotionVector: User
+    RenderType: Transparent
+  disabledShaderPasses:
+  - TransparentBackface
+  - RayTracingPrepass
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaMap:
+        m_Texture: {fileID: 2800000, guid: b9ddf95d055664d4cb2d50d9d565194a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormal:
+        m_Texture: {fileID: 2800000, guid: 598cbd39e0b9d41c1b5799b2bcb5e6d5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamMask:
+        m_Texture: {fileID: 2800000, guid: 9b74dbf1a097f43c48e94443abe42086, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 3e552570850914a19b1aa562f78a1aa8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMapB:
+        m_Texture: {fileID: 2800000, guid: fb1ef077a179b46c99adab907c79e818, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TidalMap:
+        m_Texture: {fileID: 2800000, guid: e3b5d4b4fb6c64cf59e32ed2d7e255c4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddPrecomputedVelocity: 0
+    - _AlphaClipping: 0.5
+    - _AlphaCutoffEnable: 0
+    - _AlphaDstBlend: 10
+    - _AlphaSrcBlend: 1
+    - _BlendMode: 0
+    - _ColourEnd: 0.75
+    - _ColourStart: 0.15
+    - _ConservativeDepthOffsetEnable: 0
+    - _CullMode: 2
+    - _CullModeForward: 2
+    - _DeepwaterAlpha: 0
+    - _DepthOffsetEnable: 0
+    - _DetailNormalScaling: 22.1
+    - _DetailNormalStrength: 2
+    - _DetailNormalWarpStrength: 0.03
+    - _DoubleSidedEnable: 0
+    - _DoubleSidedGIMode: 0
+    - _DoubleSidedNormalMode: 2
+    - _DstBlend: 10
+    - _DstBlend2: 10
+    - _EnableBlendModePreserveSpecularLighting: 1
+    - _EnableFogOnTransparent: 1
+    - _ExcludeFromTUAndAA: 0
+    - _FoamEnd: 0.55
+    - _FoamPower: 1.5
+    - _FoamStart: 0.15
+    - _FoamStrength: 0.15
+    - _FresnelPower: 3
+    - _FresnelSmoothness: 0
+    - _GrazingColourPower: 3
+    - _GrazingColourStrength: 0.5
+    - _GrazingDepthStrength: 0.2
+    - _GrazingOpacityStrength: 0.25
+    - _IslandSize: 600
+    - _MaterialID: 1
+    - _MaterialTypeMask: 2
+    - _NormalMapBBlend: 1.57
+    - _OceanSize: 600
+    - _OpaqueCullMode: 2
+    - _PerPixelSorting: 0
+    - _PrimaryHeight: 0.15
+    - _PrimaryScale: 0.35
+    - _PrimarySpeed: 0.45
+    - _RadialNormalInfluence: 3.33
+    - _RadialNormalOffset: -0.41
+    - _RayTracing: 0
+    - _ReceivesSSR: 1
+    - _ReceivesSSRTransparent: 1
+    - _RefractionModel: 0
+    - _RenderQueueType: 4
+    - _RequireSplitLighting: 0
+    - _SecondaryHeight: 0.06
+    - _SecondaryScale: 0.6
+    - _SecondarySpeed: 0.25
+    - _ShoreAlphaStrength: 1
+    - _ShoreColourIntensity: 1
+    - _ShoreColourStrength: 1
+    - _ShoreLineAlpha: 1
+    - _ShorelineAlphaBlend: 1
+    - _SrcBlend: 1
+    - _StencilRef: 0
+    - _StencilRefDepth: 8
+    - _StencilRefDistortionVec: 4
+    - _StencilRefGBuffer: 10
+    - _StencilRefMV: 40
+    - _StencilWriteMask: 6
+    - _StencilWriteMaskDepth: 9
+    - _StencilWriteMaskDistortionVec: 4
+    - _StencilWriteMaskGBuffer: 15
+    - _StencilWriteMaskMV: 41
+    - _SupportDecals: 1
+    - _SurfaceType: 1
+    - _TransmissionEnable: 1
+    - _TransparentBackfaceEnable: 0
+    - _TransparentCullMode: 2
+    - _TransparentDepthPostpassEnable: 1
+    - _TransparentDepthPrepassEnable: 1
+    - _TransparentSortPriority: 0
+    - _TransparentWritingMotionVec: 0
+    - _TransparentZWrite: 1
+    - _UseDetailNormal: 1
+    - _UseShadowThreshold: 0
+    - _WarpScale: 3
+    - _WarpSpeed: 0.08
+    - _WarpStrength: 0.35
+    - _ZTestDepthEqualForOpaque: 4
+    - _ZTestGBuffer: 4
+    - _ZTestTransparent: 4
+    - _ZWrite: 1
+    m_Colors:
+    - _DeepWaterColour: {r: 0.07863114, g: 0.15100846, b: 0.29245278, a: 1}
+    - _DetailNormalNoiseTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FoamColour: {r: 0.9122463, g: 0.9433962, b: 0.9333349, a: 1}
+    - _GrazingDarkColour: {r: 0.16313627, g: 0.23336497, b: 0.24528292, a: 1}
+    - _GrazingWaterColour: {r: 0.07355819, g: 0.17924526, b: 0.13724366, a: 1}
+    - _IslandCentre: {r: -8.4, g: 48.9, b: 0, a: 0}
+    - _OceanCentre: {r: -8.4, g: 48.9, b: 0, a: 0}
+    - _PrimaryDirection: {r: 1, g: 0.25, b: 0, a: 0}
+    - _SecondaryDirection: {r: -0.4, g: 1, b: 0, a: 0}
+    - _ShoreWaterColour: {r: 0.20719117, g: 0.36498156, b: 0.45283014, a: 1}
+    - _TextureScale: {r: 40, g: 40, b: 0, a: 0}
+    - _WaterColor: {r: 0.15125486, g: 0.22476077, b: 0.31132078, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

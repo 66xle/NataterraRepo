@@ -7,7 +7,12 @@
   <Project Path="DrawXXL-Editor.csproj" />
   <Project Path="CoInspector.csproj" />
   <Project Path="RAMEditor.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Runtime.csproj" />
+  <Project Path="Unity.RenderPipelines.HighDefinition.Samples.Common.Runtime.csproj" />
   <Project Path="Underwater.csproj" />
   <Project Path="TGSHDRPHelper.csproj" />
+  <Project Path="NewAssembly.csproj" />
+  <Project Path="Unity.RenderPipelines.Core.Samples.Editor.csproj" />
+  <Project Path="Unity.RenderPipelines.HighDefinition.Samples.Common.Editor.csproj" />
   <Project Path="TGSURPHelper.csproj" />
 </Solution>

@@ -581,10 +581,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a76fd08475e21554b8f284f723dd7cf8, type: 3}
   m_Name: WaterRendering
   m_EditorClassIdentifier: Unity.RenderPipelines.HighDefinition.Runtime::UnityEngine.Rendering.HighDefinition.WaterRendering
-  active: 0
+  active: 1
   enable:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   triangleSize:
     m_OverrideState: 0
     m_Value: 30
@@ -684,7 +684,7 @@ MonoBehaviour:
     m_Value: 0
   volumetricLightingDensityCutoff:
     m_OverrideState: 1
-    m_Value: 0.1
+    m_Value: 5.37
 --- !u!114 &-3775130341457498451
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -1830,13 +1830,13 @@ MonoBehaviour:
     m_Value: {r: 0, g: 0, b: 0, a: 1}
   powderEffectIntensity:
     m_OverrideState: 0
-    m_Value: 0.25
+    m_Value: 0
   multiScattering:
     m_OverrideState: 0
     m_Value: 0.5
   densityMultiplier:
     m_OverrideState: 1
-    m_Value: 0.4
+    m_Value: 0.202
   shapeFactor:
     m_OverrideState: 1
     m_Value: 0.926
@@ -1874,10 +1874,10 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0.1
   globalWindSpeed:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
-      mode: 1
-      customValue: 100
+      mode: 0
+      customValue: 5159.8
       additiveValue: 0
       multiplyValue: 1
   orientation:
@@ -1888,16 +1888,16 @@ MonoBehaviour:
       additiveValue: 0
       multiplyValue: 1
   altitudeDistortion:
-    m_OverrideState: 0
-    m_Value: 0.5
+    m_OverrideState: 1
+    m_Value: 0.38
   cloudMapSpeedMultiplier:
     m_OverrideState: 0
     m_Value: 0.5
   shapeSpeedMultiplier:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   erosionSpeedMultiplier:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.25
   verticalShapeWindSpeed:
     m_OverrideState: 0
@@ -1909,26 +1909,26 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0.95
   ghostingReduction:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   perceptualBlending:
     m_OverrideState: 0
     m_Value: 1
   shadows:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   shadowResolution:
     m_OverrideState: 0
     m_Value: 256
   shadowDistance:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 8000
   shadowOpacity:
-    m_OverrideState: 0
-    m_Value: 1
+    m_OverrideState: 1
+    m_Value: 0.176
   shadowOpacityFallback:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
 --- !u!114 &9124285970298139277
 MonoBehaviour:
   m_ObjectHideFlags: 3
