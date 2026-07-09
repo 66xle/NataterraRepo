@@ -14,10 +14,9 @@ public class GameplaySystem : NetworkBehaviour
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
 
-        TGS = TerrainGridSystem.instance;
+        TGS = TerrainGridSystem.instance; 
     }
 
-    [ObserversRpc(bufferLast:true)]
     public void SetLocalChanges(List<StateChange> changes)
     {
         foreach (StateChange state in changes)
