@@ -10,6 +10,13 @@
       },
       "hash": "6821c571090fc0828accced5dbd7635152c23887"
     },
+    "com.needle.compilation-visualizer": {
+      "version": "1.8.9",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.unity.burst": {
       "version": "1.8.29",
       "depth": 0,
