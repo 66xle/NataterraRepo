@@ -27,6 +27,7 @@ public class ServerMapWrapper
 
     private Dictionary<Base, FactionSettings> _factionSettings;
     private Dictionary<UnitType, UnitData> _dictOfUnits;
+    private Dictionary<string, DijkstraResult> _results;
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
@@ -39,6 +40,7 @@ public class ServerMapWrapper
         _dictOfUnits = dictOfUnits;
         _stateChanges = new();
         _factionSettings = new();
+        _results = new();
 
         foreach (FactionData data in factionData)
         {
@@ -108,18 +110,21 @@ public class ServerMapWrapper
     }
 
 
-    public void MoveUnit(List<Unit> units, int origin, int destination, int cost)
+    public void MoveUnit(List<Unit> units, int origin, int destination, List<DijkstraResult> listOfResults)
     {
         AddStateChange(origin);
         AddStateChange(destination);
 
-        foreach (Unit unit in units)
+        for (int i = 0; i < units.Count; i++)
         {
+            Unit unit = units[i];
+
             // remove unit from cell
             RemoveUnit(unit.UnitType, unit, origin, false);
 
             // Set unit movement
-            unit.CurrentMovement -= cost;
+            int cost = listOfResults[i].GetDestinationCost(destination);
+            unit.CurrentMovement = unit.Movement - cost;
 
             if (unit.CurrentMovement < 0)
             {
@@ -144,6 +149,11 @@ public class ServerMapWrapper
 
         _stateChanges.Clear();
         return state;
+    }
+
+    public List<HexCellState> GetState()
+    {
+        return _state;
     }
 
     public List<Cell> GetCells()
@@ -180,10 +190,22 @@ public class ServerMapWrapper
         return units;
     }
 
-    public List<HexCellState> GetState()
+
+    public DijkstraResult GetPathfindingResult(string guid)
     {
-        return _state;
+        if (_results.TryGetValue(guid, out DijkstraResult result))
+        {
+            return result;
+        }
+
+        return null;
     }
+
+    public void StoreResult(string guid, DijkstraResult result)
+    {
+        _results.Add(guid, result);
+    }
+
 
     private void AddStateChange(int cellIndex)
     {

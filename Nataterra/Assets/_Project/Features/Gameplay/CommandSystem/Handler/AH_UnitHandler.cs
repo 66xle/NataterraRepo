@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using static UnityEngine.UI.Image;
 
 public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_UnitInitialSpawnCommand>, IActionHandler<AC_UnitMoveCommand>
 {
@@ -50,27 +51,28 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         if (selectedUnits == null || selectedUnits.Count != command.ListOfUnitGUID.Count)
             return;
 
-        int origin = _gs.MSM.GetOrigin(selectedUnits, command.SelectedIndex, out bool IsOrigin);
+        List<DijkstraResult> listOfResults = new();
 
-        int lowestMovement = _gs.MSM.GetLowestMovement(selectedUnits, IsOrigin);
-        if (lowestMovement == 0)
+        foreach (Unit unit in selectedUnits)
         {
-            // No movement message
-            return;
+            DijkstraResult result = _map.GetPathfindingResult(unit.GUID);
+
+            if (result == null)
+            {
+                result = _gs.MSM.CalculateMovementRange(unit.CellOrigin, unit.Movement, _map.GetCells());
+                _map.StoreResult(unit.GUID, result);
+            }
+
+            if (!result.Contains(command.Destination))
+            {
+                // Invalid destination
+                return;
+            }
+
+            listOfResults.Add(result);
         }
 
-        DijkstraResult result = _gs.MSM.CalculateMovementRange(origin, lowestMovement, _map.GetCells());
-
-        if (!result.Contains(command.Destination))
-        {
-            // Invalid destination
-            return;
-        }
-
-        List<int> path = result.BuildPath(command.Destination); // Not used for now
-        int cost = result.GetDestinationCost(command.Destination);
-
-        _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, cost);
+        _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
 
         _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination, _map.GetStateChanges());
     }
