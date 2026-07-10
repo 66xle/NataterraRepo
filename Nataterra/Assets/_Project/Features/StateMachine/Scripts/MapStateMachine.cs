@@ -52,7 +52,7 @@ public class MapStateMachine : NetworkBehaviour
         SetupServerMap(mapData);
     }
 
-    public async void SetupClient(Dictionary<UnitType, UnitData> dictUnits)
+    public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
         _unitObjects = new();
@@ -118,11 +118,18 @@ public class MapStateMachine : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SendMoveCommand(int destination)
+    public void SendMoveCommand(int origin, int destination, List<Unit> selectedUnits)
     {
         List<string> guids = new();
         List<UnitType> type = new();
-        foreach (Unit unit in SelectedUnits)
+
+        if (selectedUnits.Count == 0)
+        {
+            Debug.LogError("MapStateMachine: SendMoveCommand() - No units selected!");
+            return;
+        }
+
+        foreach (Unit unit in selectedUnits)
         {
             guids.Add(unit.GUID);
             type.Add(unit.UnitType);
@@ -133,7 +140,7 @@ public class MapStateMachine : NetworkBehaviour
         {
             ListOfUnitType = type,
             ListOfUnitGUID = guids,
-            SelectedIndex = SelectedCell.index,
+            SelectedIndex = origin,
             Destination = destination
         };
 

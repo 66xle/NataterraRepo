@@ -33,14 +33,14 @@ public class StateMachineManager : NetworkBehaviour
 
     //Dictionary<PlayerID, Base> _dictFaction = new();
 
-    protected override void OnSpawned(bool asServer)
+    protected override async void OnSpawned(bool asServer)
     {
         base.OnSpawned();
 
         if (!asServer)
         {
             if (!isHost)
-                MapCtx.SetupClient(CreateDictDatabase());
+                await MapCtx.SetupClient(CreateDictDatabase());
 
             OnPlayerJoined();
             return;

@@ -81,7 +81,13 @@ public class SMM_MovementPhaseState : GameplayBaseState
             return;
         }
 
-        MapCtx.SendMoveCommand(cell.index);
+        if (MapCtx.SelectedUnits.Count == 0)
+        {
+            Debug.LogError("MovementPhaseState: MoveUnit(): No units are selected");
+            return;
+        }
+
+        MapCtx.SendMoveCommand(MapCtx.SelectedCell.index, cell.index, MapCtx.SelectedUnits);
 
         MapCtx.MovementResult = null;
         Destroy(MapCtx.MovementBorder);
@@ -89,6 +95,4 @@ public class SMM_MovementPhaseState : GameplayBaseState
         TGS.CellDestroyBorder(MapCtx.SelectedCell.index);
         MapCtx.SelectedCell = null;
     }
-
-    
 }
