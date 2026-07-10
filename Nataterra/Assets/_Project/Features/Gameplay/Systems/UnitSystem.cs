@@ -21,11 +21,10 @@ public class UnitSystem : NetworkBehaviour
         }
     }
 
-    [ObserversRpc]
-    public void SpawnUnitToAll(List<UnitType> types, List<string> GUIDs, int cellIndex, List<StateChange> changes)
-    {
-        _gs.SetLocalChanges(changes);
 
+    [ObserversRpc]
+    public void SpawnUnitToAll(List<UnitType> types, List<string> GUIDs, int cellIndex)
+    {
         for (int i = 0; i < types.Count; i++)
         {
             SpawnUnit(types[i], GUIDs[i], cellIndex);
@@ -40,13 +39,10 @@ public class UnitSystem : NetworkBehaviour
         GameObject newUnit = Instantiate(prefab, spawnPosition, Quaternion.identity);
         _gs.MSM.AddUnitObject(GUID, newUnit);
     }
-    
 
     [ObserversRpc]
-    public void MoveUnit(List<string> GUIDs, int destination, List<StateChange> changes)
+    public void MoveUnit(List<string> GUIDs, int destination)
     {
-        _gs.SetLocalChanges(changes);
-
         foreach (string guid in GUIDs)
         {
             GameObject moveUnit = _gs.MSM.GetUnitObject(guid);

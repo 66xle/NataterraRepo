@@ -55,7 +55,7 @@ public class MapStateMachine : NetworkBehaviour
     public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
-        _unitObjects = new();
+        _unitObjects = new(); 
         _state = await LoadMap();
 
         MapData mapData = GameManager.Instance.MapData;

@@ -41,7 +41,8 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         List<UnitType> units = _map.FactionSettings[command.Faction].StartingUnits;
         List<string> GUIDs = _map.AddUnit(units, cellIndex);
 
-        _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex, _map.GetStateChanges());
+        _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex);
+        _gs.SetLocalChanges(_map.GetStateChanges());
     }
 
     public void Handle(AC_UnitMoveCommand command)
@@ -74,6 +75,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
 
         _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
 
-        _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination, _map.GetStateChanges());
+        _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination);
+        _gs.SetLocalChanges(_map.GetStateChanges());
     }
 }

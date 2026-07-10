@@ -18,6 +18,7 @@ public class GameplaySystem : NetworkBehaviour
         TGS = TerrainGridSystem.instance; 
     }
 
+    [ObserversRpc]
     public void SetLocalChanges(List<StateChange> changes)
     {
         foreach (StateChange state in changes)
