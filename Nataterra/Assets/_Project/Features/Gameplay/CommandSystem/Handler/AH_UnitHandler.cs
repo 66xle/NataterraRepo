@@ -20,7 +20,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         int cellIndex = _map.GetBaseCellIndex(command.Faction);
 
         // server update map
-        _map.AddUnit(command.Unit, cellIndex, out string GUID);
+        _map.AddUnit(command.Unit, cellIndex);
        
 
         // send data to clients map
@@ -38,9 +38,9 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
 
         // Get Starting Unit
         List<UnitType> units = _map.FactionSettings[command.Faction].StartingUnits;
-        List<GameObject> unitObjs = _map.AddUnit(units, cellIndex, out List<string> GUIDs);
+        List<string> GUIDs = _map.AddUnit(units, cellIndex);
 
-        _gs.UnitSystem.SpawnUnit(unitObjs, GUIDs, cellIndex, _map.GetStateChanges());
+        _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex, _map.GetStateChanges());
     }
 
     public void Handle(AC_UnitMoveCommand command)

@@ -5,13 +5,10 @@ using System.Windows.Input;
 using System;
 using PurrNet;
 
-
 public class ServerMap : NetworkBehaviour
 {
     ServerMapWrapper _map;
     GameplaySystem _gs;
-
-    public ServerMapWrapper Map { get { return _map; } }
 
     private CommandProcessor _commandProcessor = new();
 
@@ -38,5 +35,33 @@ public class ServerMap : NetworkBehaviour
     public void HandleCommand(IActionCommand command)
     {
         _commandProcessor.Process(command);
+    }
+
+    public List<HexCellState> LoadClientMap(PlayerID playerID)
+    {
+        List<string> GUIDs = new();
+        List<UnitType> types = new();
+        List<int> indexs = new();
+
+        List<HexCellState> state = _map.GetState();
+
+        for (int i = 0; i < state.Count; i++)
+        {
+            if (state[i].DictOfGroups.Count == 0) continue;
+
+            foreach (UnitType type in state[i].DictOfGroups.Keys)
+            {
+                foreach (Unit unit in state[i].DictOfGroups[type].ListOfUnits)
+                {
+                    GUIDs.Add(unit.GUID);
+                    types.Add(type);
+                    indexs.Add(i);
+                }
+            }
+        }
+
+        _gs.UnitSystem.SpawnUnitToClient(playerID, types, GUIDs, indexs);
+
+        return state;
     }
 }

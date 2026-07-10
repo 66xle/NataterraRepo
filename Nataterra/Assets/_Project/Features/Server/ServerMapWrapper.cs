@@ -47,7 +47,7 @@ public class ServerMapWrapper
         }
     }
 
-    public GameObject AddUnit(UnitType type, int cellIndex, out string GUID, Unit unit = null, bool stateChange = true)
+    public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
     {
         if (stateChange)
             AddStateChange(cellIndex);
@@ -57,35 +57,31 @@ public class ServerMapWrapper
         if (unit == null)
             unit = new Unit(unitData, cellIndex);
 
-        GUID = unit.GUID;
+        string GUID = unit.GUID;
 
         if (_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
         {
             group.ListOfUnits.Add(unit);
-            return unitData.Prefab;
+            return GUID;
         }
 
         _state[cellIndex].DictOfGroups.Add(type, new Group(unit));
-        return unitData.Prefab;
+        return GUID;
     }
 
-    public List<GameObject> AddUnit(List<UnitType> types, int cellIndex, out List<string> GUIDs)
+    public List<string> AddUnit(List<UnitType> types, int cellIndex)
     {
         AddStateChange(cellIndex);
 
-        List<GameObject> tempObjs = new();
         List<string> tempGUIDS = new();
-
 
         foreach (UnitType unit in types)
         {
-            GameObject unitObj = AddUnit(unit, cellIndex, out string guid, null, false);
+            string guid = AddUnit(unit, cellIndex, null, false);
             tempGUIDS.Add(guid);
-            tempObjs.Add(unitObj);
         }
 
-        GUIDs = tempGUIDS;
-        return tempObjs;
+        return tempGUIDS;
     }
 
 
@@ -131,7 +127,7 @@ public class ServerMapWrapper
             }
 
             // add them to map
-            AddUnit(unit.UnitType, destination, out string GUID, unit, false);
+            AddUnit(unit.UnitType, destination, unit, false);
         }
     }
 
@@ -184,15 +180,9 @@ public class ServerMapWrapper
         return units;
     }
 
-    public List<HexCellState> GetNewState()
+    public List<HexCellState> GetState()
     {
-        List<HexCellState> tempState = new();
-        foreach (HexCellState state in _state)
-        {
-            tempState.Add(new HexCellState(state));
-        }
-
-        return tempState;
+        return _state;
     }
 
     private void AddStateChange(int cellIndex)

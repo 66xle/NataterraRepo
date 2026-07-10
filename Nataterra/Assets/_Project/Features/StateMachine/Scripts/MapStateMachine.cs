@@ -9,12 +9,12 @@ using UnityEngine;
 public class MapStateMachine : NetworkBehaviour
 {
     [Header("References")]
-    public GameplaySystem GS;
+    [SerializeField] GameplaySystem GS;
 
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
     List<HexCellState> _state;
-    Dictionary<string, GameObject> _unitObjects = new();
+    Dictionary<string, GameObject> _unitObjects;
 
     Dictionary<UnitType, UnitData> _dictOfUnits;
 
@@ -37,6 +37,7 @@ public class MapStateMachine : NetworkBehaviour
     public void SetupServer(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
+        _unitObjects = new();
         _state = new();
 
         MapData mapData = GameManager.Instance.MapData;
@@ -54,7 +55,8 @@ public class MapStateMachine : NetworkBehaviour
     public async void SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
-        _state = await RequestServerState();
+        _unitObjects = new();
+        _state = await LoadMap();
 
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
@@ -96,19 +98,13 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
-
     [ServerRpc]
-    async Task<List<HexCellState>> RequestServerState(RPCInfo info = default)
+    async Task<List<HexCellState>> LoadMap(RPCInfo info = default)
     {
-        return _serverMap.Map.GetNewState();
-    }
+        Debug.Log($"Loading Map for Player {info.sender}");
 
-    [TargetRpc]
-    void SetClientState(PlayerID playerID, List<HexCellState> state)
-    {
-        _state = state;
+        return _serverMap.LoadClientMap(info.sender);
     }
-
 
     [ServerRpc]
     public void SpawnStartingUnits(Base faction, RPCInfo info = default)
@@ -161,6 +157,11 @@ public class MapStateMachine : NetworkBehaviour
     public GameObject GetUnitObject(string guid)
     {
         return _unitObjects[guid];
+    }
+
+    public GameObject GetUnitPrefab(UnitType type)
+    {
+        return _dictOfUnits[type].Prefab;
     }
 
     public bool UnitExistOnCell(int cellIndex)
