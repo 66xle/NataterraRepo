@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 28b55da194dbd498dbc93234b8a9fb5f
+timeCreated: 1459918690
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Shaders/SelfIllumin-Overlay.shader
+  uploadId: 428775

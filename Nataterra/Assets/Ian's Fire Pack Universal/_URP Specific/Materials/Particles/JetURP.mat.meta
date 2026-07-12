@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 57ed911984104429199d59ea9e4271ca
+timeCreated: 1427254683
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Particles/JetURP.mat
+  uploadId: 428775

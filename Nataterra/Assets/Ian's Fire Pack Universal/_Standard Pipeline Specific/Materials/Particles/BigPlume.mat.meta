@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 56ee6d83e3579451d86026d43c233a49
+timeCreated: 1469568199
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/Particles/BigPlume.mat
+  uploadId: 428775

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f22b15d8d48da460082a10d6bf55d17d
+timeCreated: 1464458778
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/Torch.prefab
+  uploadId: 428775

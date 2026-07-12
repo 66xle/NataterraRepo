@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 86bf4c7bbde574be1b2779b71250d0b2
+timeCreated: 1470187776
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/Particles/CandleGlow.mat
+  uploadId: 428775

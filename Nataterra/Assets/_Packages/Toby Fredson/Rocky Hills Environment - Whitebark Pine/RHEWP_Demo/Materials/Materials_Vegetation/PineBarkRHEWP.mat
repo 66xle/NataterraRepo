@@ -132,6 +132,7 @@ Material:
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 0
+    - _DstBlend2: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _FadeOutWind: 0
@@ -151,6 +152,7 @@ Material:
     - _OcclusionStrength: 1
     - _OpaqueCullMode: 2
     - _Parallax: 0.02
+    - _PerPixelSorting: 0
     - _PivotSway: 1
     - _PivotSwayPower: 1
     - _QueueControl: 0
@@ -203,3 +205,4 @@ Material:
     - _Offset: {r: 1, g: 1, b: 0, a: 0}
     - _Tiling: {r: 0.8, g: 0.5, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: e013cba601d1c45b7a0406c9e78cd303
+timeCreated: 1452315320
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Particles/FullFlameSmallURP.mat
+  uploadId: 428775

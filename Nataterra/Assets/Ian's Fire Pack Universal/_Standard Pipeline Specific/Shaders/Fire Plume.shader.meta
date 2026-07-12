@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 7d8054514cdbe45448fe1d908fed7b76
+timeCreated: 1474230176
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Shaders/Fire
+    Plume.shader
+  uploadId: 428775

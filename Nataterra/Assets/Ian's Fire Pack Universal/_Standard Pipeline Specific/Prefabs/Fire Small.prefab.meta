@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 567ad5da1388d439ea276006cba9297e
+timeCreated: 1424104710
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/Fire
+    Small.prefab
+  uploadId: 428775

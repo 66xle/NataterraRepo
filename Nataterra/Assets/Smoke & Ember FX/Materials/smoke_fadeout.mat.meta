@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5caa81906061f99418eb69892113d3f1
+timeCreated: 1503409915
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Materials/smoke_fadeout.mat
+  uploadId: 462714

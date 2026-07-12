@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d48342fdfcdf23e4b8aa422b9bed2400
+timeCreated: 1503414579
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Materials/flare.mat
+  uploadId: 462714

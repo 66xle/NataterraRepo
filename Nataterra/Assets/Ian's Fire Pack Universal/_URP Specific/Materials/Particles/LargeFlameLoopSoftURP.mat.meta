@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 16e5e187857884771a28859ba031b7a0
+timeCreated: 1470241588
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Particles/LargeFlameLoopSoftURP.mat
+  uploadId: 428775

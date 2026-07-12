@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7ff901c2cc07ce74586da31216669934
+timeCreated: 1503317936
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 98947
+  packageName: Smoke & Ember FX
+  packageVersion: 1.2
+  assetPath: Assets/Smoke & Ember FX/Demo/Materials/BackgroundSmoke3.mat
+  uploadId: 462714

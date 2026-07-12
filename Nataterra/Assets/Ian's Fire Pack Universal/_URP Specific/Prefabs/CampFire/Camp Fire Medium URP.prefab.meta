@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2caed32e56f7b40eb8fe178381c72ec3
+timeCreated: 1467408525
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Prefabs/CampFire/Camp
+    Fire Medium URP.prefab
+  uploadId: 428775

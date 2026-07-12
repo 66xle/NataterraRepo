@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c509dbaa7b6f416409e3195321a2187e, type: 3}
+  m_Name: AshWaterIslePallet
+  m_EditorClassIdentifier: Unity.TerrainTools.Editor::UnityEngine.TerrainTools.TerrainPalette
+  PaletteLayers:
+  - {fileID: 8574412962073106934, guid: 3a3260fef9bdb284f958db52bb683116, type: 2}
+  - {fileID: 8574412962073106934, guid: 59f3e95d4a6d6f947b54756f951086eb, type: 2}
+  - {fileID: 8574412962073106934, guid: 3b15f2b4c62b039428ceb965e528efd7, type: 2}
+  - {fileID: 8574412962073106934, guid: 1301806ae48d246c4a5f8b7c0a5e2972, type: 2}
+  - {fileID: 8574412962073106934, guid: 55523d1f59b663347944948b3896cad4, type: 2}
+  - {fileID: 8574412962073106934, guid: 6ef36c6ea7fd51645a6449ecfa9ef74e, type: 2}
+  - {fileID: 8574412962073106934, guid: 4ab345c4653a94fda9ce2761705d038b, type: 2}
+  - {fileID: 8574412962073106934, guid: f6fc551660d4f4faca88af442bd0e60a, type: 2}

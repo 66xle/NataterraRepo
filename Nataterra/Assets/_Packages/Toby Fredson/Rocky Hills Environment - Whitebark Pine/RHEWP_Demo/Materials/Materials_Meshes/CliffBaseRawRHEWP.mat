@@ -103,7 +103,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RockAlbedo:
-        m_Texture: {fileID: 2800000, guid: 1ab71d53be2a85d44ba44033010d0a03, type: 3}
+        m_Texture: {fileID: 2800000, guid: b4efd2c27af91be44afe37eb32cfcf11, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RockMetallicAoGloss:
@@ -148,7 +148,7 @@ Material:
     - _Cutoff: 0.5
     - _DepthOffsetEnable: 1
     - _DetailNoralIntensity: 1
-    - _DetailNormalIntensity: 1.19
+    - _DetailNormalIntensity: 0.72
     - _DetailNormalMapScale: 1
     - _DoubleSidedEnable: 0
     - _DoubleSidedGIMode: 0
@@ -157,7 +157,7 @@ Material:
     - _DstBlend2: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
-    - _Float5: 1
+    - _Float5: 0.33
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -176,7 +176,7 @@ Material:
     - _ReceivesSSRTransparent: 0
     - _RenderQueueType: 1
     - _RequireSplitLighting: 0
-    - _RockNormalIntensity: 0.72
+    - _RockNormalIntensity: 0.4
     - _SlopeMax1: 3
     - _SlopeMin1: 0
     - _SmoothnessTextureChannel: 0
@@ -219,9 +219,9 @@ Material:
     - _Offset: {r: 1, g: 1, b: 0, a: 0}
     - _OffsetCover: {r: 1, g: 1, b: 0, a: 0}
     - _RockAlbedoColor: {r: 1, g: 1, b: 1, a: 0}
-    - _RockColor: {r: 0.8301887, g: 0.81032366, b: 0.755785, a: 0}
-    - _RockOffset: {r: 1, g: 1, b: 0, a: 0}
-    - _RockTiling: {r: 8, g: 8, b: 0, a: 0}
+    - _RockColor: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 0}
+    - _RockOffset: {r: 7.05, g: 1, b: 0, a: 0}
+    - _RockTiling: {r: 6, g: 6, b: 0, a: 0}
     - _Tiling: {r: 8, g: 8, b: 0, a: 0}
     - _TilingCover: {r: 5, g: 5, b: 0, a: 0}
   m_BuildTextureStacks: []

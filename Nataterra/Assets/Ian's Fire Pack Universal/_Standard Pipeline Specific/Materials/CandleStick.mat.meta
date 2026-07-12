@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 09b651582a6dd4cccb693b754d9a09d5
+timeCreated: 1464728922
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Materials/CandleStick.mat
+  uploadId: 428775

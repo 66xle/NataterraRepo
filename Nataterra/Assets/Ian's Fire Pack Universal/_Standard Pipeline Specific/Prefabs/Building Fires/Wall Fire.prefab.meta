@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3f3aa8154f05143eeb5bd7e60ce284f5
+timeCreated: 1470878412
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/Building
+    Fires/Wall Fire.prefab
+  uploadId: 428775

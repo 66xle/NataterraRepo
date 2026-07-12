@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: b6673863da87f4eb39a62640e734d47d
+timeCreated: 1424104710
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_Standard Pipeline Specific/Prefabs/Fire
+    Medium.prefab
+  uploadId: 428775

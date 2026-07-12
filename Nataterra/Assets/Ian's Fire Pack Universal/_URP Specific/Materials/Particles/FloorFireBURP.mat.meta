@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8fe516467ccd945db9f14df6ffc38aff
+timeCreated: 1470241588
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Particles/FloorFireBURP.mat
+  uploadId: 428775

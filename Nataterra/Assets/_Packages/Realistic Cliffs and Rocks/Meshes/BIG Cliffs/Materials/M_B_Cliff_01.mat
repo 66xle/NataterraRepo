@@ -8,8 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_B_Cliff_01
-  m_Shader: {fileID: -6465566751694194690, guid: a2f88c249bcac444ab81028cc80b3acd,
-    type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: a2f88c249bcac444ab81028cc80b3acd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -25,7 +24,7 @@ Material:
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2225
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -197,13 +196,17 @@ Material:
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 0
+    - _DstBlend2: 0
     - _EnableBlendModePreserveSpecularLighting: 1
     - _EnableFogOnTransparent: 1
     - _ExcludeFromTUAndAA: 0
     - _M_VERTEX_COLOR_CHANNEL: 0
     - _Mask_By_AO: 0
     - _Mask_By_Slope_Mask: 0
+    - _MaterialID: 1
+    - _MaterialTypeMask: 2
     - _OpaqueCullMode: 2
+    - _PerPixelSorting: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RayTracing: 0
@@ -227,6 +230,7 @@ Material:
     - _StencilWriteMaskMV: 41
     - _SupportDecals: 1
     - _SurfaceType: 0
+    - _TransmissionEnable: 1
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
     - _TransparentDepthPostpassEnable: 0
@@ -263,13 +267,12 @@ Material:
     - Color_C85FCDBF: {r: 1, g: 1, b: 1, a: 0}
     - Color_C85FCDBF_1: {r: 1, g: 1, b: 1, a: 0}
     - Color_EFB080B8: {r: 1, g: 1, b: 1, a: 0}
-    - Color_e03de5a5902c408caa12915648fbb9b2: {r: 0.9137255, g: 0.8562343, b: 0.7666157,
-        a: 0}
-    - Color_e03de5a5902c408caa12915648fbb9b2_1: {r: 0.9137255, g: 0.7803922, b: 0.572549,
-        a: 0}
+    - Color_e03de5a5902c408caa12915648fbb9b2: {r: 0.9137255, g: 0.8562343, b: 0.7666157, a: 0}
+    - Color_e03de5a5902c408caa12915648fbb9b2_1: {r: 0.9137255, g: 0.7803922, b: 0.572549, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &795705525112946898
 MonoBehaviour:
   m_ObjectHideFlags: 11

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe05a5969cfc94d44a529526a8ff6761
+timeCreated: 1469836560
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/Particles/OilSmokeLoopURP.mat
+  uploadId: 428775

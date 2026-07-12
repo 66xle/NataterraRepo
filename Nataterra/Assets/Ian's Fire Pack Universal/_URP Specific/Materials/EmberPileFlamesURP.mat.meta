@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 2f5caa760a33d47f19d39b4946c6c489
+timeCreated: 1466549666
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 69661
+  packageName: Ian's Fire Pack
+  packageVersion: 2.3
+  assetPath: Assets/Ian's Fire Pack Universal/_URP Specific/Materials/EmberPileFlamesURP.mat
+  uploadId: 428775
