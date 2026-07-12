@@ -5,6 +5,7 @@ using UnityObject = UnityEngine.Object;
 using System;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using ParrelSync;
 
 namespace CoInspector
 {
@@ -78,6 +79,9 @@ namespace CoInspector
 
         public void SaveData(CoInspectorWindow reference)
         {
+            if (ClonesManager.IsClone())
+                return;
+
             SaveData(true, reference);
         }
 

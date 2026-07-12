@@ -1,11 +1,9 @@
 using DrawXXL;
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Linq;
 using TGS;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Analytics;
 using UnityEngine.UI;
 
 public enum Tab
@@ -20,260 +18,285 @@ public enum Tab
 
 public class HexMapEditor : MonoBehaviour
 {
-    public Texture2D[] biomeTextures;
-    public Texture2D[] resourceTextures;
-    public Texture2D[] baseTextures;
+    [Header("Textures")]
+    public Texture2D[] BiomeTextures;
+    public Texture2D[] ResourceTextures;
+    public Texture2D[] BaseTextures;
 
-    public List<Button> buttons;
-    public List<GameObject> panels;
+    [Header("Toolbar")]
+    public List<Button> Buttons;
+    public List<GameObject> Panels;
 
-    public TMP_Text selectedTileText;
+    [Header("References")]
+    public TMP_Text SelectedTileText;
+    public GameObject ResourceImagePrefab;
 
-    public GameObject prefab;
-    public GameObject resourceImagePrefab;
+    [Header("Interact Options")]
+    public float VertexDetectionRadius = 1f;
+    public LayerMask HexGridLayer;
+    public HexGrid HexGrid;
 
-    public float vertexDetectionRadius = 1f;
-    public LayerMask hexGridLayer;
-    public HexGrid hexGrid;
-
-    // Options
-    public TMP_InputField inputField;
-    public TMP_Text errorText;
+    [Header("Save and Load UI")]
+    public TMP_InputField InputField;
+    public TMP_Text ErrorText;
+    public TMP_Dropdown Dropdown;
 
 
     // Private
-    int[] basesPlaced = new int[4] { -1, -1, -1, -1 };
-    ToggleGroup[] selectToggleGroups = new ToggleGroup[3];
+    int[] _basesPlaced = new int[4] { -1, -1, -1, -1 };
+    ToggleGroup[] _selectToggleGroups = new ToggleGroup[3];
 
-    Tab currentTab;
-    GameObject selectedCell;
+    Tab _currentTab;
+    GameObject _selectedCell;
 
-    int currentCellIndex;
-    VertexData selectedVertex;
+    int _currentCellIndex;
+    VertexData _selectedVertex;
 
-    bool isDraggingVertex;
-    Vector3 currentVertexPos;
-    Vector3 oldVertexPos;
+    bool _isDraggingVertex;
+    Vector3 _currentVertexPos;
+    Vector3 _oldVertexPos;
 
-    int biomeIndex;
-    int resourceIndex;
-    int baseIndex;
+    int _biomeIndex;
+    int _resourceIndex;
+    int _baseIndex;
 
-    HexMapOptions options;
+    HexMapOptions _options;
+
+    TerrainGridSystem TGS;
 
     void Awake()
     {
-        options = new(this);
+        TGS = TerrainGridSystem.instance;
+
+        _options = new(this);
 
         SelectButton(0);
-        biomeIndex = 0;
-        resourceIndex = 0;
-        baseIndex = 0;
+        _biomeIndex = 0;
+        _resourceIndex = 0;
+        _baseIndex = 0;
 
-        selectToggleGroups = panels[0].GetComponentsInChildren<ToggleGroup>();
+        // Get Select panel toggle groups
+        _selectToggleGroups = Panels[0].GetComponentsInChildren<ToggleGroup>();
+
+        Dropdown.AddOptions(Extensions.SceneGetList());
     }
 
     private void Update()
     {
         HandleInput();
 
-        if (currentTab == Tab.Vertex)
+        if (_currentTab == Tab.Vertex)
         {
-            if (!isDraggingVertex)
+            if (!_isDraggingVertex)
                 CheckMouseNearVertex();
 
-            if (isDraggingVertex)
+            if (_isDraggingVertex)
             {
-                currentVertexPos = MoveVertex(currentVertexPos);
+                _currentVertexPos = MoveVertex(_currentVertexPos);
 
                 bool isWithinBounds = false;
 
-                Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+                
+                Cell cell = TGS.CellGetAtMousePosition();
                 if (cell != null)
                 {
-                    isWithinBounds = selectedVertex.cellsRef.Any(c => c.Item1.index == cell.index);
+                    // Check if vertex is in bounds
+                    isWithinBounds = _selectedVertex.cellsRef.Any(c => c.Item1.index == cell.index);
+
+                    // Debug distance from last position and is within bounds
                     Color distanceColor = isWithinBounds ? Color.green : Color.red;
-                    DrawMeasurements.Distance(oldVertexPos, currentVertexPos, distanceColor);
+                    DrawMeasurements.Distance(_oldVertexPos, _currentVertexPos, distanceColor);
                 }
 
                 if (Input.GetKeyUp(KeyCode.Mouse0))
                 {
-                    isDraggingVertex = false;
+                    _isDraggingVertex = false;
 
                     if (!isWithinBounds) return;
-                    hexGrid.SetVertexPosition(currentVertexPos, selectedVertex);
-                    hexGrid.RegenerateGrid(selectedVertex);
-                    hexGrid.RegenerateCellSurface(selectedVertex, biomeTextures, baseTextures);
+
+                    // Set vertex position and update grid
+                    HexGrid.SetVertexPosition(_currentVertexPos, _selectedVertex);
+                    HexGrid.RegenerateGrid(_selectedVertex);
+                    HexGrid.RegenerateCellSurface(_selectedVertex, BiomeTextures, BaseTextures);
                 }
             }
         }
     }
 
+    
 
 
     void HandleInput()
     {
-        Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+        Cell cell = TGS.CellGetAtMousePosition();
 
         if (cell == null) return;
 
         int cellIndex = cell.index;
 
 
-        if (Input.GetKey(KeyCode.Mouse0) && currentTab != Tab.Select || Input.GetKeyDown(KeyCode.Mouse0) && currentTab == Tab.Select)
+        if (Input.GetKey(KeyCode.Mouse0) && _currentTab != Tab.Select || Input.GetKeyDown(KeyCode.Mouse0) && _currentTab == Tab.Select)
         {
-            if (Tab.Select == currentTab)
+            if (Tab.Select == _currentTab)
             {
                 ShowTileDetails(cellIndex);
             }
-            else if (Tab.Biome == currentTab)
+            else if (Tab.Biome == _currentTab)
             {
                 ChangeTileBiome(cellIndex);
             }
-            else if (Tab.Resource == currentTab)
+            else if (Tab.Resource == _currentTab)
             {
                 ChangeTileResource(cellIndex);
             }
-            else if (Tab.Base == currentTab)
+            else if (Tab.Base == _currentTab)
             {
                 ChangeTileBase(cellIndex);
             }
         }
-        else if (Input.GetKey(KeyCode.Mouse1))
+        else if (Input.GetKey(KeyCode.Mouse1) && Input.GetKey(KeyCode.LeftControl))
         {
-            hexGrid.RemoveCellBiome(cellIndex);
-            hexGrid.RemoveCellResource(cellIndex);
-            hexGrid.RemoveCellBase(cellIndex);
+            ResetCell(cellIndex);
+        }
+    }
 
-            if (currentTab == Tab.Select)
-            {
-                SetSelectToggles(cellIndex);
+    public void ResetCell(int cellIndex)
+    {
+        HexGrid.RemoveCellBiome(cellIndex);
+        HexGrid.RemoveCellResource(cellIndex);
+        HexGrid.RemoveCellBase(cellIndex);
 
-                // When resetting current cell which is no longer a biome, so hide resource toggles
-                if (currentCellIndex == cellIndex)
-                    selectToggleGroups[1].gameObject.SetActive(false);
-            }
+        if (_currentTab == Tab.Select)
+        {
+            SetSelectToggles(cellIndex);
+
+            // When resetting current cell which is no longer a biome, so hide resource toggles
+            if (_currentCellIndex == cellIndex)
+                _selectToggleGroups[1].gameObject.SetActive(false);
         }
     }
 
     public void SelectButton(int index)
     {
-        for (int i = 0; i < buttons.Count; i++)
+        for (int i = 0; i < Buttons.Count; i++)
         {
             if (i == index)
             {
-                buttons[i].interactable = false;
-                Tab previousTab = currentTab;
-                currentTab = (Tab)index;
+                Buttons[i].interactable = false;
+                Tab previousTab = _currentTab;
+                _currentTab = (Tab)index;
 
                 // If clicked on tabs other than select
-                if (currentTab != Tab.Select)
+                if (_currentTab != Tab.Select)
                 {
-                    if (i < panels.Count)
-                        panels[i].SetActive(true);
+                    if (i < Panels.Count)
+                        Panels[i].SetActive(true);
 
-                    if (selectedCell != null)
-                        Destroy(selectedCell);
+                    if (_selectedCell != null)
+                        Destroy(_selectedCell);
                 }
 
-                if (currentTab == Tab.Biome || currentTab == Tab.Resource || currentTab == Tab.Base)
+                if (_currentTab == Tab.Biome || _currentTab == Tab.Resource || _currentTab == Tab.Base)
                 {
-                    Toggle[] toggles = panels[index].GetComponentsInChildren<Toggle>();
+                    Toggle[] toggles = Panels[index].GetComponentsInChildren<Toggle>();
 
+                    // Match tabs toggles with respective index
                     for (int t = 0; t < toggles.Length; t++)
                     {
                         if (!toggles[t].isOn)
                             continue;
 
-                        if (Tab.Biome == currentTab)
-                            biomeIndex = t;
-                        else if (Tab.Resource == currentTab)
-                            resourceIndex = t;
-                        else if (Tab.Base == currentTab)
-                            baseIndex = t;
+                        if (Tab.Biome == _currentTab)
+                            _biomeIndex = t;
+                        else if (Tab.Resource == _currentTab)
+                            _resourceIndex = t;
+                        else if (Tab.Base == _currentTab)
+                            _baseIndex = t;
                     }
                 }
             }
             else
             {
-                buttons[i].interactable = true;
+                Buttons[i].interactable = true;
 
-                if (i < panels.Count)
-                    panels[i].SetActive(false);
+                if (i < Panels.Count)
+                    Panels[i].SetActive(false);
             }
         }
     }
 
     private void ShowTileDetails(int cellIndex)
     {
-        if (selectedCell != null)
-            Destroy(selectedCell);
+        if (_selectedCell != null)
+            Destroy(_selectedCell);
 
-        selectedCell = hexGrid.tgs.CellDrawBorder(cellIndex, Color.blue, 1f);
-        selectedTileText.text = $"Selected: {cellIndex}";
+        _selectedCell = TGS.CellDrawBorder(cellIndex, Color.blue, 1f);
+        SelectedTileText.text = $"Selected: {cellIndex}";
 
-        currentCellIndex = cellIndex;
-        panels[0].SetActive(true); // Select panel
+        _currentCellIndex = cellIndex;
+        Panels[0].SetActive(true); // Select panel
 
         // Show resource toggles if cell is a biome, otherwise hide it
-        bool isBiome = hexGrid.IsCellABiome(cellIndex);
-        selectToggleGroups[1].gameObject.SetActive(isBiome);
+        bool isBiome = HexGrid.IsCellABiome(cellIndex);
+        _selectToggleGroups[1].gameObject.SetActive(isBiome);
 
         SetSelectToggles(cellIndex);
     }
 
     private void SetSelectToggles(int cellIndex)
     {
-        Biome biome = hexGrid.GetCellBiome(cellIndex);
-        Resource resource = hexGrid.GetCellResource(cellIndex);
-        Base faction = hexGrid.GetCellBase(cellIndex);
+        Biome biome = HexGrid.GetCellBiome(cellIndex);
+        Resource resource = HexGrid.GetCellResource(cellIndex);
+        Base faction = HexGrid.GetCellBase(cellIndex);
 
-        selectToggleGroups[0].SetAllTogglesOff(false);
-        selectToggleGroups[1].SetAllTogglesOff(false);
-        selectToggleGroups[2].SetAllTogglesOff(false);
+        _selectToggleGroups[0].SetAllTogglesOff(false);
+        _selectToggleGroups[1].SetAllTogglesOff(false);
+        _selectToggleGroups[2].SetAllTogglesOff(false);
 
         if (Biome.None != biome)
-            selectToggleGroups[0].GetComponentsInChildren<Toggle>()[(int)biome].SetIsOnWithoutNotify(true);
+            _selectToggleGroups[0].GetComponentsInChildren<Toggle>()[(int)biome].SetIsOnWithoutNotify(true);
 
         if (Resource.None != resource)
-            selectToggleGroups[1].GetComponentsInChildren<Toggle>()[(int)resource].SetIsOnWithoutNotify(true);
+            _selectToggleGroups[1].GetComponentsInChildren<Toggle>()[(int)resource].SetIsOnWithoutNotify(true);
 
         if (Base.None != faction)
-            selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)faction].SetIsOnWithoutNotify(true);
+            _selectToggleGroups[2].GetComponentsInChildren<Toggle>()[(int)faction].SetIsOnWithoutNotify(true);
     }
 
 
 
     private void CheckMouseNearVertex()
     {
-        Cell cell = hexGrid.tgs.CellGetAtMousePosition();
+        Cell cell = TGS.CellGetAtMousePosition();
 
         if (cell == null) return;
 
-        int vc = hexGrid.tgs.CellGetVertexCount(cell.index);
+        int vc = TGS.CellGetVertexCount(cell.index);
 
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, HexGridLayer))
         {
+            // Loop through the cell's vertices
             for (int i = 0; i < vc; i++)
             {
-                Vector3 vertPos = hexGrid.tgs.CellGetVertexPosition(cell.index, i);
+                Vector3 vertPos = TGS.CellGetVertexPosition(cell.index, i);
 
                 Debug.DrawRay(vertPos, Vector3.up * 5f, Color.yellow);
 
                 Vector3 checkPos = hit.point;
                 checkPos.y = vertPos.y;
 
-                if (Vector3.Distance(checkPos, vertPos) < vertexDetectionRadius && Vector3.Distance(checkPos, vertPos) > -vertexDetectionRadius)
+                if (Vector3.Distance(checkPos, vertPos) < VertexDetectionRadius && Vector3.Distance(checkPos, vertPos) > -VertexDetectionRadius)
                 {
-                    // Draw axis on vertex pos
+                    // Debug draw axis on vertex position
                     DrawEngineBasics.CoordinateAxesGizmo(vertPos, 10f);
 
-                    VertexData vertex = hexGrid.vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.1f);
+                    // Get matching vertex in hexGrid
+                    VertexData vertex = HexGrid.Vertices.FirstOrDefault(v => (v.position - vertPos).sqrMagnitude < 0.1f);
                     foreach ((Cell, int) cellRef in vertex.cellsRef)
                     {
-                        Vector3 pos = hexGrid.tgs.CellGetCentroid(cellRef.Item1.index);
+                        Vector3 pos = TGS.CellGetCentroid(cellRef.Item1.index);
 
                         // Draw cell position sharing vertex
                         DrawBasics.Vector(pos, pos + Vector3.up * 5f);
@@ -281,11 +304,11 @@ public class HexMapEditor : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Mouse0))
                     {
-                        oldVertexPos = checkPos;
-                        currentVertexPos = checkPos;
+                        _oldVertexPos = checkPos;
+                        _currentVertexPos = checkPos;
 
-                        selectedVertex = vertex;
-                        isDraggingVertex = true;
+                        _selectedVertex = vertex;
+                        _isDraggingVertex = true;
                     }
 
                     
@@ -298,7 +321,7 @@ public class HexMapEditor : MonoBehaviour
     {
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, hexGridLayer))
+        if (Physics.Raycast(inputRay, out hit, Mathf.Infinity, HexGridLayer))
         {
             return hit.point;
         }
@@ -327,15 +350,15 @@ public class HexMapEditor : MonoBehaviour
     { 
         if (typeIndex == 0)
         {
-            ChangeTileBiome(currentCellIndex);
+            ChangeTileBiome(_currentCellIndex);
         }
         else if (typeIndex == 1)
         {
-            ChangeTileResource(currentCellIndex);
+            ChangeTileResource(_currentCellIndex);
         }
         else if (typeIndex == 2)
         {
-            ChangeTileBase(currentCellIndex);
+            ChangeTileBase(_currentCellIndex);
         }
         else
         {
@@ -346,108 +369,147 @@ public class HexMapEditor : MonoBehaviour
     private void ChangeTileBiome(int cellIndex)
     {
         // Remove base
-        hexGrid.RemoveCellBase(cellIndex);
-        selectToggleGroups[2].SetAllTogglesOff(false);
+        HexGrid.RemoveCellBase(cellIndex);
+        _selectToggleGroups[2].SetAllTogglesOff(false);
 
         // Set biome
-        hexGrid.SetCellBiome(cellIndex, (Biome)biomeIndex, biomeTextures[biomeIndex]);
+        HexGrid.SetCellBiome(cellIndex, (Biome)_biomeIndex, BiomeTextures[_biomeIndex]);
 
-        if (currentTab == Tab.Select || currentTab == Tab.Biome)
+        if (_currentTab == Tab.Select || _currentTab == Tab.Biome)
         {
-            SetSelectToggles(cellIndex);
-
             bool enableResource = true;
 
-            if (Biome.Mountain == (Biome)biomeIndex || Biome.Lake == (Biome)biomeIndex)
+            if (Biome.Mountain == (Biome)_biomeIndex || Biome.Lake == (Biome)_biomeIndex)
             {
                 enableResource = false;
-                hexGrid.RemoveCellResource(cellIndex);
+                HexGrid.RemoveCellResource(cellIndex);
             }
             
-            if (currentTab == Tab.Select)
-                selectToggleGroups[1].gameObject.SetActive(enableResource);
-
-            
+            if (_currentTab == Tab.Select)
+            {
+                SetSelectToggles(cellIndex);
+                _selectToggleGroups[1].gameObject.SetActive(enableResource);
+            }
         }
     }
 
     private void ChangeTileResource(int cellIndex)
     {
-        if (!hexGrid.IsCellABiome(cellIndex)) return;
+        if (!HexGrid.IsCellABiome(cellIndex)) return;
 
-        Biome biome = hexGrid.GetCellBiome(cellIndex);
+        Biome biome = HexGrid.GetCellBiome(cellIndex);
         if (biome == Biome.Mountain || biome == Biome.Lake)
             return;
 
-        Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
+        Vector3 cellPosition = HexGrid.GetCellWorldPosition(cellIndex);
 
-        GameObject resourceObj = Instantiate(resourceImagePrefab);
+        GameObject resourceObj = Instantiate(ResourceImagePrefab);
         resourceObj.transform.position = cellPosition;
 
         RawImage resourceImage = resourceObj.GetComponent<RawImage>();
-        resourceImage.rectTransform.SetParent(hexGrid.gridCanvas.transform, false);
-        resourceImage.rectTransform.localScale = new Vector3(resourceImage.rectTransform.localScale.x * hexGrid.CellSize.x, resourceImage.rectTransform.localScale.z * hexGrid.CellSize.y, 1f);
-        resourceImage.texture = resourceTextures[resourceIndex];
+        resourceImage.rectTransform.SetParent(HexGrid.GridCanvas.transform, false);
+        resourceImage.rectTransform.localScale = new Vector3(resourceImage.rectTransform.localScale.x * HexGrid.CellSize.x, resourceImage.rectTransform.localScale.z * HexGrid.CellSize.y, 1f);
+        resourceImage.texture = ResourceTextures[_resourceIndex];
 
-        hexGrid.RemoveCellBase(cellIndex);
-        hexGrid.SetCellBiome(cellIndex, biome, biomeTextures[(int)biome]);
-        hexGrid.SetCellResource(cellIndex, (Resource)resourceIndex, resourceObj);
+        HexGrid.RemoveCellBase(cellIndex);
+        HexGrid.SetCellBiome(cellIndex, biome, BiomeTextures[(int)biome]);
+        HexGrid.SetCellResource(cellIndex, (Resource)_resourceIndex, resourceObj);
 
-        if (currentTab == Tab.Select)
+        if (_currentTab == Tab.Select)
             SetSelectToggles(cellIndex);
     }
 
     private void ChangeTileBase(int cellIndex)
     {
-        Vector3 cellPosition = hexGrid.GetCellWorldPosition(cellIndex);
+        Vector3 cellPosition = HexGrid.GetCellWorldPosition(cellIndex);
 
-        for (int i = 0; i < basesPlaced.Length; i++)
+        for (int i = 0; i < _basesPlaced.Length; i++)
         {
             // Skip if base is placed
-            if (basesPlaced[i] != cellIndex) continue;
+            if (_basesPlaced[i] != cellIndex) continue;
 
             // If a base is not placed set to -1
-            basesPlaced[i] = -1;
+            _basesPlaced[i] = -1;
         }
 
         // Only one base should exist per type
-        if (basesPlaced[baseIndex] != -1)
-            hexGrid.RemoveCellBase(basesPlaced[baseIndex]);
+        if (_basesPlaced[_baseIndex] != -1)
+            HexGrid.RemoveCellBase(_basesPlaced[_baseIndex]);
 
-        hexGrid.RemoveCellResource(cellIndex);
-        hexGrid.SetCellBiome(cellIndex, (Biome)baseIndex);
-        hexGrid.SetCellBase(cellIndex, (Base)baseIndex, baseTextures[baseIndex]);
+        HexGrid.RemoveCellResource(cellIndex);
+        HexGrid.SetCellBiome(cellIndex, (Biome)_baseIndex);
+        HexGrid.SetCellBase(cellIndex, (Base)_baseIndex, BaseTextures[_baseIndex]);
 
-        basesPlaced[baseIndex] = cellIndex;
+        _basesPlaced[_baseIndex] = cellIndex;
 
-        if (currentTab == Tab.Select)
+        if (_currentTab == Tab.Select)
             SetSelectToggles(cellIndex);
     }
-
-    
 
 
     public void SetBiome(int index)
     {
-        biomeIndex = index;
+        _biomeIndex = index;
     }
     public void SetResource(int index)
     {
-        resourceIndex = index;
+        _resourceIndex = index;
     }
     public void SetBase(int index)
     {
-        baseIndex = index;
+        _baseIndex = index;
     }
 
 
     public void SaveMap()
     {
-        options.SaveMap(inputField.text, hexGrid.GetHexCells(), hexGrid.tgs.cells);
+        _options.SaveMap(InputField.text, HexGrid.GetHexCells(), TGS.cells, Dropdown, _basesPlaced);
     }
 
     public void LoadMap()
     {
-        options.LoadMap(inputField.text);
+        _options.LoadMap(InputField.text);
+    }
+
+    public void LoadCellData(List<HexCellData> cellData)
+    {
+        HexGrid.SetCells(cellData.Select(c => new HexCell(c)).ToArray());
+
+        for (int i = 0; i < cellData.Count; i++)
+        {
+            _biomeIndex = (int)cellData[i].biome;
+            _resourceIndex = (int)cellData[i].resource;
+            _baseIndex = (int)cellData[i].faction;
+
+            if (_baseIndex != -1)
+            {
+                ChangeTileBase(i);
+
+                _basesPlaced[_baseIndex] = i;
+            }
+            else if (_biomeIndex != -1)
+            {
+                ChangeTileBiome(i);
+
+                if (_resourceIndex == -1)
+                    continue;
+
+                ChangeTileResource(i);
+            }
+        }
+    }
+
+    public void SetDropdownScene(string sceneName)
+    {
+        int index = Extensions.SceneGetInt(sceneName);
+
+        if (index == -1)
+        {
+            ErrorText.text = $"\"{sceneName}\" does not exist in build";
+            Dropdown.value = 0;
+            return;
+        }
+
+        Dropdown.value = index;
     }
 }

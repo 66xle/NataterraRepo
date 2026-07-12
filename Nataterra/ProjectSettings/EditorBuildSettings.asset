@@ -8,4 +8,16 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/OutdoorsScene.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
+  - enabled: 1
+    path: Assets/_Project/Scenes/Bootstrapper.unity
+    guid: f213b3af726415a49888391d6861b417
+  - enabled: 1
+    path: Assets/_Project/Scenes/UI.unity
+    guid: 27688b006e1369540a3d2fcdf224d3ba
+  - enabled: 1
+    path: Assets/_Project/Scenes/Gameplay.unity
+    guid: 0006a4911ea31f04cbdc6a143a151ff3
+  - enabled: 1
+    path: Assets/_Project/Scenes/Art Test/Art Test Scene.unity
+    guid: b85e2a145a9064e29ba783969c1ad802
   m_configObjects: {}

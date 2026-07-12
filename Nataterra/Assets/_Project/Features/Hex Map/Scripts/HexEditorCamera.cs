@@ -76,8 +76,9 @@ public class HexEditorCamera : MonoBehaviour
 
     private void HandleLook()
     {
-        if (!Input.GetMouseButton(1))
+        if (!Input.GetMouseButton(1) || Input.GetKey(KeyCode.LeftControl))
             return;
+
 
         yaw += Input.GetAxis("Mouse X") * lookSensitivity;
         pitch -= Input.GetAxis("Mouse Y") * lookSensitivity;
