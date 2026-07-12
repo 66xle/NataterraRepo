@@ -5,7 +5,7 @@ public class SMM_ResourcePhaseState : GameplayBaseState
     public SMM_ResourcePhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
-
+        Debug.Log("Entered Resource Phase");
     }
 
     public override void UpdateState()

@@ -31,8 +31,6 @@ public class StateMachineManager : NetworkBehaviour
 
     public GameplayBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
 
-    //Dictionary<PlayerID, Base> _dictFaction = new();
-
     protected override async void OnSpawned(bool asServer)
     {
         base.OnSpawned();
@@ -42,7 +40,7 @@ public class StateMachineManager : NetworkBehaviour
             if (!isHost)
                 await MapCtx.SetupClient(CreateDictDatabase());
 
-            OnPlayerJoined();
+            SetupClient();
             return;
         }
 
@@ -56,27 +54,34 @@ public class StateMachineManager : NetworkBehaviour
         _currentState.UpdateStates();
     }
 
-
-    void OnPlayerJoined()
+    
+    void SetupClient()
     {
-        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
-
-        List<FactionData> factions = GameManager.Instance.ListOfFactions;
-        FactionData data = factions[(int)playerID.id.value - 1];
-
-        //_dictFaction.Add(player, data.Settings.Faction);
-
-        Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
-
-
-
-        MapCtx.SpawnStartingUnits(data.Settings.Faction);
-
-
         _states = new GameplayStateFactory(this);
         _currentState = new SMM_MapState(this, _states);
         _currentState.EnterState();
+
+        OnPlayerJoin();
     }
+
+    [ServerRpc]
+    void OnPlayerJoin()
+    {
+        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
+        List<FactionData> factions = GameManager.Instance.ListOfFactions;
+        FactionData data = factions[(int)playerID.id.value - 1];
+
+        Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
+
+        MapCtx.AddFaction(playerID, data.Settings.Faction);
+        MapCtx.SpawnStartingUnits(data.Settings.Faction);
+
+        if (networkManager.playerCount == 1)
+        {
+            MapCtx.SendEndPhaseCommand(GameplayState.WaitingForTurn);
+        }
+    }
+
     void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
     {
         if (asServer) return;
@@ -109,7 +114,6 @@ public class StateMachineManager : NetworkBehaviour
             CreateCellLabel();
         }
 #endif
-
     }
 
     Dictionary<UnitType, UnitData> CreateDictDatabase()

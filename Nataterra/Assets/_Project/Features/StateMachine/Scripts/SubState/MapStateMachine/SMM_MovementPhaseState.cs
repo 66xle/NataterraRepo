@@ -6,36 +6,39 @@ using UnityEngine;
 
 public class SMM_MovementPhaseState : GameplayBaseState
 {
-    public SMM_MovementPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) 
-    {
-        
-    }
+    public SMM_MovementPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
         Debug.Log("Entered Movement State");
 
+        MapCtx.OnEndPhase += SwitchToResourcePhase;
+
         MapCtx.OnSelectUnit += ShowUnitMovementRange;
         InputManager.Instance.OnRightClickEvent += MoveUnit;
     }
-
-    public override void UpdateState()
+    public override void UpdateState() 
     {
-        CheckSwitchState();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            MapCtx.SendEndPhaseCommand(GameplayState.MovementPhase);
+        }
     }
-
     public override void FixedUpdateState() { }
     public override void ExitState() 
     {
+        MapCtx.OnEndPhase -= SwitchToResourcePhase;
+
         MapCtx.OnSelectUnit -= ShowUnitMovementRange;
         InputManager.Instance.OnRightClickEvent -= MoveUnit;
     }
 
-    public override void CheckSwitchState()
-    {
-
-    }
-
+    public override void CheckSwitchState() { }
     public override void InitializeSubState() { }
+
+    void SwitchToResourcePhase()
+    {
+        SwitchState(Factory.ResourcePhase());
+    }
 
     private void ShowUnitMovementRange(List<Unit> units)
     {
@@ -59,7 +62,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
         Debug.Log($"Number of cells in range: {cellsInRange.Count}");
 
         if (MapCtx.MovementBorder != null)
-            Destroy(MapCtx.MovementBorder);
+            MapCtx.RemoveMovementBorder();
 
         cellsInRange.Add(MapCtx.SelectedCell.index);
         MapCtx.MovementBorder = TGS.CellDrawBorder(cellsInRange, Color.green);
@@ -90,7 +93,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
         MapCtx.SendMoveCommand(MapCtx.SelectedCell.index, cell.index, MapCtx.SelectedUnits);
 
         MapCtx.MovementResult = null;
-        Destroy(MapCtx.MovementBorder);
+        MapCtx.RemoveMovementBorder();
 
         TGS.CellDestroyBorder(MapCtx.SelectedCell.index);
         MapCtx.SelectedCell = null;

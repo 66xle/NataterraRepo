@@ -21,8 +21,6 @@ public class SMM_MapState : GameplayBaseState
 
     public override void UpdateState()
     {
-        InputCellSelection();
-
         CheckSwitchState();
     }
 
@@ -32,14 +30,11 @@ public class SMM_MapState : GameplayBaseState
         InputManager.Instance.OnLeftClickEvent -= InputCellSelection;
     }
 
-    public override void CheckSwitchState()
-    {
-        
-    }
+    public override void CheckSwitchState() { }
 
     public override void InitializeSubState() 
     {
-        SetSubState(Factory.MovementPhase());
+        SetSubState(Factory.WaitingForTurn());
         CurrentSubState.EnterState();
     }
 
@@ -57,7 +52,7 @@ public class SMM_MapState : GameplayBaseState
             if (MapCtx.MovementBorder != null)
             {
                 MapCtx.MovementResult = null;
-                Destroy(MapCtx.MovementBorder);
+                MapCtx.RemoveMovementBorder();
             }
 
             // Selected cell

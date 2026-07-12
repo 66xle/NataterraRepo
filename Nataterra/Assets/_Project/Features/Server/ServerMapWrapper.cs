@@ -1,3 +1,4 @@
+using PurrNet;
 using PurrNet.Packing;
 using System.Collections.Generic;
 using TGS;
@@ -19,18 +20,21 @@ public struct StateChange
 public class ServerMapWrapper
 {
     private List<HexCellState> _state;
+    private List<int> _stateChanges;
     private List<Cell> _cells;
     private int[] _basesPlaced;
-
-    private List<int> _stateChanges;
+    private GameplayState _phaseState;
+    private PlayerID _currentPlayerTurn;
 
 
     private Dictionary<Base, FactionSettings> _factionSettings;
     private Dictionary<UnitType, UnitData> _dictOfUnits;
     private Dictionary<string, DijkstraResult> _results;
+    private Dictionary<PlayerID, Base> _dictFaction;
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
+    public PlayerID CurrentPlayerTurn { get { return _currentPlayerTurn; } }
 
     public ServerMapWrapper(List<HexCellState> state, List<Cell> cells, int[] basesPlaced, List<FactionData> factionData, Dictionary<UnitType, UnitData> dictOfUnits)
     {
@@ -41,6 +45,9 @@ public class ServerMapWrapper
         _stateChanges = new();
         _factionSettings = new();
         _results = new();
+        _dictFaction = new();
+
+        _phaseState = GameplayState.WaitingForTurn;
 
         foreach (FactionData data in factionData)
         {
@@ -48,6 +55,18 @@ public class ServerMapWrapper
             _factionSettings.Add(setting.Faction, setting);
         }
     }
+
+    public void AddFaction(PlayerID playerID, Base facton)
+    {
+        _dictFaction.Add(playerID, facton);
+
+        if (_dictFaction.Count == 1)
+        {
+            _currentPlayerTurn = playerID;
+        }
+    }
+
+
 
     public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
     {
@@ -206,6 +225,11 @@ public class ServerMapWrapper
         _results.Add(guid, result);
     }
 
+
+    public void SetPhaseState(GameplayState state)
+    {
+        _phaseState = state;
+    }
 
     private void AddStateChange(int cellIndex)
     {

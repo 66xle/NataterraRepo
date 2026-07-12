@@ -2,7 +2,7 @@
 using PurrNet;
 using TGS;
 
-public abstract class GameplayBaseState : NetworkBehaviour
+public abstract class GameplayBaseState
 {
     bool _isRootState = false;
     StateMachineManager _ctx;
@@ -76,7 +76,7 @@ public abstract class GameplayBaseState : NetworkBehaviour
 
         if (_isRootState)
         {
-            // new root state, substate is null
+            // new root state, substate is not null
             if (_currentSubState != null && newState._currentSubState != null)
             {
                 // Exit roots substates
@@ -86,8 +86,6 @@ public abstract class GameplayBaseState : NetworkBehaviour
                     _currentSubState = newState._currentSubState;
                 }
             }
-
-
         }
         else if (_currentSuperState != null)
         {

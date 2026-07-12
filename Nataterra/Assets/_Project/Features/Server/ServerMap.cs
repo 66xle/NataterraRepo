@@ -1,26 +1,17 @@
-using UnityEngine;
-using System.Collections.Generic;
-using TGS;
-using System.Windows.Input;
-using System;
 using PurrNet;
+using System;
+using System.Collections.Generic;
+using System.Windows.Input;
+using TGS;
+using Unity.VisualScripting;
+using UnityEngine;
 
-public class ServerMap : NetworkBehaviour
+public class ServerMap
 {
     ServerMapWrapper _map;
     GameplaySystem _gs;
 
     private CommandProcessor _commandProcessor = new();
-
-    private void OnEnable()
-    {
-        InstanceHandler.RegisterInstance(this);
-    }
-
-    private void OnDisable()
-    {
-        InstanceHandler.UnregisterInstance<ServerMap>();
-    }
 
     public void Init(ServerMapWrapper wrapper, GameplaySystem GS)
     {
@@ -30,6 +21,8 @@ public class ServerMap : NetworkBehaviour
         _commandProcessor.Register<AC_UnitRecruitCommand>(new AH_UnitHandler(_gs, _map));
         _commandProcessor.Register<AC_UnitInitialSpawnCommand>(new AH_UnitHandler(_gs, _map));
         _commandProcessor.Register<AC_UnitMoveCommand>(new AH_UnitHandler(_gs, _map));
+
+        _commandProcessor.Register<AC_PhaseEndPhaseCommand>(new AH_PhaseHandler(_gs, _map));
     }
 
     public void HandleCommand(IActionCommand command)
@@ -63,5 +56,10 @@ public class ServerMap : NetworkBehaviour
         _gs.UnitSystem.SpawnUnitToClient(playerID, types, GUIDs, indexs);
 
         return state;
+    }
+
+    public void AddFaction(PlayerID playerID, Base facton)
+    {
+        _map.AddFaction(playerID, facton);
     }
 }

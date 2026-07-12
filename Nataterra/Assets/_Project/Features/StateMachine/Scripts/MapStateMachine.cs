@@ -32,6 +32,7 @@ public class MapStateMachine : NetworkBehaviour
 
 
     public Action<List<Unit>> OnSelectUnit;
+    public Action OnEndPhase;
 
 
     public void SetupServer(Dictionary<UnitType, UnitData> dictUnits)
@@ -66,16 +67,10 @@ public class MapStateMachine : NetworkBehaviour
 
     void SetupServerMap(MapData mapData)
     {
-        if (!InstanceHandler.TryGetInstance(out ServerMap serverMap))
-        {
-            Debug.LogError("StateMachineManager: Failed to get Server Manager Instance");
-            return;
-        }
-
         List<FactionData> factionData = GameManager.Instance.ListOfFactions;
 
         ServerMapWrapper wrapper = new ServerMapWrapper(_state, _tgs.cells, mapData.bases, factionData, _dictOfUnits);
-        _serverMap = serverMap;
+        _serverMap = new ServerMap();
         _serverMap.Init(wrapper, GS);
     }
 
@@ -97,6 +92,11 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.RedrawCells(_tgs.cells);
     }
 
+    public void AddFaction(PlayerID playerID, Base facton)
+    {
+        _serverMap.AddFaction(playerID, facton);
+    }
+
 
     [ServerRpc]
     async Task<List<HexCellState>> LoadMap(RPCInfo info = default)
@@ -106,8 +106,7 @@ public class MapStateMachine : NetworkBehaviour
         return _serverMap.LoadClientMap(info.sender);
     }
 
-    [ServerRpc]
-    public void SpawnStartingUnits(Base faction, RPCInfo info = default)
+    public void SpawnStartingUnits(Base faction)
     {
         AC_UnitInitialSpawnCommand command = new AC_UnitInitialSpawnCommand
         {
@@ -147,7 +146,23 @@ public class MapStateMachine : NetworkBehaviour
         _serverMap.HandleCommand(command);
     }
 
+    [ServerRpc]
+    public void SendEndPhaseCommand(GameplayState state, RPCInfo info = default)
+    {
+        AC_PhaseEndPhaseCommand command = new AC_PhaseEndPhaseCommand()
+        {
+            PlayerID = info.sender,
+            CurrentState = state
+        };
 
+        _serverMap.HandleCommand(command);
+    }
+
+    [TargetRpc]
+    public void EndPhaseForClient(PlayerID playerID)
+    {
+        OnEndPhase?.Invoke();
+    }
 
     public void SetCellState(HexCellState cellState, int cellIndex)
     {
@@ -218,6 +233,11 @@ public class MapStateMachine : NetworkBehaviour
         return currentMovement;
     }
 
+
+    public void RemoveMovementBorder()
+    {
+        Destroy(MovementBorder);
+    }
 
 
     public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells)
