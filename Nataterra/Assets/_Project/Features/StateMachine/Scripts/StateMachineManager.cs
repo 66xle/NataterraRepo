@@ -62,10 +62,9 @@ public class StateMachineManager : NetworkBehaviour
         _currentState.EnterState();
     }
 
-    [ServerRpc]
-    void OnPlayerJoin(RPCInfo info = default)
+    void OnPlayerJoin()
     {
-        MapCtx.SpawnStartingUnits(info.sender);
+        MapCtx.SpawnStartingUnits();
 
         if (networkManager.playerCount == 1)
         {
@@ -90,7 +89,7 @@ public class StateMachineManager : NetworkBehaviour
 
         Debug.Log($"Player {player.id}'s Faction: {data.Settings.Faction}");
 
-        MapCtx.SpawnStartingUnits(player);
+        MapCtx.SpawnStartingUnits();
     }
 
     void Setup()

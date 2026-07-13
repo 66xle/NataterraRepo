@@ -26,4 +26,10 @@ public class GameplaySystem : NetworkBehaviour
             MSM.SetCellState(state.State, state.CellIndex);
         }
     }
+
+    [TargetRpc]
+    public void UpdateFactionState(PlayerID playerID, FactionState state)
+    {
+        MSM.UpdateFactionState(state);
+    }
 }

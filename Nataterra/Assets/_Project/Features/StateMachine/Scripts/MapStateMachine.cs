@@ -36,6 +36,8 @@ public class MapStateMachine : NetworkBehaviour
 
     public void SetupServer(Dictionary<UnitType, UnitData> dictUnits, List<HexCellState> state)
     {
+        _dictOfUnits = dictUnits;
+
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
         GS.Setup();
@@ -123,11 +125,12 @@ public class MapStateMachine : NetworkBehaviour
         return _serverMap.GetFactionState(info.sender);
     }
 
-    public void SpawnStartingUnits(PlayerID playerID)
+    [ServerRpc]
+    public void SpawnStartingUnits(RPCInfo info = default)
     {
         AC_UnitInitialSpawnCommand command = new AC_UnitInitialSpawnCommand
         {
-            PlayerID = playerID
+            PlayerID = info.sender
         };
 
         _serverMap.HandleCommand(command);
@@ -179,6 +182,15 @@ public class MapStateMachine : NetworkBehaviour
     public void EndPhaseForClient(PlayerID playerID)
     {
         OnEndPhase?.Invoke();
+    }
+
+
+
+    public void UpdateFactionState(FactionState state)
+    {
+        _factionState = state;
+
+        Debug.Log($"Food: {_factionState.Food} - Wood: {_factionState.Wood} - Metal: {_factionState.Metal}");
     }
 
     public void SetCellState(HexCellState cellState, int cellIndex)

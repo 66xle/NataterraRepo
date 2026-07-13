@@ -12,7 +12,7 @@ public enum Biome
 
 public enum Resource
 {
-    Meat = 0,
+    Food = 0,
     Wood = 1,
     Metal = 2,
     None = -1

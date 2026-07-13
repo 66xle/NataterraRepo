@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FactionData
   Settings:
     Faction: 1
+    WorkerUnit: 200
     StartingUnits: c8000000c8000000c8000000
     ListOfUnitAvaliable:
     - Type: 200

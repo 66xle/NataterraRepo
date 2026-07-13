@@ -1,4 +1,6 @@
+using PurrNet;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 {
@@ -25,7 +27,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.ResourcePhase)
         {
-            EndResourcePhase();
+            EndResourcePhase(command.PlayerID);
             state = GameplayState.CombatPhase;
         }
         else if (command.CurrentState == GameplayState.CombatPhase)
@@ -46,12 +48,22 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
     void EndMovementPhase()
     {
-
+        
     }
 
-    void EndResourcePhase()
+    void EndResourcePhase(PlayerID playerID)
     {
+        Base faction = _map.GetFaction(playerID);
+        UnitType type = _map.FactionSettings[faction].WorkerUnit;
 
+        foreach (HexCellState state in _map.GetState())
+        {
+            if (!state.DictOfGroups.ContainsKey(type)) continue;
+
+            _map.AddResource(faction, state.Resource);
+        }
+
+        _gs.UpdateFactionState(playerID, _map.GetFactionState(playerID));
     }
 
     void EndCombatPhase()

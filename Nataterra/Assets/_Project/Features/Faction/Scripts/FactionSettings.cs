@@ -6,6 +6,7 @@ using UnityEngine;
 public class FactionSettings
 {
     public Base Faction;
+    public UnitType WorkerUnit;
     public List<UnitType> StartingUnits;
     public List<UnitAmount> ListOfUnitAvaliable;
 }

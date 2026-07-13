@@ -77,6 +77,21 @@ public class ServerMapWrapper
         return _factionState[GetFaction(playerID)];
     }
 
+    public void AddResource(Base faction, Resource resource)
+    {
+        if (resource == Resource.Food)
+        {
+            _factionState[faction].Food++;
+        }
+        else if (resource == Resource.Wood)
+        {
+            _factionState[faction].Wood++;
+        }
+        else if (resource == Resource.Metal)
+        {
+            _factionState[faction].Metal++;
+        }
+    }
 
     public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
     {

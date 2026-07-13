@@ -76,54 +76,9 @@
             "faction": -1
         },
         {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
             "biome": 1,
-            "resource": -1,
-            "faction": 1
+            "resource": 0,
+            "faction": -1
         },
         {
             "biome": -1,
@@ -147,12 +102,77 @@
         },
         {
             "biome": 0,
+            "resource": 0,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 1,
+            "resource": 0,
+            "faction": -1
+        },
+        {
+            "biome": 1,
+            "resource": -1,
+            "faction": 1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": 0,
+            "faction": -1
+        },
+        {
+            "biome": 0,
             "resource": -1,
             "faction": 0
         },
         {
+            "biome": 0,
+            "resource": 1,
+            "faction": -1
+        },
+        {
             "biome": -1,
             "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 1,
+            "resource": 1,
+            "faction": -1
+        },
+        {
+            "biome": 1,
+            "resource": 1,
+            "faction": -1
+        },
+        {
+            "biome": 1,
+            "resource": 2,
             "faction": -1
         },
         {
@@ -171,33 +191,13 @@
             "faction": -1
         },
         {
-            "biome": -1,
-            "resource": -1,
+            "biome": 0,
+            "resource": 2,
             "faction": -1
         },
         {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
+            "biome": 0,
+            "resource": 1,
             "faction": -1
         },
         {
