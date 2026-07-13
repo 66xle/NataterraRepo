@@ -36,29 +36,25 @@ public class MapStateMachine : NetworkBehaviour
     public Action OnEndPhase;
 
 
-    public void SetupServer(Dictionary<UnitType, UnitData> dictUnits)
+    public void SetupServer(Dictionary<UnitType, UnitData> dictUnits, List<HexCellState> state)
     {
-        _dictOfUnits = dictUnits;
-        _unitObjects = new();
-        _state = new();
-
         MapData mapData = GameManager.Instance.MapData;
-        foreach (HexCellData data in mapData.hexCells)
-        {
-            _state.Add(new HexCellState(data));
-        }
-
         SetupGrid(mapData);
 
         GS.Setup();
-        SetupServerMap(mapData);
+
+        SetupServerMap(mapData, state);
     }
 
     public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
         _unitObjects = new(); 
+
+        await AssignPlayerToFaction();
         _state = await LoadMap();
+
+        if (isHost) return;
 
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
@@ -66,11 +62,11 @@ public class MapStateMachine : NetworkBehaviour
         GS.Setup();
     }
 
-    void SetupServerMap(MapData mapData)
+    void SetupServerMap(MapData mapData, List<HexCellState> state)
     {
         List<FactionData> factionData = GameManager.Instance.ListOfFactions;
 
-        ServerMapWrapper wrapper = new ServerMapWrapper(_state, _tgs.cells, mapData.bases, factionData, _dictOfUnits);
+        ServerMapWrapper wrapper = new ServerMapWrapper(state, _tgs.cells, mapData.bases, factionData, _dictOfUnits);
         _serverMap = new ServerMap();
         _serverMap.Init(wrapper, GS);
     }
@@ -104,6 +100,17 @@ public class MapStateMachine : NetworkBehaviour
         _serverMap.AddFaction(playerID, facton);
     }
 
+    [ServerRpc]
+    async Task AssignPlayerToFaction(RPCInfo info = default)
+    {
+        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
+        List<FactionData> factions = GameManager.Instance.ListOfFactions;
+        FactionData data = factions[(int)playerID.id.value - 1];
+
+        Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
+
+        _serverMap.AddFaction(info.sender, data.Settings.Faction);
+    }
 
     [ServerRpc]
     async Task<List<HexCellState>> LoadMap(RPCInfo info = default)

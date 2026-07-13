@@ -66,6 +66,10 @@ public class ServerMapWrapper
         }
     }
 
+    public Base GetFaction(PlayerID playerID)
+    {
+        return _dictFaction[playerID];
+    }
 
 
     public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)

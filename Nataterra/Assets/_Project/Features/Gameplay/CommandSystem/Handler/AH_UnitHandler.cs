@@ -35,10 +35,11 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
 
     public void Handle(AC_UnitInitialSpawnCommand command)
     {
-        int cellIndex = _map.GetBaseCellIndex(command.Faction);
+        Base faction = _map.GetFaction(command.PlayerID);
+        int cellIndex = _map.GetBaseCellIndex(faction);
 
         // Get Starting Unit
-        List<UnitType> units = _map.FactionSettings[command.Faction].StartingUnits;
+        List<UnitType> units = _map.FactionSettings[faction].StartingUnits;
         List<string> GUIDs = _map.AddUnit(units, cellIndex);
 
         _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex);

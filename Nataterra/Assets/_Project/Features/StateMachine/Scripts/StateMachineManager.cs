@@ -37,10 +37,10 @@ public class StateMachineManager : NetworkBehaviour
 
         if (!asServer)
         {
-            if (!isHost)
-                await MapCtx.SetupClient(CreateDictDatabase());
+            await MapCtx.SetupClient(CreateDictDatabase());
 
-            SetupClient();
+            SetupStateMachine();
+            OnPlayerJoin();
             return;
         }
 
@@ -55,26 +55,17 @@ public class StateMachineManager : NetworkBehaviour
     }
 
     
-    void SetupClient()
+    void SetupStateMachine()
     {
         _states = new GameplayStateFactory(this);
         _currentState = new SMM_MapState(this, _states);
         _currentState.EnterState();
-
-        OnPlayerJoin();
     }
 
     [ServerRpc]
-    void OnPlayerJoin()
+    void OnPlayerJoin(RPCInfo info = default)
     {
-        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
-        List<FactionData> factions = GameManager.Instance.ListOfFactions;
-        FactionData data = factions[(int)playerID.id.value - 1];
-
-        Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
-
-        MapCtx.AddFaction(playerID, data.Settings.Faction);
-        MapCtx.SpawnStartingUnits(data.Settings.Faction);
+        MapCtx.SpawnStartingUnits(info.sender);
 
         if (networkManager.playerCount == 1)
         {
@@ -99,14 +90,22 @@ public class StateMachineManager : NetworkBehaviour
 
         Debug.Log($"Player {player.id}'s Faction: {data.Settings.Faction}");
 
-        MapCtx.SpawnStartingUnits(data.Settings.Faction);
+        MapCtx.SpawnStartingUnits(player);
     }
 
     void Setup()
     { 
         Debug.Log("Setup");
 
-        MapCtx.SetupServer(CreateDictDatabase());
+        List<HexCellState> tempState = new();
+
+        MapData mapData = GameManager.Instance.MapData;
+        foreach (HexCellData data in mapData.hexCells)
+        {
+            tempState.Add(new HexCellState(data));
+        }
+
+        MapCtx.SetupServer(CreateDictDatabase(), tempState);
 
 #if UNITY_EDITOR
         if (ShowCellIndex)
