@@ -10,6 +10,7 @@ public class MapStateMachine : NetworkBehaviour
 {
     [Header("References")]
     [SerializeField] GameplaySystem GS;
+    [SerializeField] LayerMask TerrainLayer;
 
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
@@ -76,7 +77,13 @@ public class MapStateMachine : NetworkBehaviour
 
     void SetupGrid(MapData mapData)
     {
-        _tgs = Terrain.activeTerrain.gameObject.AddTerrainGridSystem();
+        foreach (Terrain terrain in Terrain.activeTerrains)
+        {
+            if ((1 << terrain.gameObject.layer & TerrainLayer.value) == 0) continue;
+
+            _tgs = terrain.gameObject.AddTerrainGridSystem();
+            break;
+        }
 
         _tgs.gridTopology = GridTopology.Hexagonal;
         _tgs.SetGridSize(mapData.row, mapData.column);
