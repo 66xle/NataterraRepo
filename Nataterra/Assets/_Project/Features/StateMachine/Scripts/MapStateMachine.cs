@@ -15,15 +15,13 @@ public class MapStateMachine : NetworkBehaviour
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
     List<HexCellState> _state;
+    FactionState _factionState;
     Dictionary<string, GameObject> _unitObjects;
-
     Dictionary<UnitType, UnitData> _dictOfUnits;
 
     Cell _selectedCell;
     List<Unit> _selectedUnits;
-
     GameObject _movementBorder;
-
     DijkstraResult _movementResult;
 
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
@@ -40,7 +38,6 @@ public class MapStateMachine : NetworkBehaviour
     {
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
-
         GS.Setup();
 
         SetupServerMap(mapData, state);
@@ -49,16 +46,16 @@ public class MapStateMachine : NetworkBehaviour
     public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
     {
         _dictOfUnits = dictUnits;
-        _unitObjects = new(); 
+        _unitObjects = new();
 
         await AssignPlayerToFaction();
         _state = await LoadMap();
+        _factionState = await LoadFactionState();
 
         if (isHost) return;
 
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
-
         GS.Setup();
     }
 
@@ -120,11 +117,17 @@ public class MapStateMachine : NetworkBehaviour
         return _serverMap.LoadClientMap(info.sender);
     }
 
-    public void SpawnStartingUnits(Base faction)
+    [ServerRpc]
+    async Task<FactionState> LoadFactionState(RPCInfo info = default)
+    {
+        return _serverMap.GetFactionState(info.sender);
+    }
+
+    public void SpawnStartingUnits(PlayerID playerID)
     {
         AC_UnitInitialSpawnCommand command = new AC_UnitInitialSpawnCommand
         {
-            Faction = faction
+            PlayerID = playerID
         };
 
         _serverMap.HandleCommand(command);

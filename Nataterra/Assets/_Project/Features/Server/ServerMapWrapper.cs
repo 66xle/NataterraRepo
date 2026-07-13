@@ -26,11 +26,11 @@ public class ServerMapWrapper
     private GameplayState _phaseState;
     private PlayerID _currentPlayerTurn;
 
-
     private Dictionary<Base, FactionSettings> _factionSettings;
     private Dictionary<UnitType, UnitData> _dictOfUnits;
     private Dictionary<string, DijkstraResult> _results;
     private Dictionary<PlayerID, Base> _dictFaction;
+    private Dictionary<Base, FactionState> _factionState;
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
@@ -44,6 +44,7 @@ public class ServerMapWrapper
         _dictOfUnits = dictOfUnits;
         _stateChanges = new();
         _factionSettings = new();
+        _factionState = new();
         _results = new();
         _dictFaction = new();
 
@@ -53,6 +54,7 @@ public class ServerMapWrapper
         {
             FactionSettings setting = data.Settings;
             _factionSettings.Add(setting.Faction, setting);
+            _factionState.Add(setting.Faction, new FactionState(setting.ListOfUnitAvaliable));
         }
     }
 
@@ -69,6 +71,10 @@ public class ServerMapWrapper
     public Base GetFaction(PlayerID playerID)
     {
         return _dictFaction[playerID];
+    }
+    public FactionState GetFactionState(PlayerID playerID)
+    {
+        return _factionState[GetFaction(playerID)];
     }
 
 
@@ -228,6 +234,9 @@ public class ServerMapWrapper
     {
         _results.Add(guid, result);
     }
+
+
+    
 
 
     public void SetPhaseState(GameplayState state)

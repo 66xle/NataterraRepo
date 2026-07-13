@@ -7,4 +7,5 @@ public class FactionSettings
 {
     public Base Faction;
     public List<UnitType> StartingUnits;
+    public List<UnitAmount> ListOfUnitAvaliable;
 }

@@ -15,5 +15,8 @@ MonoBehaviour:
   Settings:
     Faction: 0
     StartingUnits: 640000006400000064000000
+    ListOfUnitAvaliable:
+    - Type: 100
+      Amount: 3
   ListOfUnits:
   - {fileID: 11400000, guid: e07cedc3a23f961438c5b02f6f422a26, type: 2}

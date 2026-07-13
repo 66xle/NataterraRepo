@@ -25,22 +25,23 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.ResourcePhase)
         {
-
+            EndResourcePhase();
+            state = GameplayState.CombatPhase;
         }
         else if (command.CurrentState == GameplayState.CombatPhase)
         {
-
+            EndCombatPhase();
+            state = GameplayState.DevelopmentPhase;
         }
         else if (command.CurrentState == GameplayState.DevelopmentPhase)
         {
-
+            EndDevelopmentPhase();
+            state = GameplayState.WaitingForTurn;
         }
 
         // Set server's state
         _map.SetPhaseState(state);
         _gs.MSM.EndPhaseForClient(command.PlayerID);
-
-        // Show Next Phase UI to All Clients
     }
 
     void EndMovementPhase()

@@ -6,20 +6,22 @@ public class SMM_ResourcePhaseState : GameplayBaseState
     public override void EnterState()
     {
         Debug.Log("Entered Resource Phase");
+
+
     }
 
     public override void UpdateState()
     {
-        CheckSwitchState();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            MapCtx.SendEndPhaseCommand(GameplayState.ResourcePhase);
+        }
     }
 
     public override void FixedUpdateState() { }
     public override void ExitState() { }
 
-    public override void CheckSwitchState()
-    {
-
-    }
+    public override void CheckSwitchState() { }
 
     public override void InitializeSubState() { }
 }

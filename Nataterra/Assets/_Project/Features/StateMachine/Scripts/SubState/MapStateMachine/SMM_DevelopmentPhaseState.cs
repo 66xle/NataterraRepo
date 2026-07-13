@@ -10,16 +10,16 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
 
     public override void UpdateState()
     {
-        CheckSwitchState();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            MapCtx.SendEndPhaseCommand(GameplayState.DevelopmentPhase);
+        }
     }
 
     public override void FixedUpdateState() { }
     public override void ExitState() { }
 
-    public override void CheckSwitchState()
-    {
-
-    }
+    public override void CheckSwitchState() { }
 
     public override void InitializeSubState() { }
 }

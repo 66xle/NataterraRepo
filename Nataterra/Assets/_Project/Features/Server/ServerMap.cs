@@ -58,6 +58,11 @@ public class ServerMap
         return state;
     }
 
+    public FactionState GetFactionState(PlayerID playerID)
+    {
+        return _map.GetFactionState(playerID);
+    }
+
     public void AddFaction(PlayerID playerID, Base facton)
     {
         _map.AddFaction(playerID, facton);

@@ -551,6 +551,9 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   GS: {fileID: 333907070}
+  TerrainLayer:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!1 &1386008639
 GameObject:
   m_ObjectHideFlags: 0
