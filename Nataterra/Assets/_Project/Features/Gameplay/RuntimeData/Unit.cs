@@ -6,7 +6,7 @@ public class Unit
     public string GUID { get; private set; }
     public UnitType UnitType { get; private set; }
 
-    public int CellOrigin { get; private set; }
+    public int CellOrigin;
     public int CurrentMovement;
 
 

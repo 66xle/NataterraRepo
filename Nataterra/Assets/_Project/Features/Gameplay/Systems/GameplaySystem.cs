@@ -28,7 +28,7 @@ public class GameplaySystem : NetworkBehaviour
     }
 
     [TargetRpc]
-    public void UpdateFactionState(PlayerID playerID, FactionState state)
+    public void SetClientFactionState(PlayerID playerID, FactionState state)
     {
         MSM.UpdateFactionState(state);
     }

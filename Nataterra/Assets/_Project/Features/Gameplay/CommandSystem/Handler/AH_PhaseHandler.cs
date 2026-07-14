@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using PurrNet;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -22,7 +23,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         if (command.CurrentState == GameplayState.MovementPhase)
         {
-            EndMovementPhase();
+            EndMovementPhase(command.PlayerID);
             state = GameplayState.ResourcePhase;
         }
         else if (command.CurrentState == GameplayState.ResourcePhase)
@@ -46,9 +47,18 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         _gs.MSM.EndPhaseForClient(command.PlayerID);
     }
 
-    void EndMovementPhase()
+    void EndMovementPhase(PlayerID playerID)
     {
-        
+        Base faction = _map.GetFaction(playerID);
+
+        List<HexCellState> state = _map.GetState();
+
+        for (int i = 0; i < state.Count; i++)
+        {
+            _map.ResetUnitMovementOnCell(i);
+        }
+
+        _gs.SetLocalChanges(_map.GetStateChanges());
     }
 
     void EndResourcePhase(PlayerID playerID)
@@ -63,7 +73,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
             _map.AddResource(faction, state.Resource);
         }
 
-        _gs.UpdateFactionState(playerID, _map.GetFactionState(playerID));
+        _gs.SetClientFactionState(playerID, _map.GetFactionState(playerID));
     }
 
     void EndCombatPhase()

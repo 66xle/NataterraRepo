@@ -77,6 +77,26 @@ public class ServerMapWrapper
         return _factionState[GetFaction(playerID)];
     }
 
+
+    public void ResetUnitMovementOnCell(int cellIndex)
+    {
+        HexCellState cellState = _state[cellIndex];
+
+        if (cellState.DictOfGroups.Count == 0) return;
+
+        foreach (UnitType type in cellState.DictOfGroups.Keys)
+        {
+            foreach (Unit unit in cellState.DictOfGroups[type].ListOfUnits)
+            {
+                unit.CurrentMovement = unit.Movement;
+                unit.CellOrigin = cellIndex;
+            }
+        }
+
+        AddStateChange(cellIndex);
+    }
+
+
     public void AddResource(Base faction, Resource resource)
     {
         if (resource == Resource.Food)
