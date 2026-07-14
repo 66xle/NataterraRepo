@@ -14,4 +14,8 @@ public class UnitData : ScriptableObject
     public int Initiative;
     public int Group;
     public int Movement;
+
+    public int FoodCost;
+    public int WoodCost;
+    public int MetalCost;
 }

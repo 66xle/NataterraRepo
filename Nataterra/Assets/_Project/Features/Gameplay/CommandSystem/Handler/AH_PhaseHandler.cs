@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using PurrNet;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -38,7 +39,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.DevelopmentPhase)
         {
-            EndDevelopmentPhase();
+            EndDevelopmentPhase(command.PlayerID ,command.Cart);
             state = GameplayState.WaitingForTurn;
         }
 
@@ -58,7 +59,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
             _map.ResetUnitMovementOnCell(i);
         }
 
-        _gs.SetLocalChanges(_map.GetStateChanges());
+        _gs.SetStateChanges(_map.GetStateChanges());
     }
 
     void EndResourcePhase(PlayerID playerID)
@@ -81,8 +82,17 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
     }
 
-    void EndDevelopmentPhase()
+    void EndDevelopmentPhase(PlayerID playerID, DevelopmentCart cart)
     {
+        // valdiate cost
 
+        // spawn units
+        Base faction = _map.GetFaction(playerID);
+        int baseIndex = _map.GetBaseCellIndex(faction);
+
+        List<UnitType> units = cart.Units.Keys.ToList();
+        List<string> guids = _map.AddUnit(units, baseIndex);
+
+        _gs.UnitSystem.SpawnUnitToAll(units, guids, baseIndex);
     }
 }

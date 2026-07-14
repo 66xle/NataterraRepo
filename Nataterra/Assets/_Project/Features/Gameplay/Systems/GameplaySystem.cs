@@ -19,7 +19,7 @@ public class GameplaySystem : NetworkBehaviour
     }
 
     [ObserversRpc]
-    public void SetLocalChanges(List<StateChange> changes)
+    public void SetStateChanges(List<StateChange> changes)
     {
         foreach (StateChange state in changes)
         {
@@ -30,6 +30,6 @@ public class GameplaySystem : NetworkBehaviour
     [TargetRpc]
     public void SetClientFactionState(PlayerID playerID, FactionState state)
     {
-        MSM.UpdateFactionState(state);
+        MSM.SetFactionState(state);
     }
 }

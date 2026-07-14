@@ -20,3 +20,6 @@ MonoBehaviour:
   Initiative: 1
   Group: 3
   Movement: 2
+  FoodCost: 2
+  WoodCost: 0
+  MetalCost: 0

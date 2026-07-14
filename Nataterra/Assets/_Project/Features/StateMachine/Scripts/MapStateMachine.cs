@@ -24,25 +24,37 @@ public class MapStateMachine : NetworkBehaviour
     GameObject _movementBorder;
     DijkstraResult _movementResult;
 
+    public FactionState FactionState { get { return _factionState; } }
+
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
     public List<Unit> SelectedUnits { get { return _selectedUnits; } set { _selectedUnits = value; } }
     public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
     public DijkstraResult MovementResult { get { return _movementResult; } set { _movementResult = value; } }
 
 
+    public Action<UnitType> OnUnitPurchase;
+
     public Action<List<Unit>> OnSelectUnit;
     public Action OnEndPhase;
 
 
+    private void Awake()
+    {
+        InstanceHandler.RegisterInstance(this);
+    }
+
+    private void OnDestory()
+    {
+        InstanceHandler.UnregisterInstance<MapStateMachine>();
+    }
+
     public void SetupServer(Dictionary<UnitType, UnitData> dictUnits, List<HexCellState> state)
     {
-        _dictOfUnits = dictUnits;
-
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
         GS.Setup();
 
-        SetupServerMap(mapData, state);
+        SetupServerMap(mapData, state, dictUnits);
     }
 
     public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
@@ -61,11 +73,11 @@ public class MapStateMachine : NetworkBehaviour
         GS.Setup();
     }
 
-    void SetupServerMap(MapData mapData, List<HexCellState> state)
+    void SetupServerMap(MapData mapData, List<HexCellState> state, Dictionary<UnitType, UnitData> dictOfUnits)
     {
         List<FactionData> factionData = GameManager.Instance.ListOfFactions;
 
-        ServerMapWrapper wrapper = new ServerMapWrapper(state, _tgs.cells, mapData.bases, factionData, _dictOfUnits);
+        ServerMapWrapper wrapper = new ServerMapWrapper(state, _tgs.cells, mapData.bases, factionData, dictOfUnits);
         _serverMap = new ServerMap();
         _serverMap.Init(wrapper, GS);
     }
@@ -178,6 +190,14 @@ public class MapStateMachine : NetworkBehaviour
         _serverMap.HandleCommand(command);
     }
 
+    [ServerRpc]
+    public void SendEndPhaseCommand(AC_PhaseEndPhaseCommand command, RPCInfo info = default)
+    {
+        command.PlayerID = info.sender;
+
+        _serverMap.HandleCommand(command);
+    }
+
     [TargetRpc]
     public void EndPhaseForClient(PlayerID playerID)
     {
@@ -186,18 +206,15 @@ public class MapStateMachine : NetworkBehaviour
 
 
 
-    public void UpdateFactionState(FactionState state)
+    public void SetFactionState(FactionState state)
     {
         _factionState = state;
-
-        Debug.Log($"Food: {_factionState.Food} - Wood: {_factionState.Wood} - Metal: {_factionState.Metal}");
     }
 
     public void SetCellState(HexCellState cellState, int cellIndex)
     {
         _state[cellIndex] = cellState;
     }
-
 
     public void AddUnitObject(string guid, GameObject obj)
     {
@@ -210,9 +227,25 @@ public class MapStateMachine : NetworkBehaviour
         return _unitObjects[guid];
     }
 
+
     public GameObject GetUnitPrefab(UnitType type)
     {
         return _dictOfUnits[type].Prefab;
+    }
+
+    public int GetFoodCost(UnitType type)
+    {
+        return _dictOfUnits[type].FoodCost;
+    }
+
+    public int GetWoodCost(UnitType type)
+    {
+        return _dictOfUnits[type].WoodCost;
+    }
+
+    public int GetMetalCost(UnitType type)
+    {
+        return _dictOfUnits[type].MetalCost;
     }
 
     public bool UnitExistOnCell(int cellIndex)
