@@ -7,7 +7,7 @@ public class SMM_ResourcePhaseState : GameplayBaseState
     {
         Debug.Log("Entered Resource Phase");
 
-
+        MapCtx.OnEndPhase += SwitchToCombatPhase;
     }
 
     public override void UpdateState()
@@ -19,9 +19,17 @@ public class SMM_ResourcePhaseState : GameplayBaseState
     }
 
     public override void FixedUpdateState() { }
-    public override void ExitState() { }
+    public override void ExitState() 
+    {
+        MapCtx.OnEndPhase -= SwitchToCombatPhase;
+    }
 
     public override void CheckSwitchState() { }
 
     public override void InitializeSubState() { }
+
+    private void SwitchToCombatPhase()
+    {
+        SwitchState(Factory.CombatPhase());
+    }
 }
