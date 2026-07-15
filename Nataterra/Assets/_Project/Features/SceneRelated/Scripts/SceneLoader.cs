@@ -76,7 +76,7 @@ namespace Systems.SceneManagment
 
                 await manager.LoadScenes(temp, scenesToIgnore, progress, true);
 
-
+                SceneInitialize.Instance.Invoke();
 
                 return;
             }

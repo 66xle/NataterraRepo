@@ -31,21 +31,59 @@ public class StateMachineManager : NetworkBehaviour
 
     public GameplayBaseState CurrentState { get { return _currentState; } set { _currentState = value; } }
 
-    protected override async void OnSpawned(bool asServer)
+    protected override void OnSpawned(bool asServer)
     {
         base.OnSpawned();
 
         if (!asServer)
         {
-            await MapCtx.SetupClient(CreateDictDatabase());
+            if (isHost)
+                ClientSetup();
+            else
+                SceneInitialize.Instance.Subscribe(ClientSetup);
 
-            SetupStateMachine();
-            OnPlayerJoin();
             return;
         }
 
-        Setup();
+        SceneInitialize.Instance.Subscribe(ServerSetup);
     }
+
+    private void OnDestroy()
+    {
+        SceneInitialize.Instance.Clear();
+    }
+
+    async void ClientSetup()
+    {
+        await MapCtx.SetupClient(CreateDictDatabase());
+
+        SetupStateMachine();
+        OnPlayerJoin();
+    }
+
+    void ServerSetup()
+    {
+        Debug.Log("Server Setup");
+
+        List<HexCellState> tempState = new();
+
+        MapData mapData = GameManager.Instance.MapData;
+        foreach (HexCellData data in mapData.hexCells)
+        {
+            tempState.Add(new HexCellState(data));
+        }
+
+        MapCtx.SetupServer(CreateDictDatabase(), tempState);
+
+#if UNITY_EDITOR
+        if (ShowCellIndex)
+        {
+            CreateCellLabel();
+        }
+#endif
+    }
+
+
 
     void Update()
     {
@@ -54,7 +92,6 @@ public class StateMachineManager : NetworkBehaviour
         _currentState.UpdateStates();
     }
 
-    
     void SetupStateMachine()
     {
         _states = new GameplayStateFactory(this);
@@ -92,27 +129,7 @@ public class StateMachineManager : NetworkBehaviour
         MapCtx.SpawnStartingUnits();
     }
 
-    void Setup()
-    { 
-        Debug.Log("Setup");
-
-        List<HexCellState> tempState = new();
-
-        MapData mapData = GameManager.Instance.MapData;
-        foreach (HexCellData data in mapData.hexCells)
-        {
-            tempState.Add(new HexCellState(data));
-        }
-
-        MapCtx.SetupServer(CreateDictDatabase(), tempState);
-
-#if UNITY_EDITOR
-        if (ShowCellIndex)
-        {
-            CreateCellLabel();
-        }
-#endif
-    }
+    
 
     Dictionary<UnitType, UnitData> CreateDictDatabase()
     {
