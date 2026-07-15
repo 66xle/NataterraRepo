@@ -52,7 +52,6 @@ public class MapStateMachine : NetworkBehaviour
     {
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
-        GS.Setup();
 
         SetupServerMap(mapData, state, dictUnits);
     }
@@ -63,14 +62,16 @@ public class MapStateMachine : NetworkBehaviour
         _unitObjects = new();
 
         await AssignPlayerToFaction();
-        _state = await LoadMap();
         _factionState = await LoadFactionState();
+
+        GS.Setup();
+
+        _state = await LoadMap();
 
         if (isHost) return;
 
         MapData mapData = GameManager.Instance.MapData;
         SetupGrid(mapData);
-        GS.Setup();
     }
 
     void SetupServerMap(MapData mapData, List<HexCellState> state, Dictionary<UnitType, UnitData> dictOfUnits)

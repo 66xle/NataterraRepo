@@ -8,14 +8,19 @@ public class GameplaySystem : NetworkBehaviour
     public MapStateMachine MSM;
 
     public UnitSystem UnitSystem { get; private set; }
+    public UISystem UISystem { get; private set; }
 
     public TerrainGridSystem TGS { get; private set; }
 
     public void Setup()
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
+        UISystem = GetComponentInChildren<UISystem>();
 
-        TGS = TerrainGridSystem.instance; 
+        TGS = TerrainGridSystem.instance;
+
+
+        UISystem.Setup();
     }
 
     [ObserversRpc]

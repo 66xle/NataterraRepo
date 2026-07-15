@@ -75,6 +75,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
 
         _gs.SetClientFactionState(playerID, _map.GetFactionState(playerID));
+        _gs.UISystem.ResourceUpdateClientUI(playerID);
     }
 
     void EndCombatPhase()
