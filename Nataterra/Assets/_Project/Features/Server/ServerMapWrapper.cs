@@ -101,15 +101,15 @@ public class ServerMapWrapper
     {
         if (resource == Resource.Food)
         {
-            _factionState[faction].Food++;
+            _factionState[faction].Food += _factionState[faction].FoodMultiplier;
         }
         else if (resource == Resource.Wood)
         {
-            _factionState[faction].Wood++;
+            _factionState[faction].Wood += _factionState[faction].WoodMultiplier;
         }
         else if (resource == Resource.Metal)
         {
-            _factionState[faction].Metal++;
+            _factionState[faction].Metal += _factionState[faction].MetalMultiplier;
         }
     }
 
