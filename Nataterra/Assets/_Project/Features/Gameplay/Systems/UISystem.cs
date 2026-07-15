@@ -32,4 +32,9 @@ public class UISystem : NetworkBehaviour
 
         _resourceUI.SetResource(food, wood, metal);
     }
+
+    public void SetResourceUI(int food, int wood, int metal)
+    {
+        _resourceUI.SetResource(food, wood, metal);
+    }
 }

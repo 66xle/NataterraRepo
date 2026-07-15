@@ -9,7 +9,7 @@ using UnityEngine;
 public class MapStateMachine : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] GameplaySystem GS;
+    public GameplaySystem GS;
     [SerializeField] LayerMask TerrainLayer;
 
     TerrainGridSystem _tgs;

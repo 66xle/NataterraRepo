@@ -15,8 +15,6 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
     {
         Debug.Log("Entered Development Phase");
 
-        Debug.Log($"Food: {MapCtx.FactionState.Food} - Wood: {MapCtx.FactionState.Wood} - Metal: {MapCtx.FactionState.Metal}");
-
         TotalFoodCost = 0;
         TotalWoodCost = 0;
         TotalMetalCost = 0;
@@ -61,7 +59,7 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
     {
         // Check Unit Upgraded version
 
-        Debug.Log($"Food: {MapCtx.FactionState.Food} - Wood: {MapCtx.FactionState.Wood} - Metal: {MapCtx.FactionState.Metal}");
+        
 
         if (!IsResourceEnough(unitType))
         {
@@ -75,6 +73,12 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
             _cart.Units.Add(unitType, 1);
 
         Debug.Log($"Added {unitType}");
+
+
+        int food = MapCtx.FactionState.Food;
+        int wood = MapCtx.FactionState.Wood;
+        int metal = MapCtx.FactionState.Metal;
+        MapCtx.GS.UISystem.SetResourceUI(food - TotalFoodCost, wood - TotalMetalCost, metal - TotalMetalCost);
     }
 
     public bool IsResourceEnough(UnitType type)
