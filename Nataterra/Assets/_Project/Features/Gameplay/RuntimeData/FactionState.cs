@@ -6,22 +6,27 @@ public class FactionState
     public int Wood;
     public int Metal;
 
-    public float FoodMultiplier;
-    public float WoodMultiplier;
-    public float MetalMultiplier;
+    public int FoodMultiplier;
+    public int WoodMultiplier;
+    public int MetalMultiplier;
 
-    public List<UnitAmount> ListOfCurrentUnitAvaliable;
+    public Dictionary<UnitType, int> CurrentUnitAvaliable;
 
     public FactionState(List<UnitAmount> listUnitAvaliable)
     {
-        Food = 3;
-        Wood = 3;
-        Metal = 3;
+        Food = 10;
+        Wood = 10;
+        Metal = 10;
 
         FoodMultiplier = 1;
         WoodMultiplier = 1;
         MetalMultiplier = 1;
 
-        ListOfCurrentUnitAvaliable = new List<UnitAmount>(listUnitAvaliable);
+        CurrentUnitAvaliable = new();
+
+        foreach (UnitAmount unit in listUnitAvaliable)
+        {
+            CurrentUnitAvaliable.Add(unit.Type, unit.Amount);
+        }
     }
 }

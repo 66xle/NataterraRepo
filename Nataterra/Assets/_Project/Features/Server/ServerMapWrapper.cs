@@ -118,6 +118,10 @@ public class ServerMapWrapper
         if (stateChange)
             AddStateChange(cellIndex);
 
+        // Reduce avaliable units
+        if (_phaseState == GameplayState.DevelopmentPhase)
+            _factionState[GetUnitFaction(type)].CurrentUnitAvaliable[type]--;
+
         UnitData unitData = GetUnitData(type);
 
         if (unit == null)
@@ -200,6 +204,46 @@ public class ServerMapWrapper
         }
     }
 
+
+    public bool IsUnitsAvaliable(Base faction, Dictionary<UnitType, int> units)
+    {
+        foreach (UnitType unitType in units.Keys)
+        {
+            if (_factionState[faction].CurrentUnitAvaliable[unitType] < units[unitType])
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool ReduceResources(Base faction, Dictionary<UnitType, int> units)
+    {
+        int totalCostFood = 0;
+        int totalCostWood = 0;
+        int totalCostMetal = 0;
+
+        foreach (UnitType unitType in units.Keys)
+        {
+            totalCostFood += _dictOfUnits[unitType].FoodCost * units[unitType];
+            totalCostWood += _dictOfUnits[unitType].WoodCost * units[unitType];
+            totalCostMetal += _dictOfUnits[unitType].MetalCost * units[unitType];
+        }
+
+        int CurrentFood = _factionState[faction].Food;
+        int CurrentWood = _factionState[faction].Wood;
+        int CurrentMetal = _factionState[faction].Metal;
+
+        if (CurrentFood >= totalCostFood && CurrentWood >= totalCostWood && CurrentMetal >= totalCostMetal)
+        {
+            _factionState[faction].Food -= totalCostFood;
+            _factionState[faction].Wood -= totalCostWood;
+            _factionState[faction].Metal -= totalCostMetal;
+
+            return true;
+        }
+
+        return false;
+    }
 
 
     public List<StateChange> GetStateChanges()
@@ -296,5 +340,19 @@ public class ServerMapWrapper
         }
 
         return data;
+    }
+
+    private Base GetUnitFaction(UnitType type)
+    {
+        int index = (int)type;
+
+        if (index >= 100 && index < 200)
+            return Base.Beasts;
+        else if (index >= 200 && index < 300)
+            return Base.Velathi;
+
+
+        Debug.Log($"ServerMapWrapper: GetUnitFaction(): Base not found for {type}");
+        return Base.None;
     }
 }

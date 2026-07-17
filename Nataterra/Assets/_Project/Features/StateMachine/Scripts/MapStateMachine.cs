@@ -249,6 +249,7 @@ public class MapStateMachine : NetworkBehaviour
         return _dictOfUnits[type].MetalCost;
     }
 
+
     public bool UnitExistOnCell(int cellIndex)
     {
         return _state[cellIndex].DictOfGroups.Count == 0 ? false : true;

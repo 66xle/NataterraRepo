@@ -20,6 +20,8 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         if (command.PlayerID != _map.CurrentPlayerTurn)
             return;
 
+        bool error = false;
+
         GameplayState state = command.CurrentState;
 
         if (command.CurrentState == GameplayState.MovementPhase)
@@ -39,9 +41,11 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.DevelopmentPhase)
         {
-            EndDevelopmentPhase(command.PlayerID ,command.Cart);
+            error = EndDevelopmentPhase(command.PlayerID ,command.Cart);
             state = GameplayState.WaitingForTurn;
         }
+
+        if (error) return;
 
         // Set server's state
         _map.SetPhaseState(state);
@@ -83,17 +87,37 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
     }
 
-    void EndDevelopmentPhase(PlayerID playerID, DevelopmentCart cart)
+    bool EndDevelopmentPhase(PlayerID playerID, DevelopmentCart cart)
     {
+        Base faction = _map.GetFaction(playerID);
+        
+
+        // Check units avaliable
+        if (!_map.IsUnitsAvaliable(faction, cart.Units))
+        {
+            Debug.Log($"PhaseHandler: EndDevelopmentPhase(): Not enough units");
+            return false;
+        }
+
         // valdiate cost
+        if (!_map.ReduceResources(faction, cart.Units))
+        {
+            Debug.Log($"PhaseHandler: EndDevelopmentPhase(): Not enough resources");
+            return false;
+        }
 
         // spawn units
-        Base faction = _map.GetFaction(playerID);
         int baseIndex = _map.GetBaseCellIndex(faction);
 
-        List<UnitType> units = cart.Units.Keys.ToList();
+        List<UnitType> units = cart.GetUnitsInList();
         List<string> guids = _map.AddUnit(units, baseIndex);
 
+
+        _gs.SetClientFactionState(playerID, _map.GetFactionState(playerID));
+        _gs.UISystem.ResourceUpdateClientUI(playerID);
         _gs.UnitSystem.SpawnUnitToAll(units, guids, baseIndex);
+
+        return true;
     }
+
 }

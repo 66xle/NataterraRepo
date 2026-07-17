@@ -16,6 +16,6 @@ public enum UnitType
     Exiled = 230,
     CaveGolem = 240,
     Manipulator = 250,
-    Dragon = 260,
+    Dragon = 260
 }
 
