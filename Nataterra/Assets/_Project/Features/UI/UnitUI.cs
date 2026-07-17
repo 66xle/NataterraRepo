@@ -1,11 +1,14 @@
 using PurrNet;
+using TMPro;
 using UnityEngine;
 
 public class UnitUI : MonoBehaviour
 {
     MapStateMachine MapCtx;
 
-    private void Start()
+    public TMP_Text AvaliableText;
+
+    private void Awake()
     {
         MapCtx = InstanceHandler.GetInstance<MapStateMachine>();
     }
@@ -14,5 +17,4 @@ public class UnitUI : MonoBehaviour
     {
         MapCtx.OnUnitPurchase?.Invoke((UnitType)index);
     }
-
 }
