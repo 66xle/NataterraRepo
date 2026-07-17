@@ -85,6 +85,7 @@ public class MapStateMachine : NetworkBehaviour
 
     void SetupGrid(MapData mapData)
     {
+        // Get terrain with layer
         foreach (Terrain terrain in Terrain.activeTerrains)
         {
             if ((1 << terrain.gameObject.layer & TerrainLayer.value) == 0) continue;
@@ -97,6 +98,8 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.SetGridSize(mapData.row, mapData.column);
         _tgs.SetNumTerritories(0, false);
         _tgs.highlightMode = HighlightMode.None;
+        _tgs.overlayMode = OverlayMode.Overlay;
+        _tgs.cellBorderThickness = 10f;
 
         _tgs.Redraw();
 

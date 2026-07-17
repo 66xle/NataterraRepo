@@ -605,6 +605,9 @@ MonoBehaviour:
   _invertedPathToNearestParent: 
   _directChildren: []
   GS: {fileID: 333907070}
+  BorderLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   TerrainLayer:
     serializedVersion: 2
     m_Bits: 1024
