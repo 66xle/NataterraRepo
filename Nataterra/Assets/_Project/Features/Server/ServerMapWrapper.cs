@@ -24,7 +24,7 @@ public class ServerMapWrapper
     private List<Cell> _cells;
     private int[] _basesPlaced;
     private GameplayState _phaseState;
-    private PlayerID _currentPlayerTurn;
+    private List<PlayerID> _playerTurnQueue;
 
     private Dictionary<Base, FactionSettings> _factionSettings;
     private Dictionary<UnitType, UnitData> _dictOfUnits;
@@ -34,7 +34,7 @@ public class ServerMapWrapper
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public Dictionary<Base, FactionSettings> FactionSettings { get { return _factionSettings; } }
-    public PlayerID CurrentPlayerTurn { get { return _currentPlayerTurn; } }
+    public PlayerID CurrentPlayerTurn { get { return _playerTurnQueue[0]; } }
 
     public ServerMapWrapper(List<HexCellState> state, List<Cell> cells, int[] basesPlaced, List<FactionData> factionData, Dictionary<UnitType, UnitData> dictOfUnits)
     {
@@ -47,6 +47,7 @@ public class ServerMapWrapper
         _factionState = new();
         _results = new();
         _dictFaction = new();
+        _playerTurnQueue = new();
 
         _phaseState = GameplayState.WaitingForTurn;
 
@@ -62,10 +63,14 @@ public class ServerMapWrapper
     {
         _dictFaction.Add(playerID, facton);
 
-        if (_dictFaction.Count == 1)
-        {
-            _currentPlayerTurn = playerID;
-        }
+        _playerTurnQueue.Add(playerID);
+    }
+
+    public void NextPlayerTurn()
+    {
+        PlayerID oldPlayer = _playerTurnQueue[0];
+        _playerTurnQueue.RemoveAt(0);
+        _playerTurnQueue.Add(oldPlayer);
     }
 
     public Base GetFaction(PlayerID playerID)

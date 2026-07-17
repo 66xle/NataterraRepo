@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using PurrNet;
 using UnityEngine;
 using UnityEngine.Analytics;
@@ -15,16 +16,26 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         _map = map;
     }
 
-    public void Handle(AC_PhaseEndPhaseCommand command)
+    public async void Handle(AC_PhaseEndPhaseCommand command)
     {
         if (command.PlayerID != _map.CurrentPlayerTurn)
             return;
+
+        // Validate current state
 
         bool error = false;
 
         GameplayState state = command.CurrentState;
 
-        if (command.CurrentState == GameplayState.MovementPhase)
+        if (command.CurrentState == GameplayState.WaitingForTurn)
+        {
+            _gs.UISystem.ShowFactionTurn(_map.GetFaction(command.PlayerID));
+
+            await Task.Delay(1500);
+
+            state = GameplayState.MovementPhase;
+        }
+        else if (command.CurrentState == GameplayState.MovementPhase)
         {
             EndMovementPhase(command.PlayerID);
             state = GameplayState.ResourcePhase;
@@ -47,9 +58,35 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         if (error) return;
 
-        // Set server's state
-        _map.SetPhaseState(state);
         _gs.MSM.EndPhaseForClient(command.PlayerID);
+
+        if (state != GameplayState.WaitingForTurn)
+        {
+            // Set server's state
+            _map.SetPhaseState(state);
+
+            _gs.UISystem.ShowPhaseTitle(state);
+            return;
+        }
+
+        NextPlayer();
+    }
+
+    async void NextPlayer()
+    {
+        // Next player
+        _map.NextPlayerTurn();
+
+        PlayerID nextPlayer = _map.CurrentPlayerTurn;
+
+        _gs.UISystem.ShowFactionTurn(_map.GetFaction(nextPlayer));
+
+        await Task.Delay(1500);
+
+        _map.SetPhaseState(GameplayState.MovementPhase);
+
+        _gs.UISystem.ShowPhaseTitle(GameplayState.MovementPhase);
+        _gs.MSM.EndPhaseForClient(nextPlayer);
     }
 
     void EndMovementPhase(PlayerID playerID)
@@ -96,14 +133,14 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         if (!_map.IsUnitsAvaliable(faction, cart.Units))
         {
             Debug.Log($"PhaseHandler: EndDevelopmentPhase(): Not enough units");
-            return false;
+            return true;
         }
 
         // valdiate cost
         if (!_map.ReduceResources(faction, cart.Units))
         {
             Debug.Log($"PhaseHandler: EndDevelopmentPhase(): Not enough resources");
-            return false;
+            return true;
         }
 
         // spawn units
@@ -115,9 +152,11 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         _gs.SetClientFactionState(playerID, _map.GetFactionState(playerID));
         _gs.UISystem.ResourceUpdateClientUI(playerID);
+        _gs.UISystem.UnitAvaliableUpdateClientUI(playerID, units);
+
         _gs.UnitSystem.SpawnUnitToAll(units, guids, baseIndex);
 
-        return true;
+        return false;
     }
 
 }
