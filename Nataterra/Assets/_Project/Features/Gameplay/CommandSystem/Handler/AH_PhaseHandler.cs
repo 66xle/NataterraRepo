@@ -101,6 +101,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
 
         _gs.SetStateChanges(_map.GetStateChanges());
+        _map.ClearResult();
     }
 
     void EndResourcePhase(PlayerID playerID)

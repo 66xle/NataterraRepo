@@ -319,7 +319,10 @@ public class ServerMapWrapper
         _results.Add(guid, result);
     }
 
-
+    public void ClearResult()
+    {
+        _results.Clear();
+    }
     
 
 
