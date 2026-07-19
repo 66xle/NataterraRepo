@@ -26,6 +26,7 @@ namespace TGS {
         public bool ignoreCellCosts;
         public bool includeInvisibleCells = true;
         public int minClearance = 1;
+        public bool gridBordersAsObstacles;
         public float maxCellCrossCost = float.MaxValue;
         public PathFindingEvent OnPathFindingCrossCell;
         public object OnPathFindingCrossCellData;
@@ -46,7 +47,7 @@ namespace TGS {
 
         [SerializeField]
         HeuristicFormula
-            _pathFindingHeuristicFormula = HeuristicFormula.EuclideanNoSQR;
+            _pathFindingHeuristicFormula = HeuristicFormula.DiagonalShortCut;
 
         /// <summary>
         /// The path finding heuristic formula to estimate distance from current position to destination
@@ -129,6 +130,24 @@ namespace TGS {
             }
         }
 
+        [SerializeField]
+        float
+            _pathFindingTurnCost;
+
+        /// <summary>
+        /// Extra cost added each time the path changes direction (box grids only). 0 = disabled (default, preserves legacy behaviour).
+        /// A small value (e.g. 0.001) acts as a tie-breaker that prefers straighter paths among equal-cost routes; larger values avoid turns even at higher movement cost.
+        /// </summary>
+        public float pathFindingTurnCost {
+            get { return _pathFindingTurnCost; }
+            set {
+                if (value != _pathFindingTurnCost) {
+                    _pathFindingTurnCost = value;
+                    isDirty = true;
+                }
+            }
+        }
+
 
 
         [SerializeField]
@@ -160,8 +179,8 @@ namespace TGS {
         /// <param name="maxSearchCost">Maximum search cost for the path finding algorithm. A value of 0 will use the global default defined by pathFindingMaxCost</param>
         /// <param name="maxSteps">Maximum steps for the path. A value of 0 will use the global default defined by pathFindingMaxSteps</param>
         /// <param name="maxCellCrossCost">The maximum allowed crossing cost of any cell</param>
-        public List<int> FindPath(int cellIndexStart, int cellIndexEnd, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false) {
-            return FindPath(cellIndexStart, cellIndexEnd, out _, maxSearchCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, minClearance, maxCellCrossCost, cellGroupMaskExactComparison);
+        public List<int> FindPath(int cellIndexStart, int cellIndexEnd, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false, bool gridBordersAsObstacles = false) {
+            return FindPath(cellIndexStart, cellIndexEnd, out _, maxSearchCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, minClearance, maxCellCrossCost, cellGroupMaskExactComparison, gridBordersAsObstacles);
         }
 
         /// <summary>
@@ -172,9 +191,9 @@ namespace TGS {
 		/// <param name="maxSearchCost">Maximum search cost for the path finding algorithm. A value of 0 will use the global default defined by pathFindingMaxCost</param>
 		/// <param name="maxSteps">Maximum steps for the path. A value of 0 will use the global default defined by pathFindingMaxSteps</param>
         /// <param name="maxCellCrossCost">The maximum allowed crossing cost of any cell</param>
-		public List<int> FindPath(int cellIndexStart, int cellIndexEnd, out float totalCost, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false) {
+		public List<int> FindPath(int cellIndexStart, int cellIndexEnd, out float totalCost, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false, bool gridBordersAsObstacles = false) {
             List<int> results = new();
-            FindPath(cellIndexStart, cellIndexEnd, results, out totalCost, maxSearchCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, minClearance, maxCellCrossCost, cellGroupMaskExactComparison);
+            FindPath(cellIndexStart, cellIndexEnd, results, out totalCost, maxSearchCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, minClearance, maxCellCrossCost, cellGroupMaskExactComparison, gridBordersAsObstacles);
             return results;
         }
 
@@ -188,7 +207,7 @@ namespace TGS {
         /// <param name="maxSearchCost">Maximum search cost for the path finding algorithm. A value of 0 will use the global default defined by pathFindingMaxCost</param>
         /// <param name="maxSteps">Maximum steps for the path. A value of 0 will use the global default defined by pathFindingMaxSteps</param>
         /// <param name="maxCellCrossCost">The maximum allowed crossing cost of any cell</param>
-        public int FindPath(int cellIndexStart, int cellIndexEnd, List<int> cellIndices, out float totalCost, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false) {
+        public int FindPath(int cellIndexStart, int cellIndexEnd, List<int> cellIndices, out float totalCost, float maxSearchCost = 0, int maxSteps = 0, int cellGroupMask = -1, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool includeInvisibleCells = true, int minClearance = 1, float maxCellCrossCost = float.MaxValue, bool cellGroupMaskExactComparison = false, bool gridBordersAsObstacles = false) {
             defaultOptions.maxSearchCost = maxSearchCost;
             defaultOptions.maxSteps = maxSteps;
             defaultOptions.cellGroupMask = cellGroupMask;
@@ -197,6 +216,7 @@ namespace TGS {
             defaultOptions.ignoreCellCosts = ignoreCellCosts;
             defaultOptions.includeInvisibleCells = includeInvisibleCells;
             defaultOptions.minClearance = minClearance;
+            defaultOptions.gridBordersAsObstacles = gridBordersAsObstacles;
             defaultOptions.maxCellCrossCost = maxCellCrossCost;
             defaultOptions.OnPathFindingCrossCell = null;
             defaultOptions.OnPathFindingCrossCellData = null;
@@ -212,9 +232,10 @@ namespace TGS {
             defaultOptions.ignoreCellCosts = false;
             defaultOptions.includeInvisibleCells = true;
             defaultOptions.minClearance = 1;
+            defaultOptions.gridBordersAsObstacles = false;
             defaultOptions.maxCellCrossCost = float.MaxValue;
             defaultOptions.OnPathFindingCrossCell = null;
-            defaultOptions.OnPathFindingCrossCellData = null;            
+            defaultOptions.OnPathFindingCrossCellData = null;
             return defaultOptions;
         }
 
@@ -255,8 +276,8 @@ namespace TGS {
                 }
             }
 
-            if (options.minClearance > 1 && (needRefreshRouteMatrix || !clearanceComputed)) {
-                ComputeClearance(options.cellGroupMask);
+            if (options.minClearance > 1 && (needRefreshRouteMatrix || !clearanceComputed || clearanceBordersAsObstacles != options.gridBordersAsObstacles)) {
+                ComputeClearance(options.cellGroupMask, options.gridBordersAsObstacles);
             }
             ComputeRouteMatrix();
 
@@ -290,6 +311,7 @@ namespace TGS {
             finder.MaxSteps = options.maxSteps > 0 ? options.maxSteps : _pathFindingMaxSteps;
             finder.Diagonals = _pathFindingUseDiagonals;
             finder.HeavyDiagonalsCost = _pathFindingHeavyDiagonalsCost;
+            finder.TurnCost = _pathFindingTurnCost;
             switch (_gridTopology) {
                 case GridTopology.Irregular: finder.CellShape = CellType.Irregular; break;
                 case GridTopology.Hexagonal: finder.CellShape = _pointyTopHexagons ? CellType.PointyTopHexagon : CellType.FlatTopHexagon; break;
@@ -309,7 +331,7 @@ namespace TGS {
             finder.StartCellIndex = cellIndexStart;
             finder.EndCellIndex = cellIndexEnd;
             finder.CanCrossCheckType = options.canCrossCheckType;
-            finder.ClearanceData = GetClearanceCache();
+            finder.ClearanceData = options.minClearance > 1 ? GetClearanceCache() : null;
 
             if (options.OnPathFindingCrossCell != null) {
                 finder.OnCellCross = options.OnPathFindingCrossCell;
@@ -385,14 +407,14 @@ namespace TGS {
             }
 
             // Ensure route matrix and clearance are computed on main thread
-            if (options.minClearance > 1 && (needRefreshRouteMatrix || !clearanceComputed)) {
-                ComputeClearance(options.cellGroupMask);
+            if (options.minClearance > 1 && (needRefreshRouteMatrix || !clearanceComputed || clearanceBordersAsObstacles != options.gridBordersAsObstacles)) {
+                ComputeClearance(options.cellGroupMask, options.gridBordersAsObstacles);
             }
             ComputeRouteMatrix();
 
             // Capture snapshot data for thread-safe access
             Cell[] cellsSnapshot = cachedCellsArray;
-            byte[] clearanceSnapshot = GetClearanceCache();
+            byte[] clearanceSnapshot = options.minClearance > 1 ? GetClearanceCache() : null;
             int columnCount = _cellColumnCount;
             int rowCount = _cellRowCount;
             GridTopology topology = _gridTopology;
@@ -403,6 +425,7 @@ namespace TGS {
             float maxSearchCost = options.maxSearchCost > 0 ? options.maxSearchCost : _pathFindingMaxCost;
             bool useDiagonals = _pathFindingUseDiagonals;
             float heavyDiagonalsCost = _pathFindingHeavyDiagonalsCost;
+            float turnCost = _pathFindingTurnCost;
 
             // Copy options to avoid mutation
             int cellGroupMask = options.cellGroupMask;
@@ -432,6 +455,7 @@ namespace TGS {
                     threadFinder.MaxSteps = maxSteps;
                     threadFinder.Diagonals = useDiagonals;
                     threadFinder.HeavyDiagonalsCost = heavyDiagonalsCost;
+                    threadFinder.TurnCost = turnCost;
                     switch (topology) {
                         case GridTopology.Irregular: threadFinder.CellShape = CellType.Irregular; break;
                         case GridTopology.Hexagonal: threadFinder.CellShape = pointyTopHex ? CellType.PointyTopHexagon : CellType.FlatTopHexagon; break;

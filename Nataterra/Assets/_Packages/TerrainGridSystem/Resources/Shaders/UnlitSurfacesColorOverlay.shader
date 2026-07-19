@@ -16,7 +16,7 @@ SubShader {
   	Offset [_Offset], [_Offset]
   	Blend SrcAlpha OneMinusSrcAlpha
   	ZWrite [_ZWrite]
-  	ZTest LEqual
+  	ZTest Always
     Pass {
     	CGPROGRAM
 		#pragma vertex vert	

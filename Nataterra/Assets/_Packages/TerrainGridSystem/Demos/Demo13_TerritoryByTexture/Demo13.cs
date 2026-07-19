@@ -32,8 +32,12 @@ namespace TGSDemos {
         }
 
         private void Tgs_OnTerritoryClick (TerrainGridSystem tgs, int territoryIndex, int regionIndex, int buttonIndex) {
+            // if (buttonIndex == 1) {
+            //     DrawTerritoryFrontier(territoryIndex);
+            //     return;
+            // }
             if (buttonIndex == 1) {
-                DrawTerritoryFrontier(territoryIndex);
+                DrawTerritoryGridEdgeFrontier(-1);
                 return;
             }
             Debug.Log("Hiding territory index " + territoryIndex);
@@ -57,6 +61,15 @@ namespace TGSDemos {
                 Color c = Color.HSVToRGB((float)n / Mathf.Max(1, count), 0.85f, 1f);
                 SpawnLines(frontierVertices, c);
             }
+        }
+
+        // Middle-click: draws only the segments where the territory touches the outer edge of the grid (in cyan).
+        void DrawTerritoryGridEdgeFrontier (int territoryIndex) {
+            ClearFrontierLines();
+
+            int n = tgs.TerritoryGetGridEdgeVertices(territoryIndex, frontierVertices);
+            Debug.Log("Territory " + territoryIndex + " grid-edge frontier vertices: " + n);
+            SpawnLines(frontierVertices, Color.cyan);
         }
 
         void ClearFrontierLines () {

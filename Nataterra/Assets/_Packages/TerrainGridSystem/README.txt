@@ -45,6 +45,28 @@ Of course, all updates of Terrain Grid System will be eventually available on th
 Version history
 ---------------
 
+Version 22.1
+- New "Lines Ignore Depth" option in Rendering Options (gridLinesIgnoreDepth): render grid lines through scene geometry
+
+Version 22.0.1
+- [Fix] CellGetNeighbours (step range), CellGetNeighboursWithinRange and CellGetWithinCone returned no results on irregular (Voronoi) grids; they now work on irregular topology
+- [Fix] Territory events (OnTerritoryClick, OnTerritoryEnter) and TerritoryGetIndex could return -1 after regenerating the grid at runtime (e.g. setting a new seed) when the territory count was unchanged
+
+Version 22.0
+- Path Finding: new Turn Cost option (pathFindingTurnCost) to prefer straighter, fewer-turn paths on box grids (0 = disabled, default)
+- Demo: added Demo35 "Path Finding Turn Cost" scene to try the turn cost at runtime
+- [Change] CellToggleRegionSurface overloads (color or texture, no scale/offset) now default to ground mode (pass overlay: true on the full overload for the previous on-top behavior)
+
+Version 21.2.1
+- [Fix] Removed Unity 6.5 console warnings
+
+Version 21.2
+- [Improvement] FindPath: grid borders now count as open space when computing clearance, so paths can reach and follow grid edges with minClearance > 1
+- API: FindPath new "gridBordersAsObstacles" option (default false): when enabled, grid borders count as obstacles for clearance, so wide units keep their distance from grid edges (useful for walled/interior maps)
+- API: added TerritoryGetGridEdgeVertices(): returns the ordered vertices of the grid perimeter (pass -1 for the whole grid outline)
+- Demo: Demo13 right-click now draws the whole grid perimeter
+- [Fix] Fixed FindPath minClearance on hexagonal grids: clearance now uses hex disk rings instead of axis-aligned row/column squares; minClearance=1 no longer applies stale clearance cache
+
 Version 21.1
 - Demo: updated Demo13 to demonstrate TerritoryGetFrontierVertices via right-click
 - API: added TerritoryGetFrontierVertices(): returns the ordered vertices of a territory frontier, optionally restricted to the shared frontier with another territory

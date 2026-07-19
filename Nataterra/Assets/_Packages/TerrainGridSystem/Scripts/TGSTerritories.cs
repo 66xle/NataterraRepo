@@ -1222,6 +1222,64 @@ namespace TGS {
         }
 
         /// <summary>
+        /// Returns the ordered vertices of the segments where a territory touches the outer edge of the grid.
+        /// </summary>
+        /// <returns>Number of vertices added to the list.</returns>
+        /// <param name="territoryIndex">Territory index. Pass -1 to get the grid edge segments of all territories (the whole grid perimeter).</param>
+        /// <param name="vertices">List to be filled with vertices in local grid space (offset and scale already applied). Consecutive pairs (i, i+1) form one line segment; within a continuous chain vertices[2k+1] equals vertices[2k+2]. Disjoint edge runs (e.g. a corner territory touching two sides) come back as separate chains.</param>
+        /// <param name="regionIndex">If the territory has several regions, the index of the region. -1 means all regions. Ignored when territoryIndex is -1.</param>
+        public int TerritoryGetGridEdgeVertices (int territoryIndex, List<Vector2> vertices, int regionIndex = -1) {
+
+            CheckGridChanges();
+
+            if (vertices == null) return 0;
+            vertices.Clear();
+            if (territoryIndex < -1 || territoryIndex >= territories.Count || cells == null)
+                return 0;
+            if (territoryIndex >= 0 && territories[territoryIndex].cells == null)
+                return 0;
+            if (territoryFrontiers == null) return 0;
+
+            cellUsedFlag++;
+
+            bool filterByRegion = territoryIndex >= 0 && regionIndex >= 0;
+            if (filterByRegion) {
+                if (regionIndex >= territories[territoryIndex].regions.Count) return 0;
+                List<Cell> regionCells = territories[territoryIndex].regions[regionIndex].cells;
+                int regionCellsCount = regionCells.Count;
+                for (int k = 0; k < regionCellsCount; k++) {
+                    regionCells[k].usedFlag2 = cellUsedFlag;
+                }
+            }
+
+            tempFrontierSegmentBuffer.Clear();
+
+            int frontierCount = territoryFrontiers.Count;
+            int cellsCount = cells.Count;
+            for (int k = 0; k < frontierCount; k++) {
+                Segment seg = territoryFrontiers[k];
+                if (!seg.border) continue;
+                if (territoryIndex >= 0 && seg.territoryIndex != territoryIndex) continue;
+                if (filterByRegion) {
+                    int ci = seg.cellIndex;
+                    if (ci < 0 || ci >= cellsCount) continue;
+                    Cell cell = cells[ci];
+                    if (cell == null || cell.usedFlag2 != cellUsedFlag) continue;
+                }
+                tempFrontierSegmentBuffer.Add(GetScaledVector(seg.start));
+                tempFrontierSegmentBuffer.Add(GetScaledVector(seg.end));
+            }
+
+            BuildOrderedFrontierVertices(tempFrontierSegmentBuffer);
+
+            int orderedCount = tempOrderedFrontierVertices.Count;
+            for (int k = 0; k < orderedCount; k++) {
+                vertices.Add(tempOrderedFrontierVertices[k]);
+            }
+            return vertices.Count;
+        }
+
+        /// <summary>
         /// Similar to TerritoryGetFrontierCells but returns the cells of the adjacent territory
         /// </summary>
         public int TerritoryGetAdjacentCells (int territoryIndex, List<int> cellIndices, int regionIndex = -1, int otherTerritoryIndex = -1) {

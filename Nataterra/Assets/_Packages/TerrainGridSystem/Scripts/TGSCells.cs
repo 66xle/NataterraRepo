@@ -804,7 +804,7 @@ namespace TGS {
         /// <param name="texture">Texture to be used.</param>
         /// <param name="isCanvasTexture">If true, the texture is assumed to fill the entire grid or canvas so only a portion of the texture would be visible in the cell</param>
         public GameObject CellToggleRegionSurface (int cellIndex, bool visible, Texture2D texture, bool isCanvasTexture = false) {
-            return CellToggleRegionSurface(cellIndex, visible, Color.white, false, texture, Misc.Vector2one, Misc.Vector2zero, 0, true, localSpace: false, isCanvasTexture: isCanvasTexture);
+            return CellToggleRegionSurface(cellIndex, visible, Color.white, false, texture, Misc.Vector2one, Misc.Vector2zero, 0, false, localSpace: false, isCanvasTexture: isCanvasTexture);
         }
 
         /// <summary>
@@ -816,7 +816,7 @@ namespace TGS {
         /// <param name="color">Color. Can be partially transparent.</param>
         /// <param name="refreshGeometry">If set to <c>true</c> any cached surface will be destroyed and regenerated. Usually you pass false to improve performance.</param>
         public GameObject CellToggleRegionSurface (int cellIndex, bool visible, Color color, bool refreshGeometry = false) {
-            return CellToggleRegionSurface(cellIndex, visible, color, refreshGeometry, null, Misc.Vector2one, Misc.Vector2zero, 0, true, localSpace: false, isCanvasTexture: false);
+            return CellToggleRegionSurface(cellIndex, visible, color, refreshGeometry, null, Misc.Vector2one, Misc.Vector2zero, 0, false, localSpace: false, isCanvasTexture: false);
         }
 
         /// <summary>
@@ -834,7 +834,7 @@ namespace TGS {
             if (textureIndex >= 0 && textureIndex < textures.Length) {
                 texture = textures[textureIndex];
             }
-            return CellToggleRegionSurface(cellIndex, visible, color, refreshGeometry, texture, Misc.Vector2one, Misc.Vector2zero, 0, true, localSpace: false, isCanvasTexture: isCanvasTexture);
+            return CellToggleRegionSurface(cellIndex, visible, color, refreshGeometry, texture, Misc.Vector2one, Misc.Vector2zero, 0, false, localSpace: false, isCanvasTexture: isCanvasTexture);
         }
 
         /// <summary>
@@ -1982,6 +1982,23 @@ namespace TGS {
             cellIndices.Clear();
             if (maxSteps < 0) maxSteps = _pathFindingMaxSteps;
             maxSteps = Mathf.Min(BIG_INT_NUMBER, maxSteps);
+            if (_gridTopology == GridTopology.Irregular) {
+                List<int> candidates = new List<int>();
+                GetCellsWithinHops(cellIndex, maxSteps, candidates);
+                int candidatesCount = candidates.Count;
+                int found = 0;
+                for (int i = 0; i < candidatesCount; i++) {
+                    int ci = candidates[i];
+                    if (filter != null && !filter(ci)) continue;
+                    int stepsCount = FindPath(cellIndex, ci, tempListCells, out _, maxSearchCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, cellGroupMaskExactComparison: cellGroupMaskExactComparison);
+                    if (stepsCount > 0) {
+                        cellIndices.Add(ci);
+                        found++;
+                        if (found >= maxResultsCount) break;
+                    }
+                }
+                return found;
+            }
             int maxI = maxSteps * 2 + 1;
             maxI *= maxI;
             maxI--; // ignore starting cell
@@ -2034,6 +2051,34 @@ namespace TGS {
         }
 
 
+        // Irregular topology: BFS over cell adjacency to collect all cells within maxHops steps
+        void GetCellsWithinHops (int cellIndex, int maxHops, List<int> candidates) {
+            candidates.Clear();
+            if (maxHops < 1 || cellIndex < 0 || cellIndex >= cells.Count) return;
+            cellIteration++;
+            cells[cellIndex].iteration = cellIteration;
+            Queue<int> frontier = new Queue<int>();
+            frontier.Enqueue(cellIndex);
+            int depth = 0;
+            while (frontier.Count > 0 && depth < maxHops) {
+                int levelCount = frontier.Count;
+                depth++;
+                for (int i = 0; i < levelCount; i++) {
+                    int ci = frontier.Dequeue();
+                    List<Cell> nbs = cells[ci].neighbours;
+                    if (nbs == null) continue;
+                    int nc = nbs.Count;
+                    for (int k = 0; k < nc; k++) {
+                        Cell nb = nbs[k];
+                        if (nb == null || nb.iteration == cellIteration) continue;
+                        nb.iteration = cellIteration;
+                        candidates.Add(nb.index);
+                        frontier.Enqueue(nb.index);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Get a list of cells which are nearer than a given distance in cell count
         /// </summary>
@@ -2043,6 +2088,21 @@ namespace TGS {
             minSteps = Mathf.Max(1, minSteps);
             Cell cell = cells[cellIndex];
             List<int> cc = new List<int>();
+            if (_gridTopology == GridTopology.Irregular) {
+                List<int> candidates = new List<int>();
+                GetCellsWithinHops(cellIndex, maxSteps, candidates);
+                int candidatesCount = candidates.Count;
+                for (int i = 0; i < candidatesCount; i++) {
+                    int ci = candidates[i];
+                    if (!includeInvisibleCells && !CellIsVisible(ci)) continue;
+                    if (filter != null && !filter(ci)) continue;
+                    List<int> steps = FindPath(cellIndex, ci, maxCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, cellGroupMaskExactComparison: cellGroupMaskExactComparison);
+                    if (steps != null && steps.Count >= minSteps) {
+                        cc.Add(ci);
+                    }
+                }
+                return cc;
+            }
             GridDistanceFunction distanceFunction;
             if (_gridTopology == GridTopology.Hexagonal) {
                 distanceFunction = CellGetHexagonDistance;
@@ -2075,51 +2135,6 @@ namespace TGS {
             return cc;
         }
 
-        public List<int> CellGetNeighboursWithinRangeHex(int cellIndex, int minSteps, int maxSteps, int cellGroupMask = -1, float maxCost = -1, bool includeInvisibleCells = true, CanCrossCheckType canCrossCheckType = CanCrossCheckType.Default, bool ignoreCellCosts = false, bool cellGroupMaskExactComparison = false, CellFilterDelegate filter = null)
-        {
-            if (cellIndex < 0 || cellIndex >= cells.Count)
-                return null;
-            minSteps = Mathf.Max(1, minSteps);
-            Cell cell = cells[cellIndex];
-            List<int> cc = new List<int>();
-            GridDistanceFunction distanceFunction;
-
-            // Use Hex
-            distanceFunction = CellGetHexagonDistance;
-
-            for (int x = cell.column - maxSteps; x <= cell.column + maxSteps; x++)
-            {
-                if (x < 0 || x >= _cellColumnCount)
-                    continue;
-                for (int y = cell.row - maxSteps; y <= cell.row + maxSteps; y++)
-                {
-                    if (y < 0 || y >= _cellRowCount)
-                        continue;
-                    if (x == cell.column && y == cell.row)
-                        continue;
-
-                    // Use Hex
-                    int ci = CellGetIndexHex(y, x);
-
-
-                    if (!includeInvisibleCells && !CellIsVisible(ci)) continue;
-                    if (filter != null && !filter(ci)) continue;
-                    if (distanceFunction(cellIndex, ci) <= maxSteps)
-                    {
-                        List<int> steps = FindPath(cellIndex, ci, maxCost, maxSteps, cellGroupMask, canCrossCheckType, ignoreCellCosts, includeInvisibleCells, cellGroupMaskExactComparison: cellGroupMaskExactComparison);
-                        if (steps != null)
-                        {
-                            int stepsCount = steps.Count;
-                            if (stepsCount >= minSteps)
-                            {
-                                cc.Add(ci);
-                            }
-                        }
-                    }
-                }
-            }
-            return cc;
-        }
 
 
         /// <summary>
@@ -3373,6 +3388,22 @@ namespace TGS {
             float vdot = Vector2.Dot(v, v);
             Vector2 vnorm = v.normalized;
             float maxCos = Mathf.Cos(angle * 0.5f * Mathf.Deg2Rad);
+
+            if (_gridTopology == GridTopology.Irregular) {
+                int cellsCount = cells.Count;
+                for (int k = 0; k < cellsCount; k++) {
+                    Cell candidate = cells[k];
+                    if (candidate == null) continue;
+                    Vector2 candW = (Vector2)candidate.center - startPos;
+                    float candT = Vector2.Dot(candW, v) / vdot;
+                    if (candT > 1) continue;
+                    float candCos = Vector2.Dot(candW.normalized, vnorm);
+                    if (candCos >= maxCos) {
+                        cellIndices.Add(k);
+                    }
+                }
+                return cellIndices.Count;
+            }
 
             int distX = Mathf.Abs(cells[targetCellIndex].column - cells[cellIndex].column);
             int distY = Mathf.Abs(cells[targetCellIndex].row - cells[cellIndex].row);

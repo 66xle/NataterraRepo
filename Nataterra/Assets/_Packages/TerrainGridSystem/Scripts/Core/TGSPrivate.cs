@@ -2512,6 +2512,8 @@ namespace TGS {
 
             _numTerritories = Mathf.Clamp(_numTerritories, 0, cellCount);
             territories.Clear();
+            // invalidate territory lookup: regeneration replaces Territory instances even when count is unchanged
+            lastTerritoryLookupCount = -1;
 
             if (_numTerritories == 0) {
                 if (territoryLayer != null) {
@@ -3481,6 +3483,43 @@ namespace TGS {
             mat.SetFloat(ShaderParams.Offset, depthOffset);
         }
 
+        void UpdateGridLinesDepthTest () {
+
+            int zTest = (int)(_gridLinesIgnoreDepth ? UnityEngine.Rendering.CompareFunction.Always : UnityEngine.Rendering.CompareFunction.LessEqual);
+
+            SetLinesZTest(cellsThinMat, zTest);
+            SetLinesZTest(cellsGeoMat, zTest);
+            SetLinesZTest(territoriesThinMat, zTest);
+            SetLinesZTest(territoriesGeoMat, zTest);
+            SetLinesZTest(territoriesThickHackMat, zTest);
+            SetLinesZTest(territoriesDisputedThinMat, zTest);
+            SetLinesZTest(territoriesDisputedGeoMat, zTest);
+            SetLinesZTest(territoriesGradientMat, zTest);
+
+            if (frontierColorCache != null) {
+                foreach (Material mat in frontierColorCache.Values) {
+                    SetLinesZTest(mat, zTest);
+                }
+            }
+
+            // instanced copies assigned to renderers (custom borders, frontiers, interior borders)
+            Renderer[] renderers = transform.GetComponentsInChildren<Renderer>(true);
+            for (int k = 0; k < renderers.Length; k++) {
+                Material mat = renderers[k].sharedMaterial;
+                if (mat == null || mat.shader == null) continue;
+                if (mat.shader.name.StartsWith(LINE_SHADERS_PREFIX, StringComparison.Ordinal)) {
+                    SetLinesZTest(mat, zTest);
+                }
+            }
+        }
+
+        const string LINE_SHADERS_PREFIX = "Terrain Grid System/Unlit Single Color ";
+
+        void SetLinesZTest (Material mat, int zTest) {
+            if (mat == null) return;
+            mat.SetInt(ShaderParams.ZTest, zTest);
+        }
+
         int GetMaterialBaseRenderQueue (Material mat) {
             if (mat == null) return 0;
             if (!materialBaseRenderQueues.TryGetValue(mat, out int baseQueue)) {
@@ -4264,6 +4303,7 @@ namespace TGS {
                     DrawColorizedTerritories();
                 }
                 UpdateMaterialDepthOffset();
+                UpdateGridLinesDepthTest();
                 UpdateMaterialNearClipFade();
                 UpdateMaterialFarFade();
                 UpdateMaterialThickness();
