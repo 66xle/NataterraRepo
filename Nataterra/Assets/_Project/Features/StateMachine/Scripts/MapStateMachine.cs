@@ -100,6 +100,7 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.highlightMode = HighlightMode.None;
         _tgs.overlayMode = OverlayMode.Overlay;
         _tgs.cellBorderThickness = 10f;
+        _tgs.gridLinesIgnoreDepth = true;
 
         _tgs.Redraw();
 
