@@ -19,6 +19,8 @@ public class UISystem : NetworkBehaviour
         _resourceUI = InstanceHandler.GetInstance<ResourceUI>();
         _uiManager = InstanceHandler.GetInstance<UIManager>();
 
+        if (isServer) return;
+
         UpdateResourcesUI();
     }
 

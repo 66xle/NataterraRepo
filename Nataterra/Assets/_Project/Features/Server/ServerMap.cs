@@ -30,7 +30,7 @@ public class ServerMap
         _commandProcessor.Process(command);
     }
 
-    public List<HexCellState> LoadClientMap(PlayerID playerID)
+    public void LoadClientMap(PlayerID playerID)
     {
         List<string> GUIDs = new();
         List<UnitType> types = new();
@@ -54,8 +54,11 @@ public class ServerMap
         }
 
         _gs.UnitSystem.SpawnUnitToClient(playerID, types, GUIDs, indexs);
+    }
 
-        return state;
+    public List<HexCellState> GetMap()
+    {
+        return _map.GetState();
     }
 
     public FactionState GetFactionState(PlayerID playerID)

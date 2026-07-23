@@ -54,6 +54,8 @@ public class MapStateMachine : NetworkBehaviour
         SetupGrid(mapData);
 
         SetupServerMap(mapData, state, dictUnits);
+
+        GS.Setup();
     }
 
     public async Task SetupClient(Dictionary<UnitType, UnitData> dictUnits)
@@ -61,17 +63,19 @@ public class MapStateMachine : NetworkBehaviour
         _dictOfUnits = dictUnits;
         _unitObjects = new();
 
-        await AssignPlayerToFaction();
-        _factionState = await LoadFactionState();
+        ClientRuntime client = await SetupClientOnServer();
+        _factionState = client.FactionState;
+        _state = client.MapState;
 
-        GS.Setup();
+        if (!isHost)
+        {
+            MapData mapData = GameManager.Instance.MapData;
+            SetupGrid(mapData);
 
-        _state = await LoadMap();
+            GS.Setup();
+        }
 
-        if (isHost) return;
-
-        MapData mapData = GameManager.Instance.MapData;
-        SetupGrid(mapData);
+        await LoadClientMap();
     }
 
     void SetupServerMap(MapData mapData, List<HexCellState> state, Dictionary<UnitType, UnitData> dictOfUnits)
@@ -117,30 +121,33 @@ public class MapStateMachine : NetworkBehaviour
     }
 
     [ServerRpc]
-    async Task AssignPlayerToFaction(RPCInfo info = default)
+    async Task<ClientRuntime> SetupClientOnServer(RPCInfo info = default)
     {
-        PlayerID playerID = networkManager.players[networkManager.playerCount - 1];
+        ClientRuntime client = new();
+
+        AssignPlayerToFaction(info.sender);
+        client.MapState = _serverMap.GetMap();
+        client.FactionState = _serverMap.GetFactionState(info.sender);
+
+        return client;
+    }
+
+    [ServerRpc]
+    async Task LoadClientMap(RPCInfo info = default)
+    {
+        _serverMap.LoadClientMap(info.sender);
+    }
+
+    void AssignPlayerToFaction(PlayerID playerID)
+    {
         List<FactionData> factions = GameManager.Instance.ListOfFactions;
         FactionData data = factions[(int)playerID.id.value - 1];
 
         Debug.Log($"Player {playerID} Faction: {data.Settings.Faction}");
 
-        _serverMap.AddFaction(info.sender, data.Settings.Faction);
+        _serverMap.AddFaction(playerID, data.Settings.Faction);
     }
 
-    [ServerRpc]
-    async Task<List<HexCellState>> LoadMap(RPCInfo info = default)
-    {
-        Debug.Log($"Loading Map for Player {info.sender}");
-
-        return _serverMap.LoadClientMap(info.sender);
-    }
-
-    [ServerRpc]
-    async Task<FactionState> LoadFactionState(RPCInfo info = default)
-    {
-        return _serverMap.GetFactionState(info.sender);
-    }
 
     [ServerRpc]
     public void SpawnStartingUnits(RPCInfo info = default)

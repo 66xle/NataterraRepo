@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,12 +18,10 @@ namespace Systems.SceneManagment
 
         SceneGroup ActiveSceneGroup;
 
-        public async Task LoadScenes(SceneGroup group, List<SceneReference> scenesToIgnore, IProgress<float> progress, bool reloadDupScenes = false)
+        public async Task<List<string>> LoadScenes(PlayerID id, SceneGroup group, bool reloadDupScenes = false)
         {
             ActiveSceneGroup = group;
             var loadedScenes = new List<string>();
-
-            await UnloadScenes(scenesToIgnore);
 
             int sceneCount = SceneManager.sceneCount;
 
@@ -35,23 +34,37 @@ namespace Systems.SceneManagment
 
             var operationGroup = new AsyncOperationGroup(totalScenesToLoad);
 
+            List<string> scenes = new(); 
+
             for (var i = 0; i < totalScenesToLoad; i++)
             {
                 var sceneData = group.Scenes[i];
                 if (reloadDupScenes == false && loadedScenes.Contains(sceneData.Name)) continue;
 
-                var operation = InstanceHandler.NetworkManager.sceneModule.LoadSceneAsync(sceneData.Reference.Name, LoadSceneMode.Additive);
+                NetworkManager network = InstanceHandler.NetworkManager;
+                Scene scene = SceneManager.GetSceneByName(sceneData.Name);
 
-                operationGroup.Operations.Add(operation);
+                if (!id.isServer)
+                {
+                    network.sceneModule.TryGetSceneID(scene, out SceneID sceneId);
+                    network.scenePlayersModule.AddPlayerToScene(id, sceneId);
+
+                    scenes.Add(sceneData.Name);
+                }
+                else
+                {
+                    var operation = network.sceneModule.LoadSceneAsync(sceneData.Reference.Name, LoadSceneMode.Additive);
+                    operationGroup.Operations.Add(operation);
+                }
 
                 OnSceneLoaded.Invoke(sceneData.Name);
             }
 
             while (!operationGroup.IsDone)
             {
-                progress?.Report(operationGroup.Progress);
                 await Task.Yield();
             }
+
 
             Scene activeScene = SceneManager.GetSceneByName(ActiveSceneGroup.FindSceneNameByType(SceneType.ActiveScene));
 
@@ -61,9 +74,11 @@ namespace Systems.SceneManagment
             }
 
             OnSceneGroupLoaded.Invoke();
+
+            return scenes;
         }
 
-        public async Task UnloadScenes(List<SceneReference> scenesToIgnore)
+        public async Task<List<string>> UnloadScenes(PlayerID id, SceneGroup group, List<SceneReference> scenesToIgnore = null)
         {
             var scenes = new List<string>();
             var activeScene = SceneManager.GetActiveScene().name;
@@ -78,7 +93,8 @@ namespace Systems.SceneManagment
                 var sceneName = sceneAt.name;
 
                 bool isMatch = false;
-                foreach (SceneReference sceneRef in scenesToIgnore)
+
+                foreach (SceneReference sceneRef in scenesToIgnore) 
                 {
                     if (sceneRef.Name == sceneName)
                     {
@@ -93,14 +109,42 @@ namespace Systems.SceneManagment
 
             var operationGroup = new AsyncOperationGroup(scenes.Count);
 
-            foreach (var scene in scenes)
+            List<string> listOfScenes = new();
+
+            foreach (string sceneName in scenes)
             {
-                var operation = InstanceHandler.NetworkManager.sceneModule.UnloadSceneAsync(scene);
-                if (operation == null) continue;
+                NetworkManager network = InstanceHandler.NetworkManager;
+                Scene scene = SceneManager.GetSceneByName(sceneName);
 
-                operationGroup.Operations.Add(operation);
+                if (!scene.isLoaded)
+                    continue;
 
-                OnSceneUnloaded.Invoke(scene);
+                bool registered = network.sceneModule.TryGetSceneID(scene, out SceneID sceneId);
+
+                if (!registered)
+                {
+                    var operation = SceneManager.UnloadSceneAsync(scene);
+                    if (operation == null) continue;
+
+                    operationGroup.Operations.Add(operation);
+                }
+                else
+                {
+                    if (!id.isServer)
+                    {
+                        network.scenePlayersModule.RemovePlayerFromScene(id, sceneId);
+                        listOfScenes.Add(sceneName);
+                    }
+                    else
+                    {
+                        var operation = network.sceneModule.UnloadSceneAsync(scene);
+                        if (operation == null) continue;
+
+                        operationGroup.Operations.Add(operation);
+                    }
+                }
+
+                OnSceneUnloaded.Invoke(sceneName);
             }
 
             while (!operationGroup.IsDone)
@@ -108,8 +152,12 @@ namespace Systems.SceneManagment
                 await Task.Delay(100);
             }
 
+            return listOfScenes;
+
             //await Resources.UnloadUnusedAssets();
         }
+
+        
     }
 
     public readonly struct AsyncOperationGroup

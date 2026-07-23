@@ -35,6 +35,9 @@ public class StateMachineManager : NetworkBehaviour
     {
         base.OnSpawned();
 
+
+        Debug.Log("Setup Subscribe");
+
         if (!asServer)
         {
             if (isHost)
@@ -55,6 +58,8 @@ public class StateMachineManager : NetworkBehaviour
 
     async void ClientSetup()
     {
+        Debug.Log("Client Setup");
+
         await MapCtx.SetupClient(CreateDictDatabase());
 
         SetupStateMachine();

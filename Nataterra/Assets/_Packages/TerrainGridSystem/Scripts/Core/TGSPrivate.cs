@@ -18,7 +18,7 @@ namespace TGS {
             None = 0,
             Full = 1,
             IncrementalTerritories = 2
-        }
+        } 
 
         // internal fields
         const double MIN_VERTEX_DISTANCE = 0.002;
