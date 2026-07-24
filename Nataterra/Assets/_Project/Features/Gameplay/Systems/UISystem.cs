@@ -61,8 +61,18 @@ public class UISystem : NetworkBehaviour
         _uiManager.UpdateUnitAvaliable(type, amount);
     }
 
+    [TargetRpc]
+    public void ShowPhaseTitleClient(PlayerID playerID, GameplayState state)
+    {
+        ShowPhaseTitle(state);
+    }
 
     [ObserversRpc]
+    public void ShowPhaseTitleToAll(GameplayState state)
+    {
+        ShowPhaseTitle(state);
+    }
+
     public void ShowPhaseTitle(GameplayState state)
     {
         if (state == GameplayState.MovementPhase)
@@ -74,6 +84,7 @@ public class UISystem : NetworkBehaviour
         else if (state == GameplayState.DevelopmentPhase)
             _uiManager.ShowPhaseUI("Development Phase");
     }
+
 
     [ObserversRpc]
     public void ShowFactionTurn(Base faction)

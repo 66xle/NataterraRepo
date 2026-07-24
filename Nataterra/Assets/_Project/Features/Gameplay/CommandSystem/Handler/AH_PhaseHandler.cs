@@ -65,7 +65,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
             // Set server's state
             _map.SetPhaseState(state);
 
-            _gs.UISystem.ShowPhaseTitle(state);
+            _gs.UISystem.ShowPhaseTitleToAll(state);
             return;
         }
 
@@ -85,7 +85,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         _map.SetPhaseState(GameplayState.MovementPhase);
 
-        _gs.UISystem.ShowPhaseTitle(GameplayState.MovementPhase);
+        _gs.UISystem.ShowPhaseTitleToAll(GameplayState.MovementPhase);
         _gs.MSM.EndPhaseForClient(nextPlayer);
     }
 

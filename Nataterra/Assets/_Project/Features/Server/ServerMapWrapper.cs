@@ -304,6 +304,13 @@ public class ServerMapWrapper
     }
 
 
+    public GameplayState GetGameplayState()
+    {
+        return _phaseState;
+    }
+
+
+
     public DijkstraResult GetPathfindingResult(string guid)
     {
         if (_results.TryGetValue(guid, out DijkstraResult result))
