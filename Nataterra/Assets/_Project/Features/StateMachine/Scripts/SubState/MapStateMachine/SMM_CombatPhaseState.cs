@@ -16,7 +16,7 @@ public class SMM_CombatPhaseState : GameplayBaseState
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            MapCtx.SendEndPhaseCommand(GameplayState.CombatPhase);
+            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.CombatPhase));
         }
     }
 

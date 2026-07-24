@@ -46,7 +46,18 @@ namespace Systems.SceneManagment
 
                 if (!id.isServer)
                 {
-                    network.sceneModule.TryGetSceneID(scene, out SceneID sceneId);
+                    if (!scene.IsValid() || !scene.isLoaded)
+                    {
+                        Debug.LogError($"Scene {sceneData.Name} isn't loaded on the server.");
+                        continue;
+                    }
+
+                    if (!network.sceneModule.TryGetSceneID(scene, out SceneID sceneId))
+                    {
+                        Debug.LogError($"Couldn't get SceneID for {sceneData.Name}");
+                        continue;
+                    }
+
                     network.scenePlayersModule.AddPlayerToScene(id, sceneId);
 
                     scenes.Add(sceneData.Name);

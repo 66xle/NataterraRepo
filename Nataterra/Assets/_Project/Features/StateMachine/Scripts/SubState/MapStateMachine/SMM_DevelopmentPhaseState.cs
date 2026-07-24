@@ -28,13 +28,10 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            AC_PhaseEndPhaseCommand command = new AC_PhaseEndPhaseCommand()
-            {
-                CurrentState = GameplayState.DevelopmentPhase,
-                Cart = _cart
-            };
+            AC_PhaseEndPhaseCommand command = CreateCommand.EndPhase(GameplayState.DevelopmentPhase);
+            command.Cart = _cart;
 
-            MapCtx.SendEndPhaseCommand(command);
+            MapCtx.SendCommandToServer(command);
         }
     }
 

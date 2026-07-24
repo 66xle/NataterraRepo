@@ -106,35 +106,13 @@ public class StateMachineManager : NetworkBehaviour
 
     void OnPlayerJoin()
     {
-        MapCtx.SpawnStartingUnits();
+        MapCtx.SendCommandToServer(CreateCommand.UnitInitialSpawn());
 
         if (networkManager.playerCount == 1)
         {
-            MapCtx.SendEndPhaseCommand(GameplayState.WaitingForTurn);
+            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.WaitingForTurn));
         }
     }
-
-    void OnPlayerJoined(PlayerID player, bool isReconnect, bool asServer)
-    {
-        if (asServer) return;
-
-        if (isReconnect)
-        {
-            Debug.Log($"Player {player.id} reconnected.");
-            return;
-        }
-
-        List<FactionData> factions = GameManager.Instance.ListOfFactions;
-        FactionData data = factions[(int)player.id.value - 1];
-
-        //_dictFaction.Add(player, data.Settings.Faction);
-
-        Debug.Log($"Player {player.id}'s Faction: {data.Settings.Faction}");
-
-        MapCtx.SpawnStartingUnits();
-    }
-
-    
 
     Dictionary<UnitType, UnitData> CreateDictDatabase()
     {

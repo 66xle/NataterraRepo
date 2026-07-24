@@ -148,64 +148,13 @@ public class MapStateMachine : NetworkBehaviour
         _serverMap.AddFaction(playerID, data.Settings.Faction);
     }
 
-
     [ServerRpc]
-    public void SpawnStartingUnits(RPCInfo info = default)
+    public void SendCommandToServer(IActionCommand command, RPCInfo info = default)
     {
-        AC_UnitInitialSpawnCommand command = new AC_UnitInitialSpawnCommand
-        {
-            PlayerID = info.sender
-        };
-
-        _serverMap.HandleCommand(command);
-    }
-
-    [ServerRpc]
-    public void SendMoveCommand(int origin, int destination, List<Unit> selectedUnits)
-    {
-        List<string> guids = new();
-        List<UnitType> type = new();
-
-        if (selectedUnits.Count == 0)
-        {
-            Debug.LogError("MapStateMachine: SendMoveCommand() - No units selected!");
+        if (command == null)
             return;
-        }
 
-        foreach (Unit unit in selectedUnits)
-        {
-            guids.Add(unit.GUID);
-            type.Add(unit.UnitType);
-        }
-
-        // Send Command
-        AC_UnitMoveCommand command = new AC_UnitMoveCommand()
-        {
-            ListOfUnitType = type,
-            ListOfUnitGUID = guids,
-            SelectedIndex = origin,
-            Destination = destination
-        };
-
-        _serverMap.HandleCommand(command);
-    }
-
-    [ServerRpc]
-    public void SendEndPhaseCommand(GameplayState state, RPCInfo info = default)
-    {
-        AC_PhaseEndPhaseCommand command = new AC_PhaseEndPhaseCommand()
-        {
-            PlayerID = info.sender,
-            CurrentState = state
-        };
-
-        _serverMap.HandleCommand(command);
-    }
-
-    [ServerRpc]
-    public void SendEndPhaseCommand(AC_PhaseEndPhaseCommand command, RPCInfo info = default)
-    {
-        command.PlayerID = info.sender;
+        command.ID = info.sender;
 
         _serverMap.HandleCommand(command);
     }

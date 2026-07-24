@@ -18,7 +18,6 @@ public class ServerMap
         _map = wrapper;
         _gs = GS;
 
-        _commandProcessor.Register<AC_UnitRecruitCommand>(new AH_UnitHandler(_gs, _map));
         _commandProcessor.Register<AC_UnitInitialSpawnCommand>(new AH_UnitHandler(_gs, _map));
         _commandProcessor.Register<AC_UnitMoveCommand>(new AH_UnitHandler(_gs, _map));
 

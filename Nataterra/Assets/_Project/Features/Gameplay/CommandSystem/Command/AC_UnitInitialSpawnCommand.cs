@@ -3,5 +3,5 @@ using PurrNet;
 
 public struct AC_UnitInitialSpawnCommand : IActionCommand
 {
-    public PlayerID PlayerID;
+    public PlayerID ID { get; set; }
 }

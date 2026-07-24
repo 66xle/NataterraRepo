@@ -20,7 +20,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            MapCtx.SendEndPhaseCommand(GameplayState.MovementPhase);
+            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.MovementPhase));
         }
     }
     public override void FixedUpdateState() { }
@@ -90,7 +90,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
             return;
         }
 
-        MapCtx.SendMoveCommand(MapCtx.SelectedCell.index, cell.index, MapCtx.SelectedUnits);
+        MapCtx.SendCommandToServer(CreateCommand.UnitMove(MapCtx.SelectedCell.index, cell.index, MapCtx.SelectedUnits));
 
         MapCtx.MovementResult = null;
         MapCtx.RemoveMovementBorder();

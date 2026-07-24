@@ -18,7 +18,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
     public async void Handle(AC_PhaseEndPhaseCommand command)
     {
-        if (command.PlayerID != _map.CurrentPlayerTurn)
+        if (command.ID != _map.CurrentPlayerTurn)
             return;
 
         // Validate current state
@@ -29,7 +29,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         if (command.CurrentState == GameplayState.WaitingForTurn)
         {
-            _gs.UISystem.ShowFactionTurn(_map.GetFaction(command.PlayerID));
+            _gs.UISystem.ShowFactionTurn(_map.GetFaction(command.ID));
 
             await Task.Delay(1500);
 
@@ -37,12 +37,12 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.MovementPhase)
         {
-            EndMovementPhase(command.PlayerID);
+            EndMovementPhase(command.ID);
             state = GameplayState.ResourcePhase;
         }
         else if (command.CurrentState == GameplayState.ResourcePhase)
         {
-            EndResourcePhase(command.PlayerID);
+            EndResourcePhase(command.ID);
             state = GameplayState.CombatPhase;
         }
         else if (command.CurrentState == GameplayState.CombatPhase)
@@ -52,13 +52,13 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         }
         else if (command.CurrentState == GameplayState.DevelopmentPhase)
         {
-            error = EndDevelopmentPhase(command.PlayerID ,command.Cart);
+            error = EndDevelopmentPhase(command.ID ,command.Cart);
             state = GameplayState.WaitingForTurn;
         }
 
         if (error) return;
 
-        _gs.MSM.EndPhaseForClient(command.PlayerID);
+        _gs.MSM.EndPhaseForClient(command.ID);
 
         if (state != GameplayState.WaitingForTurn)
         {

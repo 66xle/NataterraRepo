@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHandler<AC_UnitInitialSpawnCommand>, IActionHandler<AC_UnitMoveCommand>
+public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActionHandler<AC_UnitMoveCommand>
 {
     GameplaySystem _gs;
     ServerMapWrapper _map;
@@ -13,29 +13,9 @@ public class AH_UnitHandler : IActionHandler<AC_UnitRecruitCommand>, IActionHand
         _map = map;
     }
 
-    public void Handle(AC_UnitRecruitCommand command)
-    {
-        // validate server map against client map
-
-
-        int cellIndex = _map.GetBaseCellIndex(command.Faction);
-
-        // server update map
-        _map.AddUnit(command.Unit, cellIndex);
-       
-
-        // send data to clients map
-        _gs.SetStateChanges(_map.GetStateChanges());  
-
-        //_gs.UnitSystem.SpawnUnit(command.Unit, cellIndex);
-
-
-        Debug.Log("Unit Spawned");
-    }
-
     public void Handle(AC_UnitInitialSpawnCommand command)
     {
-        Base faction = _map.GetFaction(command.PlayerID);
+        Base faction = _map.GetFaction(command.ID);
         int cellIndex = _map.GetBaseCellIndex(faction);
 
         // Get Starting Unit

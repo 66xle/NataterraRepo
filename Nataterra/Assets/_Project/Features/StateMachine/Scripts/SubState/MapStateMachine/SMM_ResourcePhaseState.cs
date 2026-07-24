@@ -14,7 +14,7 @@ public class SMM_ResourcePhaseState : GameplayBaseState
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            MapCtx.SendEndPhaseCommand(GameplayState.ResourcePhase);
+            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.ResourcePhase));
         }
     }
 

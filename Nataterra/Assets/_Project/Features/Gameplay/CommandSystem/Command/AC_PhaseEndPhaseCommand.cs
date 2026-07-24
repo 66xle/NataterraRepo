@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct AC_PhaseEndPhaseCommand : IActionCommand
 {
-    public PlayerID PlayerID;
+    public PlayerID ID { get; set; }
     public GameplayState CurrentState;
     public DevelopmentCart Cart;
 }

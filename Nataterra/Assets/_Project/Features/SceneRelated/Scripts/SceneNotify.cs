@@ -16,4 +16,14 @@ public class SceneNotify : NetworkBehaviour
         else
             Debug.LogError($"SceneNotify: Failed to get SceneLoader instance for Scene {gameObject.scene.name}");
     }
+
+    private void OnDestroy()
+    {
+        Debug.Log($"{gameObject.scene.name} SceneNotify destroyed");
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log($"{gameObject.scene.name} SceneNotify disabled");
+    }
 }
