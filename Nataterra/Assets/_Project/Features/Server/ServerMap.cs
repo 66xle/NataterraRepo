@@ -55,7 +55,7 @@ public class ServerMap
         _gs.UnitSystem.SpawnUnitToClient(playerID, types, GUIDs, indexs);
 
         if (_gs.networkManager.playerCount > 1)
-            _gs.UISystem.ShowPhaseTitleClient(playerID, _map.GetGameplayState());
+            _gs.UISystem.ShowPhaseTitleClient(playerID, _map.GetPhaseState());
 
     }
 

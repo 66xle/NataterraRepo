@@ -59,20 +59,27 @@ public class ServerMapWrapper
         }
     }
 
+    
+    #region Phase State
+    public GameplayState GetPhaseState()
+    {
+        return _phaseState;
+    }
+
+    public void SetPhaseState(GameplayState state)
+    {
+        _phaseState = state;
+    }
+
+    #endregion
+
+    #region Faction
     public void AddFaction(PlayerID playerID, Base facton)
     {
         _dictFaction.Add(playerID, facton);
 
         _playerTurnQueue.Add(playerID);
     }
-
-    public void NextPlayerTurn()
-    {
-        PlayerID oldPlayer = _playerTurnQueue[0];
-        _playerTurnQueue.RemoveAt(0);
-        _playerTurnQueue.Add(oldPlayer);
-    }
-
     public Base GetFaction(PlayerID playerID)
     {
         return _dictFaction[playerID];
@@ -81,42 +88,33 @@ public class ServerMapWrapper
     {
         return _factionState[GetFaction(playerID)];
     }
+    #endregion
 
-
-    public void ResetUnitMovementOnCell(int cellIndex)
+    #region Units
+    public List<Unit> GetUnits(int cellIndex, List<string> guids, List<UnitType> types)
     {
-        HexCellState cellState = _state[cellIndex];
+        List<Unit> units = new();
 
-        if (cellState.DictOfGroups.Count == 0) return;
-
-        foreach (UnitType type in cellState.DictOfGroups.Keys)
+        for (int i = 0; i < guids.Count; i++)
         {
-            foreach (Unit unit in cellState.DictOfGroups[type].ListOfUnits)
+            if (!_state[cellIndex].DictOfGroups.TryGetValue(types[i], out Group group))
             {
-                unit.CurrentMovement = unit.Movement;
-                unit.CellOrigin = cellIndex;
+                Debug.LogError("Server Map Wrapper: GetUnits(): Unit Type not found");
+                return null;
             }
+
+            if (!Extensions.Contains(group.ListOfUnits, guids[i], g => g.GUID, out Unit unit))
+            {
+                Debug.LogError("Server Map Wrapper: GetUnits(): Unit's GUID not found");
+                return null;
+            }
+
+            units.Add(unit);
         }
 
-        AddStateChange(cellIndex);
+        return units;
     }
 
-
-    public void AddResource(Base faction, Resource resource)
-    {
-        if (resource == Resource.Food)
-        {
-            _factionState[faction].Food += _factionState[faction].FoodMultiplier;
-        }
-        else if (resource == Resource.Wood)
-        {
-            _factionState[faction].Wood += _factionState[faction].WoodMultiplier;
-        }
-        else if (resource == Resource.Metal)
-        {
-            _factionState[faction].Metal += _factionState[faction].MetalMultiplier;
-        }
-    }
 
     public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
     {
@@ -182,7 +180,6 @@ public class ServerMapWrapper
         _state[cellIndex].DictOfGroups.Remove(type);
     }
 
-
     public void MoveUnit(List<Unit> units, int origin, int destination, List<DijkstraResult> listOfResults)
     {
         AddStateChange(origin);
@@ -221,6 +218,67 @@ public class ServerMapWrapper
         return true;
     }
 
+    #endregion
+
+    #region Movement
+
+    public void ResetUnitMovementOnCell(int cellIndex)
+    {
+        HexCellState cellState = _state[cellIndex];
+
+        if (cellState.DictOfGroups.Count == 0) return;
+
+        foreach (UnitType type in cellState.DictOfGroups.Keys)
+        {
+            foreach (Unit unit in cellState.DictOfGroups[type].ListOfUnits)
+            {
+                unit.CurrentMovement = unit.Movement;
+                unit.CellOrigin = cellIndex;
+            }
+        }
+
+        AddStateChange(cellIndex);
+    }
+
+    public DijkstraResult GetPathfindingResult(string guid)
+    {
+        if (_results.TryGetValue(guid, out DijkstraResult result))
+        {
+            return result;
+        }
+
+        return null;
+    }
+
+    public void StoreResult(string guid, DijkstraResult result)
+    {
+        _results.Add(guid, result);
+    }
+
+    public void ClearResult()
+    {
+        _results.Clear();
+    }
+
+    #endregion
+
+    #region Resources
+    public void AddResource(Base faction, Resource resource)
+    {
+        if (resource == Resource.Food)
+        {
+            _factionState[faction].Food += _factionState[faction].FoodMultiplier;
+        }
+        else if (resource == Resource.Wood)
+        {
+            _factionState[faction].Wood += _factionState[faction].WoodMultiplier;
+        }
+        else if (resource == Resource.Metal)
+        {
+            _factionState[faction].Metal += _factionState[faction].MetalMultiplier;
+        }
+    }
+
     public bool ReduceResources(Base faction, Dictionary<UnitType, int> units)
     {
         int totalCostFood = 0;
@@ -249,7 +307,10 @@ public class ServerMapWrapper
 
         return false;
     }
+    #endregion
 
+
+    #region Map State
 
     public List<StateChange> GetStateChanges()
     {
@@ -264,80 +325,6 @@ public class ServerMapWrapper
         return state;
     }
 
-    public List<HexCellState> GetState()
-    {
-        return _state;
-    }
-
-    public List<Cell> GetCells()
-    {
-        return _cells;
-    }
-
-    public int GetBaseCellIndex(Base faction)
-    {
-        return _basesPlaced[(int)faction];
-    }
-
-    public List<Unit> GetUnits(int cellIndex, List<string> guids, List<UnitType> types)
-    {
-        List<Unit> units = new();
-
-        for (int i = 0; i < guids.Count; i++)
-        {
-            if (!_state[cellIndex].DictOfGroups.TryGetValue(types[i], out Group group))
-            {
-                Debug.LogError("Server Map Wrapper: GetUnits(): Unit Type not found");
-                return null;
-            }
-
-            if (!Extensions.Contains(group.ListOfUnits, guids[i], g => g.GUID, out Unit unit))
-            {
-                Debug.LogError("Server Map Wrapper: GetUnits(): Unit's GUID not found");
-                return null;
-            }
-
-            units.Add(unit);
-        }
-
-        return units;
-    }
-
-
-    public GameplayState GetGameplayState()
-    {
-        return _phaseState;
-    }
-
-
-
-    public DijkstraResult GetPathfindingResult(string guid)
-    {
-        if (_results.TryGetValue(guid, out DijkstraResult result))
-        {
-            return result;
-        }
-
-        return null;
-    }
-
-    public void StoreResult(string guid, DijkstraResult result)
-    {
-        _results.Add(guid, result);
-    }
-
-    public void ClearResult()
-    {
-        _results.Clear();
-    }
-    
-
-
-    public void SetPhaseState(GameplayState state)
-    {
-        _phaseState = state;
-    }
-
     private void AddStateChange(int cellIndex)
     {
         if (!_stateChanges.Contains(cellIndex))
@@ -346,15 +333,18 @@ public class ServerMapWrapper
         }
     }
 
-    private UnitData GetUnitData(UnitType type)
+    public List<HexCellState> GetState()
     {
-        if (!_dictOfUnits.TryGetValue(type, out UnitData data))
-        {
-            Debug.LogError($"{type} data does not exist in database");
-            return null;
-        }
+        return _state;
+    }
 
-        return data;
+    #endregion
+
+   
+    #region Faction
+    public int GetBaseCellIndex(Base faction)
+    {
+        return _basesPlaced[(int)faction];
     }
 
     private Base GetUnitFaction(UnitType type)
@@ -369,5 +359,32 @@ public class ServerMapWrapper
 
         Debug.Log($"ServerMapWrapper: GetUnitFaction(): Base not found for {type}");
         return Base.None;
+    }
+
+    #endregion
+
+
+    public void NextPlayerTurn()
+    {
+        PlayerID oldPlayer = _playerTurnQueue[0];
+        _playerTurnQueue.RemoveAt(0);
+        _playerTurnQueue.Add(oldPlayer);
+    }
+
+
+    private UnitData GetUnitData(UnitType type)
+    {
+        if (!_dictOfUnits.TryGetValue(type, out UnitData data))
+        {
+            Debug.LogError($"{type} data does not exist in database");
+            return null;
+        }
+
+        return data;
+    }
+
+    public List<Cell> GetCells()
+    {
+        return _cells;
     }
 }
