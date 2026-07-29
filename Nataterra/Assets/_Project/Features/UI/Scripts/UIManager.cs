@@ -8,7 +8,10 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text PhaseTitle;
 
-    public List<UnitUI> _listOfUnitUI;
+    [SerializeField] GameObject UnitUIPrefab;
+    [SerializeField] Transform UnitUIParent;
+
+    List<UnitUI> _listOfUnitUI = new();
 
     private void Awake()
     {
@@ -19,6 +22,22 @@ public class UIManager : MonoBehaviour
     {
         InstanceHandler.UnregisterInstance<UIManager>();
     }
+
+    public void SpawnUnitUI(UnitData data)
+    {
+        // Spawn UI
+        UnitUI ui = Instantiate(UnitUIPrefab, UnitUIParent).GetComponent<UnitUI>();
+        ui.SetData(data);
+        _listOfUnitUI.Add(ui);
+    }
+
+    public void UpdateUnitAvaliable(UnitType type, int amount)
+    {
+        int index = ((int)type / 10) % 10;
+
+        _listOfUnitUI[index].SetUnitAvailiable(amount);
+    }
+
 
     public async void ShowPhaseUI(string text)
     {
@@ -41,10 +60,5 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void UpdateUnitAvaliable(UnitType type, int amount)
-    {
-        int index = ((int)type / 10) % 10;
-
-        _listOfUnitUI[index].AvaliableText.text = $"Avaliable: <color=green>{amount}</color>";
-    }
+    
 }

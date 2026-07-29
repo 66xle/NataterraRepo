@@ -24,6 +24,7 @@ public class MapStateMachine : NetworkBehaviour
     GameObject _movementBorder;
     DijkstraResult _movementResult;
 
+    public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public FactionState FactionState { get { return _factionState; } }
 
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
@@ -74,6 +75,9 @@ public class MapStateMachine : NetworkBehaviour
 
             GS.Setup();
         }
+
+        Base faction = await GetBase();
+        GS.UISystem.Setup(faction);
 
         await LoadClientMap();
     }
@@ -136,6 +140,12 @@ public class MapStateMachine : NetworkBehaviour
     async Task LoadClientMap(RPCInfo info = default)
     {
         _serverMap.LoadClientMap(info.sender);
+    }
+
+    [ServerRpc]
+    async Task<Base> GetBase(RPCInfo info = default)
+    {
+        return _serverMap.GetBase(info.sender);
     }
 
     void AssignPlayerToFaction(PlayerID playerID)

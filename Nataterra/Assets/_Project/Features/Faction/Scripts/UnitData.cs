@@ -8,7 +8,7 @@ public class UnitData : ScriptableObject
     [Header("Info")]
     public UnitType UnitType;
     public GameObject Prefab;
-    public Texture Texture;
+    public Sprite Sprite;
     public int StartingAvailiableUnits;
 
     [Header("Stats")]

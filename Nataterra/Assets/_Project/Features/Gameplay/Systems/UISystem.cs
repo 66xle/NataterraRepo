@@ -9,19 +9,33 @@ public class UISystem : NetworkBehaviour
     GameplaySystem _gs;
     ResourceUI _resourceUI;
     UIManager _uiManager;
+
     private void Awake()
     {
         _gs = GetComponentInParent<GameplaySystem>();
+        
     }
 
-    public void Setup()
+    public void Setup(Base faction)
     {
         _resourceUI = InstanceHandler.GetInstance<ResourceUI>();
         _uiManager = InstanceHandler.GetInstance<UIManager>();
 
-        if (isServer) return;
-
         UpdateResourcesUI();
+
+        foreach (FactionData data in GameManager.Instance.ListOfFactions)
+        {
+            if (faction != data.Settings.Faction)
+                continue;
+
+            // Load Units in Development UI
+            foreach (UnitData unitData in data.ListOfUnits)
+            {
+                _uiManager.SpawnUnitUI(unitData);
+            }
+
+            break;
+        }
     }
 
     [TargetRpc]

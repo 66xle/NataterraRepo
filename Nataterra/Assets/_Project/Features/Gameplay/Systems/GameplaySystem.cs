@@ -12,15 +12,15 @@ public class GameplaySystem : NetworkBehaviour
 
     public TerrainGridSystem TGS { get; private set; }
 
-    public void Setup()
+    private void Awake()
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
         UISystem = GetComponentInChildren<UISystem>();
+    }
 
+    public void Setup()
+    {
         TGS = TerrainGridSystem.instance;
-
-
-        UISystem.Setup();
     }
 
     [ObserversRpc]

@@ -69,6 +69,11 @@ public class ServerMap
         return _map.GetFactionState(playerID);
     }
 
+    public Base GetBase(PlayerID playerID)
+    {
+        return _map.GetFaction(playerID);
+    }
+
     public void AddFaction(PlayerID playerID, Base facton)
     {
         _map.AddFaction(playerID, facton);

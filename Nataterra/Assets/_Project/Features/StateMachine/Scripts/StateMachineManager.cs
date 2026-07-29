@@ -1,26 +1,16 @@
+using Alchemy.Inspector;
 using PurrNet;
-using PurrNet.Modules;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using TGS;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
-using static Unity.Cinemachine.CinemachineTriggerAction;
-using static UnityEditor.VersionControl.Asset;
 
 public class StateMachineManager : NetworkBehaviour
 {
-#if UNITY_EDITOR
     [Header("Debugging")]
-    public TMP_Text CellLabelPrefab;
-    public Canvas GridCanvas;
-    public bool ShowCellIndex = false;
-#endif
+    [SerializeField] TMP_Text CellLabelPrefab;
+    [SerializeField] Canvas GridCanvas;
+    [SerializeField] bool ShowCellIndex = false;
 
     [Header("References")]
     public MapStateMachine MapCtx;
