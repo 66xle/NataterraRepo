@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   UnitType: 100
   Prefab: {fileID: 6562541755985119412, guid: b6ad794cd1c70b248aa417b21034400e, type: 3}
+  Texture: {fileID: 2800000, guid: abaac0d51668bdf4b8ce78dc25567cfa, type: 3}
+  StartingAvailiableUnits: 3
   Attack: 2
   Armour: 0
   Health: 6

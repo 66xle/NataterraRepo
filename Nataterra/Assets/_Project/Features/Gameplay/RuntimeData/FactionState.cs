@@ -12,7 +12,7 @@ public class FactionState
 
     public Dictionary<UnitType, int> CurrentUnitAvaliable;
 
-    public FactionState(List<UnitAmount> listUnitAvaliable)
+    public FactionState(List<UnitData> units)
     {
         Food = 10;
         Wood = 10;
@@ -24,9 +24,9 @@ public class FactionState
 
         CurrentUnitAvaliable = new();
 
-        foreach (UnitAmount unit in listUnitAvaliable)
+        foreach (UnitData unit in units)
         {
-            CurrentUnitAvaliable.Add(unit.Type, unit.Amount);
+            CurrentUnitAvaliable.Add(unit.UnitType, unit.StartingAvailiableUnits);
         }
     }
 }

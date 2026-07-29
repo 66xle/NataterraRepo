@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08955cbb794b9614fb19a34a6b706a3c, type: 3}
-  m_Name: Hunter
+  m_Name: Disciple
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  UnitType: 200
+  UnitType: 210
   Prefab: {fileID: 6562541755985119412, guid: 2d3774447a3ec4b488e82dd9c72e18b7, type: 3}
-  Texture: {fileID: 2800000, guid: 3ef0934c55c866a4abe6aa840de36cb4, type: 3}
+  Texture: {fileID: 2800000, guid: a04ec6cf4e8542a4ea69561d1c7a84fa, type: 3}
   StartingAvailiableUnits: 3
-  Attack: 2
+  Attack: 4
   Armour: 0
-  Health: 6
-  Initiative: 1
+  Health: 8
+  Initiative: 7
   Group: 3
-  Movement: 2
-  FoodCost: 2
+  Movement: 3
+  FoodCost: 3
   WoodCost: 0
-  MetalCost: 0
+  MetalCost: 1

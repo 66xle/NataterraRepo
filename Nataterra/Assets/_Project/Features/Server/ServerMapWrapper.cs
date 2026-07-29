@@ -55,7 +55,7 @@ public class ServerMapWrapper
         {
             FactionSettings setting = data.Settings;
             _factionSettings.Add(setting.Faction, setting);
-            _factionState.Add(setting.Faction, new FactionState(setting.ListOfUnitAvaliable));
+            _factionState.Add(setting.Faction, new FactionState(data.ListOfUnits));
         }
     }
 

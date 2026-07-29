@@ -16,8 +16,7 @@ MonoBehaviour:
     Faction: 1
     WorkerUnit: 200
     StartingUnits: c8000000c8000000c8000000
-    ListOfUnitAvaliable:
-    - Type: 200
-      Amount: 3
   ListOfUnits:
   - {fileID: 11400000, guid: f3454bd6da45a464b97befbb88ef192b, type: 2}
+  - {fileID: 11400000, guid: 3d489f3a798ad0c4a8c78682665cb251, type: 2}
+  - {fileID: 11400000, guid: 8ef23948efc930a4aa2f687cd2dd25d5, type: 2}
