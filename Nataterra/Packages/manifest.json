@@ -9,6 +9,7 @@
     }
   ],
   "dependencies": {
+    "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#5.0.0",
     "com.needle.compilation-visualizer": "1.8.9",
     "com.unity.burst": "1.8.29",
