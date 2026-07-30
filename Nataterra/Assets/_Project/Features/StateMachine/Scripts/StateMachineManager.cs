@@ -100,7 +100,7 @@ public class StateMachineManager : NetworkBehaviour
 
         if (networkManager.playerCount == 1)
         {
-            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.WaitingForTurn));
+            MapCtx.SendCommandToServer(CreateCommand.EndPhase());
         }
     }
 

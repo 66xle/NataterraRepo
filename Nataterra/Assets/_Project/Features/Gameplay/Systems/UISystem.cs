@@ -21,6 +21,7 @@ public class UISystem : NetworkBehaviour
         _resourceUI = InstanceHandler.GetInstance<ResourceUI>();
         _uiManager = InstanceHandler.GetInstance<UIManager>();
 
+        _uiManager.Setup();
         UpdateResourcesUI();
 
         foreach (FactionData data in GameManager.Instance.ListOfFactions)
@@ -104,5 +105,11 @@ public class UISystem : NetworkBehaviour
     public void ShowFactionTurn(Base faction)
     {
         _uiManager.ShowFactionTurn($"{faction}'s Turn");
+    }
+
+
+    public void EnableEndPhaseButton(bool value)
+    { 
+        _uiManager.EnableEndPhaseButton(value);
     }
 }

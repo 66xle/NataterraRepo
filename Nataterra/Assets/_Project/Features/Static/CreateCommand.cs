@@ -40,12 +40,9 @@ public static class CreateCommand
         return command;
     }
 
-    public static AC_PhaseEndPhaseCommand EndPhase(GameplayState state)
+    public static AC_PhaseEndPhaseCommand EndPhase()
     {
-        AC_PhaseEndPhaseCommand command = new AC_PhaseEndPhaseCommand()
-        {
-            CurrentState = state
-        };
+        AC_PhaseEndPhaseCommand command = new AC_PhaseEndPhaseCommand();
 
         return command;
     }

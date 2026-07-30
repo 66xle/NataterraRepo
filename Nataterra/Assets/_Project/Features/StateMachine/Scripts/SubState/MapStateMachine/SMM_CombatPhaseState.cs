@@ -8,21 +8,18 @@ public class SMM_CombatPhaseState : GameplayBaseState
     {
         Debug.Log("Entered Combat Phase");
 
+        MapCtx.GS.UISystem.EnableEndPhaseButton(true);
+
+        MapCtx.OnRequestEndPhase += RequestEndPhase;
         MapCtx.OnEndPhase += SwitchToDevelopmentPhase;
-
     }
 
-    public override void UpdateState()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.CombatPhase));
-        }
-    }
+    public override void UpdateState() { }
 
     public override void FixedUpdateState() { }
     public override void ExitState() 
     {
+        MapCtx.OnRequestEndPhase -= RequestEndPhase;
         MapCtx.OnEndPhase -= SwitchToDevelopmentPhase;
     }
 
@@ -33,5 +30,10 @@ public class SMM_CombatPhaseState : GameplayBaseState
     private void SwitchToDevelopmentPhase()
     {
         SwitchState(Factory.DevelopmentPhase());
+    }
+
+    void RequestEndPhase()
+    {
+        MapCtx.SendCommandToServer(CreateCommand.EndPhase());
     }
 }

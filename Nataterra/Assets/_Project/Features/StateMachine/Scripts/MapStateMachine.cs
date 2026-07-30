@@ -37,6 +37,7 @@ public class MapStateMachine : NetworkBehaviour
 
     public Action<List<Unit>> OnSelectUnit;
     public Action OnEndPhase;
+    public Action OnRequestEndPhase;
 
 
     private void Awake()
@@ -175,7 +176,7 @@ public class MapStateMachine : NetworkBehaviour
         OnEndPhase?.Invoke();
     }
 
-
+    
 
     public void SetFactionState(FactionState state)
     {

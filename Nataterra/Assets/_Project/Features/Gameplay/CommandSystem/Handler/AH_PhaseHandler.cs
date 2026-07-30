@@ -25,9 +25,9 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         bool error = false;
 
-        GameplayState state = command.CurrentState;
+        GameplayState state = _map.GetPhaseState();
 
-        if (command.CurrentState == GameplayState.WaitingForTurn)
+        if (state == GameplayState.WaitingForTurn)
         {
             _gs.UISystem.ShowFactionTurn(_map.GetFaction(command.ID));
 
@@ -35,22 +35,22 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
             state = GameplayState.MovementPhase;
         }
-        else if (command.CurrentState == GameplayState.MovementPhase)
+        else if (state == GameplayState.MovementPhase)
         {
             EndMovementPhase(command.ID);
             state = GameplayState.ResourcePhase;
         }
-        else if (command.CurrentState == GameplayState.ResourcePhase)
+        else if (state == GameplayState.ResourcePhase)
         {
             EndResourcePhase(command.ID);
             state = GameplayState.CombatPhase;
         }
-        else if (command.CurrentState == GameplayState.CombatPhase)
+        else if (state == GameplayState.CombatPhase)
         {
             EndCombatPhase();
             state = GameplayState.DevelopmentPhase;
         }
-        else if (command.CurrentState == GameplayState.DevelopmentPhase)
+        else if (state == GameplayState.DevelopmentPhase)
         {
             error = EndDevelopmentPhase(command.ID ,command.Cart);
             state = GameplayState.WaitingForTurn;
@@ -59,12 +59,10 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         if (error) return;
 
         _gs.MSM.EndPhaseForClient(command.ID);
+        _map.SetPhaseState(state);
 
         if (state != GameplayState.WaitingForTurn)
         {
-            // Set server's state
-            _map.SetPhaseState(state);
-
             _gs.UISystem.ShowPhaseTitleToAll(state);
             return;
         }
@@ -82,8 +80,6 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         _gs.UISystem.ShowFactionTurn(_map.GetFaction(nextPlayer));
 
         await Task.Delay(1500);
-
-        _map.SetPhaseState(GameplayState.MovementPhase);
 
         _gs.UISystem.ShowPhaseTitleToAll(GameplayState.MovementPhase);
         _gs.MSM.EndPhaseForClient(nextPlayer);

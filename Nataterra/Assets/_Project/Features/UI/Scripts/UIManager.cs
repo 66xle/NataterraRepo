@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text PhaseTitle;
+    [SerializeField] Button EndPhaseButton;
 
     [SerializeField] GameObject UnitUIPrefab;
     [SerializeField] Transform UnitUIParent;
 
     List<UnitUI> _listOfUnitUI = new();
+
+    MapStateMachine MapCtx;
 
     private void Awake()
     {
@@ -21,6 +25,11 @@ public class UIManager : MonoBehaviour
     private void OnDestroy()
     {
         InstanceHandler.UnregisterInstance<UIManager>();
+    }
+
+    public void Setup()
+    {
+        MapCtx = InstanceHandler.GetInstance<MapStateMachine>();
     }
 
     public void SpawnUnitUI(UnitData data)
@@ -59,6 +68,18 @@ public class UIManager : MonoBehaviour
         PhaseTitle.transform.parent.gameObject.SetActive(false);
     }
 
-
     
+
+    public void TriggerEndPhaseButton()
+    {
+        // Disable button
+        EnableEndPhaseButton(false);
+
+        MapCtx.OnRequestEndPhase?.Invoke();
+    }
+
+    public void EnableEndPhaseButton(bool value)
+    {
+        EndPhaseButton.interactable = value;
+    }
 }

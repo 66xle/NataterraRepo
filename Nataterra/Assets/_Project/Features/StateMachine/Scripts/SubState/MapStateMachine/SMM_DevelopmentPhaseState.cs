@@ -15,25 +15,19 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
     {
         Debug.Log("Entered Development Phase");
 
+        MapCtx.GS.UISystem.EnableEndPhaseButton(true);
+
         TotalFoodCost = 0;
         TotalWoodCost = 0;
         TotalMetalCost = 0;
         _cart.Units = new();
 
         MapCtx.OnUnitPurchase += AddUnitToCart;
+        MapCtx.OnRequestEndPhase += RequestEndPhase;
         MapCtx.OnEndPhase += SwitchToWaitingForTurn;
     }
 
-    public override void UpdateState()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            AC_PhaseEndPhaseCommand command = CreateCommand.EndPhase(GameplayState.DevelopmentPhase);
-            command.Cart = _cart;
-
-            MapCtx.SendCommandToServer(command);
-        }
-    }
+    public override void UpdateState() { }
 
     public override void FixedUpdateState() { }
     public override void ExitState() 
@@ -41,6 +35,7 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
         _cart.Units.Clear();
 
         MapCtx.OnUnitPurchase -= AddUnitToCart;
+        MapCtx.OnRequestEndPhase -= RequestEndPhase;
         MapCtx.OnEndPhase -= SwitchToWaitingForTurn;
     }
 
@@ -51,6 +46,14 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
     private void SwitchToWaitingForTurn()
     {
         SwitchState(Factory.WaitingForTurn());
+    }
+
+    void RequestEndPhase()
+    {
+        AC_PhaseEndPhaseCommand command = CreateCommand.EndPhase();
+        command.Cart = _cart;
+
+        MapCtx.SendCommandToServer(command);
     }
 
     public void AddUnitToCart(UnitType unitType)

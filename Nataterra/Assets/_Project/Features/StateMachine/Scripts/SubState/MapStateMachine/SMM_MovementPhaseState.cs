@@ -11,21 +11,19 @@ public class SMM_MovementPhaseState : GameplayBaseState
     {
         Debug.Log("Entered Movement State");
 
+        MapCtx.GS.UISystem.EnableEndPhaseButton(true);
+
+        MapCtx.OnRequestEndPhase += RequestEndPhase;
         MapCtx.OnEndPhase += SwitchToResourcePhase;
 
         MapCtx.OnSelectUnit += ShowUnitMovementRange;
         InputManager.Instance.OnRightClickEvent += MoveUnit;
     }
-    public override void UpdateState() 
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            MapCtx.SendCommandToServer(CreateCommand.EndPhase(GameplayState.MovementPhase));
-        }
-    }
+    public override void UpdateState() { }
     public override void FixedUpdateState() { }
     public override void ExitState() 
     {
+        MapCtx.OnRequestEndPhase -= RequestEndPhase;
         MapCtx.OnEndPhase -= SwitchToResourcePhase;
 
         MapCtx.OnSelectUnit -= ShowUnitMovementRange;
@@ -38,6 +36,11 @@ public class SMM_MovementPhaseState : GameplayBaseState
     void SwitchToResourcePhase()
     {
         SwitchState(Factory.ResourcePhase());
+    }
+
+    void RequestEndPhase()
+    {
+        MapCtx.SendCommandToServer(CreateCommand.EndPhase());
     }
 
     private void ShowUnitMovementRange(List<Unit> units)
