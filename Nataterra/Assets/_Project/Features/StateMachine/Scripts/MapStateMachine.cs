@@ -34,6 +34,7 @@ public class MapStateMachine : NetworkBehaviour
 
 
     public Action<UnitType> OnUnitPurchase;
+    public Action<UnitType> OnUnitRefund;
 
     public Action<List<Unit>> OnSelectUnit;
     public Action OnEndPhase;

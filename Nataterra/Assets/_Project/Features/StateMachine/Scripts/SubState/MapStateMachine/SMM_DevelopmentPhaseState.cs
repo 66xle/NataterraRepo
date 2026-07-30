@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class SMM_DevelopmentPhaseState : GameplayBaseState
 {
@@ -23,6 +24,8 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
         _cart.Units = new();
 
         MapCtx.OnUnitPurchase += AddUnitToCart;
+        MapCtx.OnUnitRefund += RemoveUnitFromCart;
+
         MapCtx.OnRequestEndPhase += RequestEndPhase;
         MapCtx.OnEndPhase += SwitchToWaitingForTurn;
     }
@@ -35,6 +38,8 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
         _cart.Units.Clear();
 
         MapCtx.OnUnitPurchase -= AddUnitToCart;
+        MapCtx.OnUnitRefund -= RemoveUnitFromCart;
+
         MapCtx.OnRequestEndPhase -= RequestEndPhase;
         MapCtx.OnEndPhase -= SwitchToWaitingForTurn;
     }
@@ -89,6 +94,43 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
         MapCtx.GS.UISystem.SetResourceUI(food - TotalFoodCost, wood - TotalWoodCost, metal - TotalMetalCost);
 
         int unitsAvaliable = currentUnitAvaliable - _cart.Units[unitType];
+        MapCtx.GS.UISystem.SetUnitAvaliable(unitType, unitsAvaliable);
+    }
+
+    public void RemoveUnitFromCart(UnitType unitType)
+    {
+        // Check Unit Upgraded version
+
+        // Is there unit in cart
+        if (!_cart.Units.ContainsKey(unitType))
+            return;
+
+        // Remove unit from cart
+        if (_cart.Units[unitType] > 1)
+            _cart.Units[unitType]--;
+        else
+            _cart.Units.Remove(unitType);
+
+        // Refund resources
+        int FoodCost = MapCtx.GetFoodCost(unitType);
+        int WoodCost = MapCtx.GetWoodCost(unitType);
+        int MetalCost = MapCtx.GetMetalCost(unitType);
+
+        TotalFoodCost -= FoodCost;
+        TotalWoodCost -= WoodCost;
+        TotalMetalCost -= MetalCost;
+
+        // Update Resources UI
+        int food = MapCtx.FactionState.Food;
+        int wood = MapCtx.FactionState.Wood;
+        int metal = MapCtx.FactionState.Metal;
+        MapCtx.GS.UISystem.SetResourceUI(food - TotalFoodCost, wood - TotalWoodCost, metal - TotalMetalCost);
+
+        // Update Units Avaliable UI
+        int currentUnitAvaliable = MapCtx.FactionState.CurrentUnitAvaliable.ContainsKey(unitType) ? MapCtx.FactionState.CurrentUnitAvaliable[unitType] : 0;
+        int purchasedUnits = _cart.Units.ContainsKey(unitType) ? _cart.Units[unitType] : 0;
+
+        int unitsAvaliable = currentUnitAvaliable - purchasedUnits;
         MapCtx.GS.UISystem.SetUnitAvaliable(unitType, unitsAvaliable);
     }
 

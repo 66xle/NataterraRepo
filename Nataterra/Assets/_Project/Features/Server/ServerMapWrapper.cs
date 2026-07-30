@@ -211,7 +211,7 @@ public class ServerMapWrapper
     {
         foreach (UnitType unitType in units.Keys)
         {
-            if (_factionState[faction].CurrentUnitAvaliable[unitType] < units[unitType])
+            if (_factionState[faction].CurrentUnitAvaliable[unitType] <= units[unitType])
                 return false;
         }
 

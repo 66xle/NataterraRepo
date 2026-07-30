@@ -4,8 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Alchemy.Inspector;
+using UnityEngine.EventSystems;
 
-public class UnitUI : MonoBehaviour
+public class UnitUI : MonoBehaviour, IPointerClickHandler
 {
     MapStateMachine MapCtx;
     Button _button;
@@ -49,6 +50,18 @@ public class UnitUI : MonoBehaviour
 
     public void AddUnitToCart()
     {
-        MapCtx.OnUnitPurchase?.Invoke(_unitType);
+        
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            MapCtx.OnUnitPurchase?.Invoke(_unitType);
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            MapCtx.OnUnitRefund?.Invoke(_unitType);
+        }
     }
 }
