@@ -17,8 +17,13 @@ namespace CoInspector
         public string path = "";
         public string[] paths;
         public float tabWidth = 0;
+#if UNITY_6000_4_OR_NEWER
+        [NonSerialized] public EntityId id = EntityId.None;
+        [NonSerialized] public EntityId[] ids;
+#else
         [NonSerialized] public int id = 0;
         [NonSerialized] public int[] ids;
+#endif
         public string name;
         public Texture2D icon;
         public string shortName;
@@ -326,7 +331,13 @@ namespace CoInspector
             name = "New Tab";
             path = "";
             paths = null;
+#if UNITY_6000_4_OR_NEWER
+            id = EntityId.None;
+
+#else
             id = 0;
+
+#endif
             ids = null;
             history = new List<GameObject[]>();
             historyPosition = 0;
@@ -583,7 +594,13 @@ namespace CoInspector
             {
                 path = "";
                 paths = null;
+#if UNITY_6000_4_OR_NEWER
+                id = EntityId.None;
+
+#else
                 id = 0;
+
+#endif
                 ids = null;
                 historyPaths = null;
                 history = null;
@@ -601,7 +618,13 @@ namespace CoInspector
                 paths = targets.Select(EditorUtils.GatherGameObjectPath).ToArray();
                 ids = targets.Select(t => EditorUtils.GetObjectId(t)).ToArray();
                 path = "";
+#if UNITY_6000_4_OR_NEWER
+                id = EntityId.None;
+
+#else
                 id = 0;
+
+#endif
 
             }
             if (IsTabValid() && history != null && history.Count > 0)
@@ -1883,9 +1906,25 @@ namespace CoInspector
     internal class HistoryPaths
     {
         [SerializeField] internal string[] paths;
+#if UNITY_6000_4_OR_NEWER
+        internal EntityId[] instances;
+
+#else
         internal int[] instances;
+
+#endif
         [SerializeField] internal bool prefab;
 
+#if UNITY_6000_4_OR_NEWER
+        public HistoryPaths(string[] history, EntityId[] instanceIDs, bool _prefab = false)
+        {
+            paths = new string[history.Length];
+            Array.Copy(history, paths, history.Length);
+            instances = new EntityId[instanceIDs.Length];
+            Array.Copy(instanceIDs, instances, instanceIDs.Length);
+            prefab = _prefab;
+        }
+#else
         public HistoryPaths(string[] history, int[] instanceIDs, bool _prefab = false)
         {
             paths = new string[history.Length];
@@ -1894,5 +1933,8 @@ namespace CoInspector
             Array.Copy(instanceIDs, instances, instanceIDs.Length);
             prefab = _prefab;
         }
+#endif
+
+
     }
 }

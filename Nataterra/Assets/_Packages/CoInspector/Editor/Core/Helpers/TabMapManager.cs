@@ -21,8 +21,13 @@ namespace CoInspector
     {
         [SerializeField] internal int index;
         [SerializeField] internal Component component;
-        [SerializeField] internal VisualElement visualElement;
+        internal VisualElement visualElement;
+#if UNITY_6000_3_OR_NEWER
+        [SerializeField] internal EntityId missingComponentID = EntityId.None;
+#else
         [SerializeField] internal int missingComponentID = -1;
+
+#endif
         [SerializeField] internal bool foldout;
         [SerializeField] internal int focusAfter;
         [SerializeField] internal bool awaitingScroll;

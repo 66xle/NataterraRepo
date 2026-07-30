@@ -174,6 +174,8 @@ namespace CoInspector
 
 
             GUILayout.Space(7);
+            CoInspectorWindow.hideUpdateAlert = EditorGUILayout.Toggle("Hide update alert?", CoInspectorWindow.hideUpdateAlert);
+            GUILayout.Space(7);
 
             CoInspectorWindow.sessionsMode = EditorGUILayout.Popup("Sessions Behavior", CoInspectorWindow.sessionsMode, new[] { "Always Ask", "Always Restore", "Disable Sessions" });
             CoInspectorWindow.rememberSessions = CoInspectorWindow.sessionsMode != 2;

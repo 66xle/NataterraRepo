@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 278831
   packageName: CoInspector | Inline Asset Inspection, Tabs & More!
-  packageVersion: 1.7.1
-  assetPath: Assets/CoInspector/Editor/Core/PoolCache.cs
-  uploadId: 922182
+  packageVersion: 1.7.5
+  assetPath: Assets/_Packages/CoInspector/Editor/Core/PoolCache.cs
+  uploadId: 960056

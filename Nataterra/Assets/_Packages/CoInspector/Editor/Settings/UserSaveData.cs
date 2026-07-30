@@ -12,6 +12,7 @@ namespace CoInspector
     [Serializable]
     internal class UserSaveData : ScriptableObject
     {
+        public bool hideUpdateAlert = false;
         public bool recycleUnlockedTabs = false;
         public int generalScrollSensitivity = 1;
         [HideInInspector]
@@ -102,6 +103,7 @@ namespace CoInspector
 
         public void SaveData(bool saveToDisk = false, CoInspectorWindow reference = null, bool skipCheck = false)
         {
+            hideUpdateAlert = CoInspectorWindow.hideUpdateAlert;
             recycleUnlockedTabs = CoInspectorWindow.recycleUnlockedTabs;
             generalScrollSensitivity = CoInspectorWindow.mouseWheelSpeed;
             userInstalls = CoInspectorWindow.userInstalls;
@@ -181,6 +183,7 @@ namespace CoInspector
 
         internal TabSession LoadData(CoInspectorWindow reference = null, bool rebuild = true)
         {
+            CoInspectorWindow.hideUpdateAlert = hideUpdateAlert;
             CoInspectorWindow.recycleUnlockedTabs = recycleUnlockedTabs;
             CoInspectorWindow.mouseWheelSpeed = generalScrollSensitivity;
             CoInspectorWindow.userInstalls = userInstalls;

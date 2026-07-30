@@ -16,8 +16,13 @@ namespace CoInspector
                 return path;
             }
         }
+#if UNITY_6000_4_OR_NEWER
+        [HideInInspector] public EntityId entityID = EntityId.None;
 
+#else
         [HideInInspector] public int instanceID = -1;
+
+#endif
         [HideInInspector] public int localIdentifierInFile = -1;
         [HideInInspector] public int count = 0;
         [HideInInspector] public string path = "";
@@ -45,6 +50,35 @@ namespace CoInspector
             }
         }
 
+#if UNITY_6000_4_OR_NEWER
+
+        public static MissingScriptManager WriteData()
+        {
+            EnsureInstance();
+            instance.path = AssetDatabase.GetAssetPath(instance.GetEntityId());
+            string guid;
+            long _localIdentifierInFile;
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instance.GetEntityId(), out guid, out _localIdentifierInFile);
+            instance.localIdentifierInFile = (int)_localIdentifierInFile;
+            instance.assetName = instance.path[(instance.path.LastIndexOf('/') + 1)..];
+            instance.count = 1;
+            instance.CleanExtension();
+            return instance;
+        }
+
+
+        public static MissingScriptManager WriteData(EntityId entityID)
+        {
+            EnsureInstance();
+            if (entityID.IsValid())
+            {
+                instance.entityID = entityID;
+            }
+            return WriteData();
+        }
+#else
+#pragma warning disable CS0618
+
         public static MissingScriptManager WriteData(int instanceID = -1)
         {
             EnsureInstance();
@@ -52,43 +86,60 @@ namespace CoInspector
             {
                 instance.instanceID = instanceID;
             }
-#if UNITY_6000_3_OR_NEWER
-            instance.path = AssetDatabase.GetAssetPath(instance.GetEntityId());
-#else
             instance.path = AssetDatabase.GetAssetPath(instance.instanceID);
-#endif
             string guid;
             long _localIdentifierInFile;
-#if UNITY_6000_3_OR_NEWER
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instance.GetEntityId(), out guid, out _localIdentifierInFile);
-#else
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(instance.instanceID, out guid, out _localIdentifierInFile);
-#endif
             instance.localIdentifierInFile = (int)_localIdentifierInFile;
             instance.assetName = instance.path[(instance.path.LastIndexOf('/') + 1)..];
             instance.count = 1;
             instance.CleanExtension();
-            //Debug.Log("Writing Missing Script Data: " + instance.assetName);
             return instance;
         }
-
+#pragma warning restore CS0618
+#endif
         public static MissingScriptManager WriteData(string _path)
         {
             EnsureInstance();
-            instance.instanceID = -1;
+#if UNITY_6000_4_OR_NEWER
+            instance.entityID = EntityId.None;
+
+#else
+            instance.instanceID = 0;
+
+#endif
             instance.path = _path;
             instance.assetName = instance.path[(instance.path.LastIndexOf('/') + 1)..];
             instance.count = 1;
             instance.CleanExtension();
             return instance;
         }
+#if UNITY_6000_4_OR_NEWER
+        public static int CountMissingScripts()
+        {
+            int count = 0;
+            foreach (var entityID in Selection.entityIds)
+            {
+                var asset = EditorUtils.IdToObject(entityID);
+                if (!asset)
+                {
+                    if (count == 0)
+                    {
+                        EnsureInstance();
+                        instance.entityID = entityID;
+                    }
+                    count++;
+                }
+            }
+            return count;
+        }
+#else
+#pragma warning disable CS0618
 
         public static int CountMissingScripts()
         {
             int count = 0;
-#pragma warning disable CS0618
             foreach (var instanceID in Selection.instanceIDs)
-#pragma warning restore CS0618
             {
                 var asset = EditorUtils.IdToObject(instanceID);
                 if (!asset)
@@ -103,16 +154,18 @@ namespace CoInspector
             }
             return count;
         }
-
+#pragma warning restore CS0618
+#endif
         public static MissingScriptManager WriteMultiData(int count)
         {
             EnsureInstance();
-#if UNITY_6000_3_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
             instance.path = AssetDatabase.GetAssetPath(instance.GetEntityId());
 
 #else
+#pragma warning disable CS0618
             instance.path = AssetDatabase.GetAssetPath(instance.instanceID);
-
+#pragma warning restore CS0618
 #endif
             instance.assetName = count + " Missing Scripts";
             instance.count = count;
@@ -128,16 +181,26 @@ namespace CoInspector
             EnsureInstance();
             return instance.count;
         }
+
+
         public static void ClearData()
         {
             EnsureInstance();
-            instance.instanceID = -1;
+#if UNITY_6000_4_OR_NEWER
+            instance.entityID = EntityId.None;
+
+#else
+            instance.instanceID = 0;
+
+#endif
             instance.localIdentifierInFile = -1;
             instance.count = 0;
             instance.path = "";
             instance.assetName = "";
             instance.script = null;
         }
+
+
         public static bool IsActive()
         {
             EnsureInstance();

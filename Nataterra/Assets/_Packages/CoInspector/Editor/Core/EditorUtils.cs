@@ -80,6 +80,20 @@ namespace CoInspector
             "VF.Model.VRCFury"
 };
 
+        private static readonly string[] ImportOverridesInspector = new string[]
+       {
+            "UnityEditor.U2D.SpriteAtlasInspector"
+       };
+
+        internal static bool ImportEditorOverridesInspector(Editor editor)
+        {
+            if (ImportOverridesInspector.Contains(editor.GetType().ToString()))
+            {
+                return true;
+            }
+            return false;
+        }
+
         internal static bool HasProblematicScrollComponent(GameObject gameObject)
         {
             if (!gameObject)
@@ -229,34 +243,36 @@ namespace CoInspector
         {
             "UnityEngine.ParticleSystemRenderer",
         };
+#if UNITY_6000_4_OR_NEWER
+        internal static EntityId GetObjectId(UnityObject obj)
+        {
+            return obj.GetEntityId();
+        }
 
+#else
         internal static int GetObjectId(UnityObject obj)
         {
+            return obj.GetInstanceID();
+        }
+#endif
+
 #if UNITY_6000_4_OR_NEWER
-#pragma warning disable CS0618
-            return (int)obj.GetEntityId();
-#pragma warning restore CS0618
-#else
-    return obj.GetInstanceID();
-#endif
-        }
-
-        public static UnityObject
-        IdToObject(int id)
+        internal static UnityObject IdToObject(EntityId id)
         {
-#if UNITY_6000_3_OR_NEWER
-#pragma warning disable CS0618
             return EditorUtility.EntityIdToObject(id);
-#pragma warning restore CS0618
-#else
-        return EditorUtility.InstanceIDToObject(id);
-#endif
+
         }
 
-        public static T IdToObject<T>(int id) where T : UnityObject
+#else
+        internal static UnityObject IdToObject(int id)
         {
-            return IdToObject(id) as T;
+#pragma warning disable CS0618
+            return EditorUtility.InstanceIDToObject(id);
+#pragma warning restore CS0618
+
         }
+#endif
+
 
         public static bool IsValidEditorToolType(Component component)
         {
@@ -981,24 +997,17 @@ namespace CoInspector
             }
             return index;
         }
-
-        internal static GameObject LoadSingleTabGameObject(string path, int id, bool prefab)
+#if UNITY_6000_4_OR_NEWER
+        internal static GameObject LoadSingleTabGameObject(string path, EntityId id, bool prefab)
         {
             if (string.IsNullOrEmpty(path))
             {
                 return null;
             }
             GameObject go = null;
-            if (id != 0)
+            if (id.IsValid())
             {
-#if UNITY_6000_3_OR_NEWER
-#pragma warning disable CS0618
-                go = EditorUtility.EntityIdToObject(id) as GameObject;
-#pragma warning restore CS0618
-#else
-    go = EditorUtility.InstanceIDToObject(id) as GameObject;
-#endif
-
+                go = IdToObject(id) as GameObject;
                 //string _goPath = GatherGameObjectPath(go);
                 if (go != null && path.Contains(go.name))
                 {
@@ -1008,6 +1017,28 @@ namespace CoInspector
             go = LoadGameObject(path, prefab);
             return go;
         }
+#else
+        internal static GameObject LoadSingleTabGameObject(string path, int id, bool prefab)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return null;
+            }
+            GameObject go = null;
+            if (id != 0)
+            {
+                go = IdToObject(id) as GameObject;
+                //string _goPath = GatherGameObjectPath(go);
+                if (go != null && path.Contains(go.name))
+                {
+                    return go;
+                }
+            }
+            go = LoadGameObject(path, prefab);
+            return go;
+        }
+#endif
+
 
         internal static GameObject LoadTabGameObject(TabInfo tab)
         {
@@ -1029,7 +1060,13 @@ namespace CoInspector
                 List<GameObject> gameObjects = new List<GameObject>();
                 if (tab.ids == null)
                 {
+#if UNITY_6000_4_OR_NEWER
+                    tab.ids = new EntityId[tab.paths.Length];
+
+#else
                     tab.ids = new int[tab.paths.Length];
+
+#endif
                 }
                 for (int i = 0; i < tab.paths.Length; i++)
                 {
@@ -1688,7 +1725,14 @@ namespace CoInspector
                 {
                     if (paths.paths != null && (paths.instances == null || paths.instances.Length != paths.paths.Length))
                     {
+#if UNITY_6000_4_OR_NEWER
+                        paths.instances = new EntityId[paths.paths.Length];
+
+#else
                         paths.instances = new int[paths.paths.Length];
+
+#endif
+
                     }
                     List<GameObject> gameObjects = new List<GameObject>();
                     for (int j = 0; j < paths.paths.Length; j++)
@@ -1867,7 +1911,7 @@ namespace CoInspector
                     continue;
                 }
                 bool found = false;
-                int id1 = GetObjectId(obj1);
+                var id1 = GetObjectId(obj1);
                 foreach (var obj2 in selection2)
                 {
                     if (obj2 == null)
@@ -2019,6 +2063,28 @@ namespace CoInspector
             return false;
         }
 
+#if UNITY_6000_4_OR_NEWER
+        internal static GameObject GetLastCreatedGameObject(GameObject[] gameObjects)
+        {
+            if (gameObjects == null || gameObjects.Length == 0) return null;
+
+            GameObject lastCreated = null;
+            EntityId highest = EntityId.None;
+
+            foreach (var go in gameObjects)
+            {
+                if (go == null) continue;
+                var id = go.GetComponents<Component>()[0].GetEntityId();
+                if (!highest.IsValid() || id.CompareTo(highest) > 0)
+                {
+                    highest = id;
+                    lastCreated = go;
+                }
+            }
+            return lastCreated;
+        }
+#else
+
         internal static GameObject GetLastCreatedGameObject(GameObject[] gameObjects)
         {
             if (gameObjects == null || gameObjects.Length == 0)
@@ -2046,6 +2112,7 @@ namespace CoInspector
             }
             return lastCreated;
         }
+#endif
         internal static bool ObjectIsMonoBehaviourOrScriptableObjectWithoutScript(System.Object obj)
         {
             if ((bool)obj)
@@ -2266,10 +2333,15 @@ namespace CoInspector
                 var component = components[i];
                 if (component == null)
                 {
+                    if (components.Length == 2)
+                    {
+                        allIcons.Add(GetIconForComponent(components[0]));
+                    }
                     continue;
                 }
                 Texture2D icon = GetIconForComponent(component);
-                allIcons.Add(icon);
+                if (icon != null)
+                { allIcons.Add(icon); }
                 if (!priorityIcon && prioritizedComponentTypes.Contains(component.GetType().Name))
                 {
                     priorityIcon = icon;
@@ -2286,19 +2358,34 @@ namespace CoInspector
                     return icon;
                 }
             }
-            return allIcons[0];
+            if (!allIcons.Any())
+            {
+                return allIcons[0];
+            }
+            return CustomGUIContents.EmptyGameObjectContent.image as Texture2D;
+
         }
+#if UNITY_6000_4_OR_NEWER
+        public static EntityId GetMissingComponentID(SerializedObject gameObjectSerialized, int index)
+        {
+            var componentArray = gameObjectSerialized.FindProperty("m_Component");
+            if (componentArray == null || !componentArray.isArray || index >= componentArray.arraySize) { return EntityId.None; }
+            var element = componentArray.GetArrayElementAtIndex(index);
+            var componentReference = element.FindPropertyRelative("component");
+            var entityID = componentReference.objectReferenceEntityIdValue;
+            return entityID;
+        }
+#else
         public static int GetMissingComponentID(SerializedObject gameObjectSerialized, int index)
         {
             var componentArray = gameObjectSerialized.FindProperty("m_Component");
-            if (componentArray == null || !componentArray.isArray || index >= componentArray.arraySize) return 0;
+            if (componentArray == null || !componentArray.isArray || index >= componentArray.arraySize) { return 0; }
             var element = componentArray.GetArrayElementAtIndex(index);
             var componentReference = element.FindPropertyRelative("component");
-#pragma warning disable CS0618
             var instanceID = componentReference.objectReferenceInstanceIDValue;
-#pragma warning restore CS0618
             return instanceID;
         }
+#endif
         internal static readonly string[] prioritizedComponentTypes =
            {
         "Animator", "Renderer", "AudioSource", "Light", "Camera",
@@ -2901,7 +2988,7 @@ namespace CoInspector
 
         public static bool _HasPreviewGUI(this Editor editor)
         {
-            if (editor == null)
+            if (editor == null || editor.target == null)
             {
                 return false;
             }

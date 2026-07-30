@@ -24,6 +24,7 @@ namespace CoInspector
     public class CoInspectorWindow : EditorWindow, IHasCustomMenu
     {
         //RUNTIME SETTINGS
+        internal static bool hideUpdateAlert = false;
         internal static bool recycleUnlockedTabs = false;
         internal static string[] userInstalls = new string[0];
         internal static bool tabPreviewExpanded = true;
@@ -173,7 +174,7 @@ namespace CoInspector
         internal List<List<GameObject>> mostClicked;
         [SerializeField] internal UnityObject[] targetObjects;
         private UnityObject[] ignoreSelection;
-        [SerializeField] private Dictionary<Type, List<UnityObject>> sortedAssetSelection;
+        private Dictionary<Type, List<UnityObject>> sortedAssetSelection;
         [SerializeField] internal bool forceSelection = false;
         [SerializeField] internal bool ignoreNextSelection = false;
 
@@ -2040,7 +2041,14 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                             break;
                         }
                     }
+#if UNITY_6000_4_OR_NEWER
+                    else if (!maps[i].missingComponentID.IsValid())
+
+#else
                     else if (maps[i].missingComponentID == -1)
+
+#endif
+
                     {
                         //Debug.Log(i + "Component mismatch. " + maps[i].component.GetType());
                         rebuild = true;
@@ -2495,7 +2503,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                             leftHandleRect.y += GetActiveTab().previewHeight;
                             rightHandleRect.y += GetActiveTab().previewHeight;
                         }
-                        bool updateCase = UpdateChecker.IsUpdateAvailable && position.width > 322;
+                        bool updateCase = !hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322;
                         if (updateCase)
                         {
                             leftHandleRect.width -= 55;
@@ -2955,6 +2963,8 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 
             if (sameType || !isMulti)
             {
+                bool overrideEditorWithImport = ImportEditorOverridesInspector(assetEditor) && assetImportSettingsEditor != null;
+
                 bool hasImportSettings = assetImportSettingsEditor != null;
                 bool hasImportPreview = hasImportSettings && assetImportSettingsEditor._HasPreviewGUI();
                 if (isImportedObject && hasImportSettings && !hasImportPreview)
@@ -2962,21 +2972,23 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     Editor modelClipEditor = Reflected.GetModelClipEditor(assetImportSettingsEditor);
                     hasImportPreview = modelClipEditor ? modelClipEditor._HasPreviewGUI() : false;
                 }
+
                 bool shouldDrawHeaders = ShouldDrawImportSettings() && !isPrefab;
-                bool hasPreview = assetEditor._HasPreviewGUI();
+                bool hasPreview = assetEditor._HasPreviewGUI() && !debugAsset;
                 bool isSprite = targetObject is Sprite;
                 if (!debugAsset)
                 {
+
                     if (odinInspectorPresent && targetObject is ScriptableObject)
                     {
-                        var imgui = new InspectorElement(assetEditor);
+                        var imgui = new InspectorElement(overrideEditorWithImport ? assetImportSettingsEditor : assetEditor);
                         imgui.style.minHeight = 50;
                         assetInspector = imgui;
 
                     }
                     else
                     {
-                        assetInspector = new InspectorElement(assetEditor);
+                        assetInspector = new InspectorElement(overrideEditorWithImport ? assetImportSettingsEditor : assetEditor);
                     }
 
                     if (isMissingScript)
@@ -2992,7 +3004,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 
                 assetInspector.name = "AssetInspector";
                 assetInspector.style.paddingBottom = 8;
-                if (hasImportSettings)
+                if (hasImportSettings && !overrideEditorWithImport)
                 {
                     assetImportSettings = new InspectorElement(assetImportSettingsEditor);
                     assetImportSettings.name = "ImportSettingsInspector";
@@ -3007,6 +3019,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 
                     if (assetImportSettingsEditor.target is TextureImporter)
                     {
+
                         EditorUtils.SetElementVisible(assetInspector, false);
                     }
                     EditorUtils.SetStaticElement(assetImportHeader);
@@ -3035,6 +3048,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 {
                     if (assetInspector != null)
                     {
+
                         float inspectorHeight = assetInspector.contentRect.height;
                         bool invisibleInspector = !assetsCollapsed && assetInspector.contentRect.height <= 5;
                         if (invisibleInspector)
@@ -3056,10 +3070,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     LimitAssetViewHeight(evt);
                 });
                 EditorUtils.SetElementVisible(assetHeader, missingScript != null || (!hasImportHeader) && (shouldDrawHeaders || (isMulti && sameType)));
-
                 EditorUtils.SetElementVisible(assetImportHeader, hasImportHeader && (shouldDrawHeaders || (isMulti && sameType)));
-
-
                 EditorUtils.SetElementVisible(assetView, !assetsCollapsed);
                 EditorUtils.SetStaticElement(assetHeader);
                 if (debugAsset)
@@ -3131,14 +3142,16 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     preview.AddPreviewBackground();
                     preview.name = "AssetPreview";
                     preview.style.height = previewHeight;
+                    assetView.Add(assetScrollView);
+
                     if (isTransition || ShouldDrawImportSettings() || debugAsset || isPrefab || isMulti)
                     {
-                        assetView.Add(assetScrollView);
                         preview.style.minHeight = GetPreviewHeight();
                         preview.style.flexShrink = 0;
                     }
                     else
                     {
+                        EditorUtils.SetElementVisible(assetScrollView, false);
                         preview.style.flexShrink = 1;
 
                     }
@@ -3255,6 +3268,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             }
             if (IsHeaderAndPreview(assetHeader, assetImportHeader, preview))
             {
+
                 assetScrollView.style.flexGrow = 0;
             }
             assetScrollView.style.flexGrow = assetPreviewExpanded && !assetOnlyMode ? 0 : 1;
@@ -3378,7 +3392,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 leftHandleRect.y += GetActiveTab().previewHeight;
                 rightHandleRect.y += GetActiveTab().previewHeight;
             }
-            if (UpdateChecker.IsUpdateAvailable && position.width > 322)
+            if (!hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322)
             {
                 leftHandleRect.width -= 55;
                 leftHandleRect.x += 55;
@@ -3790,7 +3804,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 {
                     PopUpTip.Hide();
 
-                    if (Vector2.Distance(mousePositionOnClick, realMousePosition) > 2 && dragIndex < tabs.Count)
+                    if (Vector2.Distance(mousePositionOnClick, realMousePosition) > 5 && dragIndex < tabs.Count)
                     {
                         FloatingTab.tabDragPoint = mousePositionOnClick.x - dragRect.position.x;
                         dragging = true;
@@ -5487,6 +5501,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
         }
         internal static void ResetToDefault()
         {
+            hideUpdateAlert = false;
             recycleUnlockedTabs = false;
             mouseWheelSpeed = 1;
             userInstalls = new string[] { };
@@ -7521,7 +7536,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             GUI.enabled = true;
             Rect rect1 = GUILayoutUtility.GetLastRect();
 
-            if (UpdateChecker.IsUpdateAvailable && position.width > 322)
+            if (!hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322)
             {
                 Rect buttonRect = new Rect(5, rect1.y + 2, 54, 21);
                 if (GUI.Button(buttonRect, CustomGUIContents.UpdateContent, GUIStyle.none))
@@ -9231,36 +9246,43 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 #if UNITY_6000_4_OR_NEWER
         internal void HandleAssetClickEntity(EntityId entityId, Rect selectionRect)
         {
-#pragma warning disable CS0618
-            int instanceID = (int)entityId;
-#pragma warning restore CS0618
-            HandleAssetClick(instanceID, selectionRect);
+            HandleAssetClick(entityId, selectionRect);
         }
 #endif
 #if UNITY_2022_1_OR_NEWER
-        internal void HandleAssetClick(int instanceID, Rect selectionRect)
+#if UNITY_6000_4_OR_NEWER
+        internal void HandleAssetClick(EntityId entityID, Rect selectionRect)
+
+#else
+        internal void HandleAssetClick(int entityID, Rect selectionRect)
+
+#endif
         {
             Event current = Event.current;
             if ((current.type == EventType.MouseDown || current.type == EventType.MouseUp) && current.button == 0 && selectionRect.Contains(current.mousePosition))
             {
                 UnityEngine.Object asset = null;
                 MissingScriptManager missing = null;
-#if UNITY_6000_3_OR_NEWER
-                if (instanceID != 0 && EditorUtils.IdToObject(instanceID) == null)
+#if UNITY_6000_4_OR_NEWER
+                if (entityID.IsValid() && IdToObject(entityID) == null)
+
 #else
-                if (instanceID != 0 && EditorUtility.InstanceIDToObject(instanceID) == null)
+                if (entityID != 0 && IdToObject(entityID) == null)
 
 #endif
                 {
-                    MissingScriptManager.WriteData(instanceID);
+                    MissingScriptManager.WriteData(entityID);
                     asset = missing;
                 }
                 else
                 {
-#if UNITY_6000_3_OR_NEWER
-                    asset = EditorUtils.IdToObject(instanceID);
+#if UNITY_6000_4_OR_NEWER
+                    asset = EditorUtils.IdToObject(entityID);
 #else
-                    asset = EditorUtility.InstanceIDToObject(instanceID);
+#pragma warning disable CS0618
+                    asset = EditorUtility.InstanceIDToObject(entityID);
+#pragma warning restore CS0618
+
 
 #endif
                 }
@@ -9353,14 +9375,17 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 #if UNITY_6000_4_OR_NEWER
         internal void HandleMiddleClickEntity(EntityId entityId, Rect selectionRect)
         {
-#pragma warning disable CS0618
-            int instanceID = (int)entityId;
-#pragma warning restore CS0618
-            HandleMiddleClick(instanceID, selectionRect);
+            HandleMiddleClick(entityId, selectionRect);
         }
 #endif
 
-        internal void HandleMiddleClick(int instanceID, Rect selectionRect)
+#if UNITY_6000_4_OR_NEWER
+        internal void HandleMiddleClick(EntityId entityID, Rect selectionRect)
+
+#else
+        internal void HandleMiddleClick(int entityID, Rect selectionRect)
+
+#endif
         {
             Event current = Event.current;
             if (current.type == EventType.MouseUp && current.button == 0 && !current.alt && !current.shift && !EditorUtils.IsCtrlHeld())
@@ -9389,11 +9414,8 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                         return;
                     }
 
-#if UNITY_6000_3_OR_NEWER
-                    GameObject go = IdToObject<GameObject>(instanceID);
-#else
-                    GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-#endif
+                    GameObject go = IdToObject(entityID) as GameObject;
+
                     if (go == null)
                     {
                         ignoreNextSelection = true;
@@ -9485,11 +9507,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 {
                     return;
                 }
-#if UNITY_6000_3_OR_NEWER
-                GameObject go = IdToObject<GameObject>(instanceID);
-#else
-                GameObject go = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
-#endif
+                GameObject go = IdToObject(entityID) as GameObject;
 
                 if (go == null)
                 {
@@ -9875,10 +9893,13 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 }
                 for (int i = 0; i < components.Length; i++)
                 {
-#if UNITY_6000_3_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
                     if (prefabEditors[i] == null || EditorUtility.EntityIdToObject(prefabEditors[i].GetEntityId()) == null)
 #else
-                if (prefabEditors[i] == null || EditorUtility.InstanceIDToObject(prefabEditors[i].GetInstanceID()) == null)
+#pragma warning disable CS0618
+                    if (prefabEditors[i] == null || EditorUtility.InstanceIDToObject(prefabEditors[i].GetInstanceID()) == null)
+#pragma warning restore CS0618
+
 #endif
 
                     {
@@ -10090,9 +10111,14 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             {
                 return false;
             }
-
+#if UNITY_6000_4_OR_NEWER
+            var set1 = new HashSet<EntityId>(array1.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+            var set2 = new HashSet<EntityId>(array2.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+#else
             var set1 = new HashSet<int>(array1.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
             var set2 = new HashSet<int>(array2.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+#endif
+
 
             return set1.SetEquals(set2);
         }
@@ -10105,8 +10131,13 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 return false;
             }
 
+#if UNITY_6000_4_OR_NEWER
+            var set1 = new HashSet<EntityId>(array1.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+            var set2 = new HashSet<EntityId>(array2.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+#else
             var set1 = new HashSet<int>(array1.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
             var set2 = new HashSet<int>(array2.Where(obj => obj != null).Select(obj => GetObjectId(obj)));
+#endif
 
             return set1.IsSupersetOf(set2);
         }
@@ -10314,6 +10345,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 ResetMultiAssetEditors();
                 targetObject = null;
             }
+
             lockedAsset = wasLocked;
         }
 
@@ -10549,7 +10581,6 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 
         internal void TryGatherTimeControls()
         {
-
             object avatarOwner = null;
             if (assetEditor.GetType().ToString() == "UnityEditor.Graphs.AnimationStateMachine.AnimatorStateTransitionInspector")
             {
@@ -10691,6 +10722,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             }
             if (!overrideHeight && AreWeChangingAssetTypes(ob))
             {
+
                 userAssetViewSize = -1;
             }
             HandleAssetHistory(new UnityObject[] { ob });
@@ -10962,9 +10994,8 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             bool hasImportPreview = assetImportSettingsEditor != null && assetImportSettingsEditor.HasPreviewGUI();
 
 
-            if (assetEditor != null && assetEditor.HasPreviewGUI() && (!videoClip && !hasImportPreview))
+            if (assetEditor != null && assetEditor.HasPreviewGUI() && assetEditor.target && (!videoClip && !hasImportPreview))
             {
-
                 EditorGUI.BeginChangeCheck();
                 assetEditor.DrawPreview(rect);
                 if (EditorGUI.EndChangeCheck())
@@ -10973,11 +11004,22 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     TryGatherTimeControls();
                 }
             }
-            else if (assetImportSettingsEditor != null)
+            else if (assetImportSettingsEditor != null && assetImportSettingsEditor.target != null)
             {
 
                 EditorGUI.BeginChangeCheck();
-                assetImportSettingsEditor.DrawPreview(rect);
+                EditorGUI.BeginChangeCheck();
+                try
+                {
+                    assetImportSettingsEditor.DrawPreview(rect);
+                }
+                catch (MissingReferenceException)
+                {
+
+                    //Unity's SpriteAtlasImporterInspector internally accesses a destroyed preview texture.
+                    //Nothing we can do about it.
+                    ResetAssetInspector();
+                }
                 if (EditorGUI.EndChangeCheck())
                 {
                     TryGatherTimeControls();
@@ -12012,9 +12054,13 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                             }
                             else if (missingScript != null)
                             {
-#pragma warning disable CS0618
+#if UNITY_6000_4_OR_NEWER
+                                EditorGUIUtility.PingObject(missingScript.entityID);
+
+#else
                                 EditorGUIUtility.PingObject(missingScript.instanceID);
-#pragma warning restore CS0618
+
+#endif
                             }
                             ActiveEditorTracker.sharedTracker.ForceRebuild();
                         }
@@ -12233,12 +12279,13 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     }
                     else
                     {
-#if UNITY_6000_3_OR_NEWER
-#pragma warning disable CS0618
-                        Selection.entityIds = new EntityId[] { missingScript.instanceID };
-#pragma warning restore CS0618
+#if UNITY_6000_4_OR_NEWER
+                        Selection.entityIds = new EntityId[] { missingScript.entityID };
 #else
-    Selection.instanceIDs = new int[] { missingScript.instanceID };
+#pragma warning disable CS0618
+                        Selection.instanceIDs = new int[] { missingScript.instanceID };
+#pragma warning restore CS0618
+
 #endif
 
                     }
@@ -12283,11 +12330,12 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                     }
                     else
                     {
-#if UNITY_6000_3_OR_NEWER
+#if UNITY_6000_4_OR_NEWER
                         Selection.entityIds = new EntityId[] { missingScript.GetEntityId() };
 #else
+#pragma warning disable CS0618
                         Selection.instanceIDs = new int[] { missingScript.instanceID };
-
+#pragma warning restore CS0618
 #endif
                     }
                     inspector.Show();
@@ -12746,7 +12794,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             leftHandleRect.width = leftHandleRect.width / 2 - 100;
             rightHandleRect.x += leftHandleRect.width + 200;
             rightHandleRect.width = leftHandleRect.width;
-            if (UpdateChecker.IsUpdateAvailable && position.width > 322)
+            if (!hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322)
             {
                 leftHandleRect.width -= 55;
                 leftHandleRect.x += 55;
@@ -12770,7 +12818,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 EditorUtils.DrawLineOverRect(leftHandleRect, CustomColors.HarderBright, -3);
                 EditorUtils.DrawLineOverRect(leftHandleRect, CustomColors.HarderBright, -7);
             }
-            if (UpdateChecker.IsUpdateAvailable && position.width > 322)
+            if (!hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322)
             {
                 leftHandleRect.width += 55;
                 leftHandleRect.x -= 55;
@@ -12829,7 +12877,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
             EditorUtils.DrawRectBorder(addButtonRect, CustomColors.SimpleShadow);
             EditorUtils.DrawLineOverRect(addButtonRect, CustomColors.HarderBright, -1, 1);
             GUI.enabled = true;
-            if (UpdateChecker.IsUpdateAvailable && position.width > 322)
+            if (!hideUpdateAlert && UpdateChecker.IsUpdateAvailable && position.width > 322)
             {
                 Rect buttonRect = new Rect(5, addButtonRect.y + 2, 54, 21);
                 if (GUI.Button(buttonRect, CustomGUIContents.UpdateContent, GUIStyle.none))
@@ -14406,14 +14454,27 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
                 EditorGUILayout.ObjectField("Script", missingScript.script, typeof(MonoScript), false);
                 GUI.enabled = true;
                 GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
-                string instanceID = missingScript.instanceID.ToString();
+#if UNITY_6000_4_OR_NEWER
+                string entityID = missingScript.entityID.GetHashCode().ToString();
+
+#else
+                string entityID = missingScript.instanceID.ToString();
+
+#endif
+
                 string localIdentifier = missingScript.localIdentifierInFile.ToString();
                 if (multi)
                 {
-                    instanceID = "―";
+                    entityID = "―";
                     localIdentifier = "―";
                 }
-                EditorGUILayout.TextField("Instance ID", instanceID);
+#if UNITY_6000_4_OR_NEWER
+                EditorGUILayout.TextField("Entity ID", entityID);
+
+#else
+                EditorGUILayout.TextField("Instance ID", entityID);
+
+#endif
                 GUILayout.Space(EditorGUIUtility.standardVerticalSpacing);
                 EditorGUILayout.TextField("Local identifier in file", localIdentifier);
                 ShowMissingAssetScript(multi);
@@ -14666,7 +14727,7 @@ EditorUtils.GetObjectId(c.containingInstanceGameObject) ==
 
         internal bool IsAssetImportSettingsDirty()
         {
-            if (assetImportSettingsEditor == null || assetImportSettingsEditor.targets == null || assetImportSettingsEditor.targets.Length == 0)
+            if (assetImportSettingsEditor == null || assetImportSettingsEditor.targets == null || assetImportSettingsEditor.targets.Length == 0 || assetImportSettingsEditor.target == null)
             {
                 return false;
             }
