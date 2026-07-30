@@ -86,7 +86,7 @@ public class SMM_DevelopmentPhaseState : GameplayBaseState
         int food = MapCtx.FactionState.Food;
         int wood = MapCtx.FactionState.Wood;
         int metal = MapCtx.FactionState.Metal;
-        MapCtx.GS.UISystem.SetResourceUI(food - TotalFoodCost, wood - TotalMetalCost, metal - TotalMetalCost);
+        MapCtx.GS.UISystem.SetResourceUI(food - TotalFoodCost, wood - TotalWoodCost, metal - TotalMetalCost);
 
         int unitsAvaliable = currentUnitAvaliable - _cart.Units[unitType];
         MapCtx.GS.UISystem.SetUnitAvaliable(unitType, unitsAvaliable);
