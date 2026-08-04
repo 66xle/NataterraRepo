@@ -1,5 +1,7 @@
 using PurrNet;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TGS;
 using UnityEngine;
 
@@ -12,6 +14,10 @@ public class GameplaySystem : NetworkBehaviour
 
     public TerrainGridSystem TGS { get; private set; }
 
+
+    private Queue<Action> _eventQueue = new();
+
+
     private void Awake()
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
@@ -22,6 +28,28 @@ public class GameplaySystem : NetworkBehaviour
     {
         TGS = TerrainGridSystem.instance;
     }
+
+    public void AddEventQueue(Action action)
+    {
+        _eventQueue.Enqueue(action);
+
+        if (_eventQueue.Count == 1)
+        {
+            _eventQueue.Peek()?.Invoke();
+        }
+    }
+
+    public void RemoveEventQueue()
+    {
+        _eventQueue.Dequeue();
+
+        if (_eventQueue.Count > 0)
+        {
+            _eventQueue.Peek()?.Invoke();
+        }
+    }
+
+
 
     [ObserversRpc]
     public void SetStateChanges(List<StateChange> changes)

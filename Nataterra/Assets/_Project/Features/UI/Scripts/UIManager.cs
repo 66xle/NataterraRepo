@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public async void ShowPhaseUI(string text)
+    public async Task ShowPhaseUI(string text)
     {
         PhaseTitle.text = text;
         PhaseTitle.transform.parent.gameObject.SetActive(true);
@@ -58,7 +58,7 @@ public class UIManager : MonoBehaviour
         PhaseTitle.transform.parent.gameObject.SetActive(false);
     }
 
-    public async void ShowFactionTurn(string text)
+    public async Task ShowFactionTurn(string text)
     {
         PhaseTitle.text = text;
         PhaseTitle.transform.parent.gameObject.SetActive(true);

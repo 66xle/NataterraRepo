@@ -13,7 +13,6 @@ public class UISystem : NetworkBehaviour
     private void Awake()
     {
         _gs = GetComponentInParent<GameplaySystem>();
-        
     }
 
     public void Setup(Base faction)
@@ -22,7 +21,7 @@ public class UISystem : NetworkBehaviour
         _uiManager = InstanceHandler.GetInstance<UIManager>();
 
         _uiManager.Setup();
-        UpdateResourcesUI();
+        _gs.AddEventQueue(() => UpdateResourcesUI());
 
         foreach (FactionData data in GameManager.Instance.ListOfFactions)
         {
@@ -42,7 +41,7 @@ public class UISystem : NetworkBehaviour
     [TargetRpc]
     public void ResourceUpdateClientUI(PlayerID playerID)
     {
-        UpdateResourcesUI();
+        _gs.AddEventQueue(() => UpdateResourcesUI());
     }
 
     void UpdateResourcesUI()
@@ -52,6 +51,8 @@ public class UISystem : NetworkBehaviour
         int metal = _gs.MSM.FactionState.Metal;
 
         SetResourceUI(food, wood, metal);
+
+        _gs.RemoveEventQueue();
     }
 
     public void SetResourceUI(int food, int wood, int metal)
@@ -76,35 +77,42 @@ public class UISystem : NetworkBehaviour
         _uiManager.UpdateUnitAvaliable(type, amount);
     }
 
+
     [TargetRpc]
     public void ShowPhaseTitleClient(PlayerID playerID, GameplayState state)
     {
-        ShowPhaseTitle(state);
+        _gs.AddEventQueue(() => ShowPhaseTitle(state));
     }
-
     [ObserversRpc]
     public void ShowPhaseTitleToAll(GameplayState state)
     {
-        ShowPhaseTitle(state);
+        _gs.AddEventQueue(() => ShowPhaseTitle(state));
     }
-
-    public void ShowPhaseTitle(GameplayState state)
+    async void ShowPhaseTitle(GameplayState state)
     {
         if (state == GameplayState.MovementPhase)
-            _uiManager.ShowPhaseUI("Movement Phase");
+            await _uiManager.ShowPhaseUI("Movement Phase");
         else if (state == GameplayState.ResourcePhase)
-            _uiManager.ShowPhaseUI("Resource Phase");
+            await _uiManager.ShowPhaseUI("Resource Phase");
         else if (state == GameplayState.CombatPhase)
-            _uiManager.ShowPhaseUI("Combat Phase");
+            await _uiManager.ShowPhaseUI("Combat Phase");
         else if (state == GameplayState.DevelopmentPhase)
-            _uiManager.ShowPhaseUI("Development Phase");
+            await _uiManager.ShowPhaseUI("Development Phase");
+
+        _gs.RemoveEventQueue();
     }
 
 
     [ObserversRpc]
-    public void ShowFactionTurn(Base faction)
+    public void ShowFactionTurnToAll(Base faction)
     {
-        _uiManager.ShowFactionTurn($"{faction}'s Turn");
+        _gs.AddEventQueue(() => ShowFactionTurn(faction));
+    }
+    async void ShowFactionTurn(Base faction)
+    {
+        await _uiManager.ShowFactionTurn($"{faction}'s Turn");
+
+        _gs.RemoveEventQueue();
     }
 
 

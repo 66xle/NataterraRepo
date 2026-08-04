@@ -29,7 +29,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         if (state == GameplayState.WaitingForTurn)
         {
-            _gs.UISystem.ShowFactionTurn(_map.GetFaction(command.ID));
+            _gs.UISystem.ShowFactionTurnToAll(_map.GetFaction(command.ID));
 
             await Task.Delay(1500);
 
@@ -77,7 +77,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         PlayerID nextPlayer = _map.CurrentPlayerTurn;
 
-        _gs.UISystem.ShowFactionTurn(_map.GetFaction(nextPlayer));
+        _gs.UISystem.ShowFactionTurnToAll(_map.GetFaction(nextPlayer));
 
         await Task.Delay(1500);
 
