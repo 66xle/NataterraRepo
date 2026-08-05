@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Net;
 using DrawXXL;
 using TGS;
 using Unity.VisualScripting;
@@ -79,8 +80,11 @@ public class SMM_MapState : GameplayBaseState
 
         if (MapCtx.UnitExistOnCell(cellIndex))
         {
-            List<Unit> units = MapCtx.GetUnitList(cellIndex);
+            if (!MapCtx.GetState()[cellIndex].DictOfGroups.ContainsKey(MapCtx.LocalPlayerID)) 
+                return;
 
+            List<Unit> units = MapCtx.GetUnitList(cellIndex);
+            
             MapCtx.OnSelectUnit?.Invoke(units);
         }
     }

@@ -1,8 +1,9 @@
+using PurrNet.Packing;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Group 
+public class Group : IPackedAuto
 {
     public List<Unit> ListOfUnits;
 

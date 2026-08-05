@@ -20,7 +20,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
         // Get Starting Unit
         List<UnitType> units = _map.FactionSettings[faction].StartingUnits;
-        List<string> GUIDs = _map.AddUnit(units, cellIndex);
+        List<string> GUIDs = _map.AddUnit(command.ID, units, cellIndex);
 
         _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex);
         _gs.SetStateChanges(_map.GetStateChanges());
@@ -28,7 +28,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
     public void Handle(AC_UnitMoveCommand command)
     {
-        List<Unit> selectedUnits = _map.GetUnits(command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
+        List<Unit> selectedUnits = _map.GetUnits(command.ID, command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
 
         if (selectedUnits == null || selectedUnits.Count != command.ListOfUnitGUID.Count)
             return;
@@ -41,7 +41,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
             if (result == null)
             {
-                result = _gs.MSM.CalculateMovementRange(unit.CellOrigin, unit.Movement, _map.GetCells(), _map.GetState(), unit.IsFlying);
+                result = _gs.MSM.CalculateMovementRange(command.ID, unit.CellOrigin, unit.Movement, _map.GetCells(), _map.GetState(), unit.IsFlying);
                 _map.StoreResult(unit.GUID, result);
             }
 
@@ -54,7 +54,7 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
             listOfResults.Add(result);
         }
 
-        _map.MoveUnit(selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
+        _map.MoveUnit(command.ID, selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
 
         _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination);
         _gs.SetStateChanges(_map.GetStateChanges());

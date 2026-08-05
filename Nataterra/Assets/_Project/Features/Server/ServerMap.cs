@@ -29,7 +29,7 @@ public class ServerMap
         _commandProcessor.Process(command);
     }
 
-    public void LoadClientMap(PlayerID playerID)
+    public void LoadClientMap(PlayerID id)
     {
         List<string> GUIDs = new();
         List<UnitType> types = new();
@@ -41,21 +41,24 @@ public class ServerMap
         {
             if (state[i].DictOfGroups.Count == 0) continue;
 
-            foreach (UnitType type in state[i].DictOfGroups.Keys)
+            foreach (PlayerID playerID in state[i].DictOfGroups.Keys)
             {
-                foreach (Unit unit in state[i].DictOfGroups[type].ListOfUnits)
+                foreach (UnitType type in state[i].DictOfGroups[playerID].Keys)
                 {
-                    GUIDs.Add(unit.GUID);
-                    types.Add(type);
-                    indexs.Add(i);
+                    foreach (Unit unit in state[i].DictOfGroups[playerID][type].ListOfUnits)
+                    {
+                        GUIDs.Add(unit.GUID);
+                        types.Add(type);
+                        indexs.Add(i);
+                    }
                 }
             }
         }
 
-        _gs.UnitSystem.SpawnUnitToClient(playerID, types, GUIDs, indexs);
+        _gs.UnitSystem.SpawnUnitToClient(id, types, GUIDs, indexs);
 
         if (_gs.networkManager.playerCount > 1)
-            _gs.UISystem.ShowPhaseTitleClient(playerID, _map.GetPhaseState());
+            _gs.UISystem.ShowPhaseTitleClient(id, _map.GetPhaseState());
 
     }
 

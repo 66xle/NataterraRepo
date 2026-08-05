@@ -23,10 +23,13 @@ public class MapStateMachine : NetworkBehaviour
     List<Unit> _selectedUnits;
     GameObject _movementBorder;
     DijkstraResult _movementResult;
+    PlayerID _localPlayerID;
+
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public FactionState FactionState { get { return _factionState; } }
 
+    public PlayerID LocalPlayerID { get { return _localPlayerID; } }
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
     public List<Unit> SelectedUnits { get { return _selectedUnits; } set { _selectedUnits = value; } }
     public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
@@ -69,6 +72,7 @@ public class MapStateMachine : NetworkBehaviour
         ClientRuntime client = await SetupClientOnServer();
         _factionState = client.FactionState;
         _state = client.MapState;
+        _localPlayerID = client.ID;
 
         if (!isHost)
         {
@@ -132,6 +136,7 @@ public class MapStateMachine : NetworkBehaviour
         ClientRuntime client = new();
 
         AssignPlayerToFaction(info.sender);
+        client.ID = info.sender;
         client.MapState = _serverMap.GetMap();
         client.FactionState = _serverMap.GetFactionState(info.sender);
 
@@ -234,9 +239,9 @@ public class MapStateMachine : NetworkBehaviour
 
     public List<Unit> GetUnitList(int cellIndex)
     {
-        List<UnitType> unitTypes = _state[cellIndex].DictOfGroups.Keys.ToList();
+        List<UnitType> unitTypes = _state[cellIndex].DictOfGroups[_localPlayerID].Keys.ToList();
 
-        return _state[cellIndex].DictOfGroups[unitTypes[0]].ListOfUnits;
+        return _state[cellIndex].DictOfGroups[_localPlayerID][unitTypes[0]].ListOfUnits;
     }
 
 
@@ -281,8 +286,9 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
-    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells, List<HexCellState> state, bool flying = false)
+    public DijkstraResult CalculateMovementRange(PlayerID id, int startCell, int maxMovement, List<Cell> cells, List<HexCellState> state, bool flying = false)
     {
+        const int ConsumeRemainingMovement = -1;
         DijkstraResult result = new DijkstraResult();
 
         List<int> open = new();
@@ -307,6 +313,9 @@ public class MapStateMachine : NetworkBehaviour
 
             int currentCost = result.Cost[current];
 
+            if (currentCost >= maxMovement)
+                continue;
+
             Cell cell = cells[current];
 
             foreach (Cell neighbour in cell.neighbours)
@@ -314,7 +323,12 @@ public class MapStateMachine : NetworkBehaviour
                 if (!CanEnter(neighbour, state[neighbour.index], flying))
                     continue;
 
-                int newCost = currentCost + GetMovementCost(neighbour, state[neighbour.index], flying);
+                int movementCost = GetMovementCost(id, neighbour, state[neighbour.index], flying);
+
+                if (movementCost == ConsumeRemainingMovement)
+                    movementCost = maxMovement - currentCost;
+
+                int newCost = currentCost + movementCost;
 
                 if (newCost > maxMovement)
                     continue;
@@ -345,14 +359,17 @@ public class MapStateMachine : NetworkBehaviour
         return true;
     }
 
-    int GetMovementCost(Cell cell, HexCellState cellState, bool flying)
+    int GetMovementCost(PlayerID id, Cell cell, HexCellState cellState, bool flying)
     {
+        // Check if combat is happening on this cell
+
         // Check if enemy is on cell
-        //networkManager.playerModule.localPlayerId
+        if (!cellState.DictOfGroups.ContainsKey(id) && cellState.DictOfGroups.Count > 0)
+            return -1;
 
         // If ground check if cell is a mountain
         if (cellState.Biome == Biome.Mountain && !flying)
-            return 100;
+            return -1;
 
         return 1;
     }

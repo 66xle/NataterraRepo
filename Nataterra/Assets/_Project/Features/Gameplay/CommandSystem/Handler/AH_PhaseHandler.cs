@@ -94,7 +94,10 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         for (int i = 0; i < state.Count; i++)
         {
-            _map.ResetUnitMovementOnCell(i);
+            if (!state[i].DictOfGroups.ContainsKey(playerID))
+                continue;
+
+            _map.ResetUnitMovementOnCell(playerID, i);
         }
 
         _gs.SetStateChanges(_map.GetStateChanges());
@@ -108,7 +111,9 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         foreach (HexCellState state in _map.GetState())
         {
-            if (!state.DictOfGroups.ContainsKey(type)) continue;
+            if (!state.DictOfGroups.ContainsKey(playerID)) continue;
+
+            if (!state.DictOfGroups[playerID].ContainsKey(type)) continue;
 
             _map.AddResource(faction, state.Resource);
         }
@@ -145,7 +150,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         int baseIndex = _map.GetBaseCellIndex(faction);
 
         List<UnitType> units = cart.GetUnitsInList();
-        List<string> guids = _map.AddUnit(units, baseIndex);
+        List<string> guids = _map.AddUnit(playerID, units, baseIndex);
 
 
         _gs.SetClientFactionState(playerID, _map.GetFactionState(playerID));

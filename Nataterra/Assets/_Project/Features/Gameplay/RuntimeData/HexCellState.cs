@@ -1,14 +1,15 @@
 using PurrNet;
+using PurrNet.Packing;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexCellState
+public class HexCellState : IPackedAuto
 {
     public Biome Biome = Biome.None;
     public Resource Resource = Resource.None;
     public Base Faction = Base.None;
 
-    public Dictionary<UnitType, Group> DictOfGroups;
+    public Dictionary<PlayerID, Dictionary<UnitType, Group>> DictOfGroups;
 
     public HexCellState(HexCellData cell)
     {

@@ -91,13 +91,13 @@ public class ServerMapWrapper
     #endregion
 
     #region Units
-    public List<Unit> GetUnits(int cellIndex, List<string> guids, List<UnitType> types)
+    public List<Unit> GetUnits(PlayerID id, int cellIndex, List<string> guids, List<UnitType> types)
     {
         List<Unit> units = new();
 
         for (int i = 0; i < guids.Count; i++)
         {
-            if (!_state[cellIndex].DictOfGroups.TryGetValue(types[i], out Group group))
+            if (!_state[cellIndex].DictOfGroups[id].TryGetValue(types[i], out Group group))
             {
                 Debug.LogError("Server Map Wrapper: GetUnits(): Unit Type not found");
                 return null;
@@ -116,7 +116,7 @@ public class ServerMapWrapper
     }
 
 
-    public string AddUnit(UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
+    public string AddUnit(PlayerID id, UnitType type, int cellIndex, Unit unit = null, bool stateChange = true)
     {
         if (stateChange)
             AddStateChange(cellIndex);
@@ -132,17 +132,21 @@ public class ServerMapWrapper
 
         string GUID = unit.GUID;
 
-        if (_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
+
+        if (!_state[cellIndex].DictOfGroups.ContainsKey(id))
+            _state[cellIndex].DictOfGroups.Add(id, new Dictionary<UnitType, Group>());
+
+        if (_state[cellIndex].DictOfGroups[id].TryGetValue(type, out Group group))
         {
             group.ListOfUnits.Add(unit);
             return GUID;
         }
 
-        _state[cellIndex].DictOfGroups.Add(type, new Group(unit));
+        _state[cellIndex].DictOfGroups[id].Add(type, new Group(unit));
         return GUID;
     }
 
-    public List<string> AddUnit(List<UnitType> types, int cellIndex)
+    public List<string> AddUnit(PlayerID id, List<UnitType> types, int cellIndex)
     {
         AddStateChange(cellIndex);
 
@@ -150,7 +154,7 @@ public class ServerMapWrapper
 
         foreach (UnitType unit in types)
         {
-            string guid = AddUnit(unit, cellIndex, null, false);
+            string guid = AddUnit(id, unit, cellIndex, null, false);
             tempGUIDS.Add(guid);
         }
 
@@ -158,12 +162,12 @@ public class ServerMapWrapper
     }
 
 
-    public void RemoveUnit(UnitType type, Unit unit, int cellIndex, bool stateChange = true)
+    public void RemoveUnit(PlayerID id, UnitType type, Unit unit, int cellIndex, bool stateChange = true)
     {
         if (stateChange)
             AddStateChange(cellIndex);
 
-        if (!_state[cellIndex].DictOfGroups.TryGetValue(type, out Group group))
+        if (!_state[cellIndex].DictOfGroups[id].TryGetValue(type, out Group group))
         {
             Debug.LogError("Server Map Wrapper: RemoveUnit(): Unit Type not found");
             return;
@@ -176,11 +180,14 @@ public class ServerMapWrapper
             return;
         }
 
-        // Remove group
-        _state[cellIndex].DictOfGroups.Remove(type);
+        // Remove unitType dictionary
+        _state[cellIndex].DictOfGroups[id].Remove(type);
+
+        if (_state[cellIndex].DictOfGroups[id].Count == 0)
+            _state[cellIndex].DictOfGroups.Remove(id);
     }
 
-    public void MoveUnit(List<Unit> units, int origin, int destination, List<DijkstraResult> listOfResults)
+    public void MoveUnit(PlayerID id, List<Unit> units, int origin, int destination, List<DijkstraResult> listOfResults)
     {
         AddStateChange(origin);
         AddStateChange(destination);
@@ -190,7 +197,7 @@ public class ServerMapWrapper
             Unit unit = units[i];
 
             // remove unit from cell
-            RemoveUnit(unit.UnitType, unit, origin, false);
+            RemoveUnit(id, unit.UnitType, unit, origin, false);
 
             // Set unit movement
             int cost = listOfResults[i].GetDestinationCost(destination);
@@ -202,7 +209,7 @@ public class ServerMapWrapper
             }
 
             // add them to map
-            AddUnit(unit.UnitType, destination, unit, false);
+            AddUnit(id, unit.UnitType, destination, unit, false);
         }
     }
 
@@ -222,15 +229,15 @@ public class ServerMapWrapper
 
     #region Movement
 
-    public void ResetUnitMovementOnCell(int cellIndex)
+    public void ResetUnitMovementOnCell(PlayerID id, int cellIndex)
     {
         HexCellState cellState = _state[cellIndex];
 
-        if (cellState.DictOfGroups.Count == 0) return;
+        if (cellState.DictOfGroups[id].Count == 0) return;
 
-        foreach (UnitType type in cellState.DictOfGroups.Keys)
+        foreach (UnitType type in cellState.DictOfGroups[id].Keys)
         {
-            foreach (Unit unit in cellState.DictOfGroups[type].ListOfUnits)
+            foreach (Unit unit in cellState.DictOfGroups[id][type].ListOfUnits)
             {
                 unit.CurrentMovement = unit.Movement;
                 unit.CellOrigin = cellIndex;
