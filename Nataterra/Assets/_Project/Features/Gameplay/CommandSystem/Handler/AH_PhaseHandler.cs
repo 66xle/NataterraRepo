@@ -81,6 +81,7 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
 
         await Task.Delay(1500);
 
+        _map.SetPhaseState(GameplayState.MovementPhase);
         _gs.UISystem.ShowPhaseTitleToAll(GameplayState.MovementPhase);
         _gs.MSM.EndPhaseForClient(nextPlayer);
     }
