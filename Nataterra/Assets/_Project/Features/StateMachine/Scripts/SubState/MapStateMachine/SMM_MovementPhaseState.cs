@@ -83,9 +83,13 @@ public class SMM_MovementPhaseState : GameplayBaseState
         if (cell == null) 
             return;
 
+        if (MapCtx.SelectedCell.index == cell.index)
+            return;
+
         if (!MapCtx.MovementResult.Contains(cell.index))
         {
             // Display UI invalid destination
+            Debug.LogError("MovementPhaseState: MoveUnit(): Invalid destination");
             return;
         }
 
