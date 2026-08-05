@@ -41,13 +41,13 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
             if (result == null)
             {
-                result = _gs.MSM.CalculateMovementRange(unit.CellOrigin, unit.Movement, _map.GetCells());
+                result = _gs.MSM.CalculateMovementRange(unit.CellOrigin, unit.Movement, _map.GetCells(), _map.GetState(), unit.IsFlying);
                 _map.StoreResult(unit.GUID, result);
             }
 
             if (!result.Contains(command.Destination))
             {
-                // Invalid destination
+                Debug.LogError($"UnitHandler: Handle: Destination is not in range for Unit {unit.UnitType}");
                 return;
             }
 

@@ -17,7 +17,7 @@ public class Unit
     public int Group { get; private set; }
     public int Movement { get; private set; }
 
-    
+    public bool IsFlying { get; private set; }
 
     public Unit(UnitData data, int cellOrigin)
     {
@@ -30,6 +30,8 @@ public class Unit
         Initiative = data.Initiative;
         Group = data.Group;
         Movement = data.Movement;
+
+        IsFlying = data.IsFlying;
 
         CellOrigin = cellOrigin;
         CurrentMovement = Movement;

@@ -189,6 +189,11 @@ public class MapStateMachine : NetworkBehaviour
         _state[cellIndex] = cellState;
     }
 
+    public List<HexCellState> GetState()
+    {
+        return _state;
+    }
+
     public void AddUnitObject(string guid, GameObject obj)
     {
         _unitObjects.Add(guid, obj);
@@ -276,7 +281,7 @@ public class MapStateMachine : NetworkBehaviour
     }
 
 
-    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells)
+    public DijkstraResult CalculateMovementRange(int startCell, int maxMovement, List<Cell> cells, List<HexCellState> state, bool flying = false)
     {
         DijkstraResult result = new DijkstraResult();
 
@@ -306,10 +311,10 @@ public class MapStateMachine : NetworkBehaviour
 
             foreach (Cell neighbour in cell.neighbours)
             {
-                if (!CanEnter(neighbour))
+                if (!CanEnter(neighbour, state[neighbour.index], flying))
                     continue;
 
-                int newCost = currentCost + GetMovementCost(neighbour);
+                int newCost = currentCost + GetMovementCost(neighbour, state[neighbour.index], flying);
 
                 if (newCost > maxMovement)
                     continue;
@@ -329,19 +334,25 @@ public class MapStateMachine : NetworkBehaviour
         return result;
     }
 
-    bool CanEnter(Cell cell)
+    bool CanEnter(Cell cell, HexCellState cellState, bool flying)
     {
+        if (cellState.Biome == Biome.Lake && flying)
+            return true;
+
         if (!cell.canCross)
             return false;
 
         return true;
     }
 
-    int GetMovementCost(Cell cell)
+    int GetMovementCost(Cell cell, HexCellState cellState, bool flying)
     {
-        // Check if ground or flying type
+        // Check if enemy is on cell
+        //networkManager.playerModule.localPlayerId
 
         // If ground check if cell is a mountain
+        if (cellState.Biome == Biome.Mountain && !flying)
+            return 100;
 
         return 1;
     }

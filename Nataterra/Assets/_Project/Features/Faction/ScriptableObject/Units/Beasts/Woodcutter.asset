@@ -25,3 +25,4 @@ MonoBehaviour:
   FoodCost: 2
   WoodCost: 0
   MetalCost: 0
+  IsFlying: 0

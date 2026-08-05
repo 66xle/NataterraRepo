@@ -1432,6 +1432,7 @@ namespace TGS {
                         cell.index = cellsCount;
                         cell.row = (ushort)j;
                         cell.column = (ushort)k;
+                        cell.canCross = data.canCross;
 
                         p1 = new Point(data.points[0].x, data.points[0].y);
                         p2 = new Point(data.points[5].x, data.points[5].y);

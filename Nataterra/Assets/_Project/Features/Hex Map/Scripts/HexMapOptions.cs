@@ -51,6 +51,16 @@ public class HexMapOptions
         editor.ErrorText.text = $"Created \"{fileName}\"";
         editor.ErrorText.color = Color.green;
 
+        foreach (Cell cell in tgsCells)
+        {
+            if (cells[cell.index].biome == Biome.None || cells[cell.index].biome == Biome.Lake)
+            {
+                cell.canCross = false;
+                continue;
+            }
+
+            cell.canCross = true;
+        }
         
         string sceneName = dropdown.options[dropdown.value].text;
         MapData mapData = new(cells, tgsCells, sceneName, bases, TGS.rowCount, TGS.columnCount);

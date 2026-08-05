@@ -51,13 +51,15 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
         if (lowestMovement == 0)
         {
-            // No movement message
+            Debug.LogError($"MovementState: ShowUnitMovementRange: A selected unit has no movement avaliable");
             return;
         }
 
         MapCtx.SelectedUnits = units;
 
-        DijkstraResult result = MapCtx.CalculateMovementRange(origin, lowestMovement, TGS.cells);
+        bool flying = Extensions.Contains(units, false, units => units.IsFlying) ? false : true;
+
+        DijkstraResult result = MapCtx.CalculateMovementRange(origin, lowestMovement, TGS.cells, MapCtx.GetState(), flying);
         MapCtx.MovementResult = result;
 
         List<int> cellsInRange = result.GetIndexList();

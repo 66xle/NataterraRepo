@@ -23,4 +23,7 @@ public class UnitData : ScriptableObject
     public int FoodCost;
     public int WoodCost;
     public int MetalCost;
+
+    [Header("Traits")]
+    public bool IsFlying;
 }

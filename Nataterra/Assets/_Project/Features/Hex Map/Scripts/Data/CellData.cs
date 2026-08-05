@@ -12,6 +12,7 @@ public class CellData
     public List<Vector2> points;
 
     public int index;
+    public bool canCross;
 
     public CellData(Cell data)
     {
@@ -19,5 +20,6 @@ public class CellData
         points = data.region.points;
 
         index = data.index;
+        canCross = data.canCross;
     }
 }
