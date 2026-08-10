@@ -28,6 +28,9 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
     public void Handle(AC_UnitMoveCommand command)
     {
+        if (command.ID != _map.CurrentPlayerTurn)
+            return;
+
         List<Unit> selectedUnits = _map.GetUnits(command.ID, command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
 
         if (selectedUnits == null || selectedUnits.Count != command.ListOfUnitGUID.Count)

@@ -97,6 +97,12 @@ public class ServerMapWrapper
 
         for (int i = 0; i < guids.Count; i++)
         {
+            if (!_state[cellIndex].DictOfGroups.ContainsKey(id))
+            {
+                Debug.LogError("Server Map Wrapper: GetUnits(): PlayerID not found");
+                return null;
+            }
+
             if (!_state[cellIndex].DictOfGroups[id].TryGetValue(types[i], out Group group))
             {
                 Debug.LogError("Server Map Wrapper: GetUnits(): Unit Type not found");

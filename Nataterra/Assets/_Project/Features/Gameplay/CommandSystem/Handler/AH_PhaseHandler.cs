@@ -21,8 +21,6 @@ public class AH_PhaseHandler : IActionHandler<AC_PhaseEndPhaseCommand>
         if (command.ID != _map.CurrentPlayerTurn)
             return;
 
-        // Validate current state
-
         bool error = false;
 
         GameplayState state = _map.GetPhaseState();
