@@ -5,6 +5,7 @@ using DrawXXL;
 using TGS;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SMM_MapState : GameplayBaseState
 {
@@ -41,7 +42,11 @@ public class SMM_MapState : GameplayBaseState
 
     public void InputCellSelection()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         Cell cell = TGS.CellGetAtMousePosition();
+
 
         // If selected cell exists
         if (MapCtx.SelectedCell != null)
