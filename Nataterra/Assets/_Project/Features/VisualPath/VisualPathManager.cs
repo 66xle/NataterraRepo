@@ -1,39 +1,84 @@
 using System.Collections.Generic;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using VisualPath;
 
 public class VisualPathManager : MonoBehaviour
 {
-    public List<VisualRoad> roads = new();
+    [Header("Path Settings")]
+    public PathPriorityMode PathPriority;
+    public EdgeAvoidanceMode EdgeAvoidance;
+    [Range(0, 1)] public float EdgeAvoidanceAmount = 0.35f;
+    [Range(0, 1)] public float EdgeMargin = 0.25f;
+    public int PortalRelaxationPasses = 4;
+    public float StraightAngleTolerance = 6f;
+    [Range(0, 1)] public float SmoothingRatio = 0.2f;
 
-    private VisualPathGenerator _generator;
+    [Header("Other")]
+    public bool UpdatePath = false;
+    List<VisualRoad> roads = new();
 
-    public List<Vector3> Generate(List<VisualHex> corridor, Vector3 start, Vector3 destination)
+
+    VisualPathGenerator _generator;
+    VisualPathRequest _request;
+
+    LineRenderer _lineRenderer;
+    List<Vector3> _path = new();
+
+
+
+    public void Awake()
+    {
+        _lineRenderer = GetComponent<LineRenderer>();
+    }
+
+    public void Update()
+    {
+        if (UpdatePath && _path.Count > 0)
+        {
+            GeneratePath();
+            DisplayPath();
+        }
+    }
+
+    public void CreateRequest(List<VisualHex> corridor, Vector3 start, Vector3 destination)
+    {
+        _request = new VisualPathRequest(corridor, start, destination, roads);
+    }
+
+    public void GeneratePath()
     {
         VisualPathSettings settings = new VisualPathSettings
         {
-            PathPriority = PathPriorityMode.OptimizedPathFirst,
-            EdgeAvoidanceMode = EdgeAvoidanceMode.PortalCenterBias,
-            EdgeAvoidanceAmount = 0.35f,
-            EdgeMargin = 0.25f,
-            PortalRelaxationPasses = 4,
-            StraightAngleTolerance = 6f,
-            SmoothingRatio = 0.2f
+            PathPriority = PathPriority,
+            EdgeAvoidanceMode = EdgeAvoidance,
+            EdgeAvoidanceAmount = EdgeAvoidanceAmount,
+            EdgeMargin = EdgeMargin,
+            PortalRelaxationPasses = PortalRelaxationPasses,
+            StraightAngleTolerance = StraightAngleTolerance,
+            SmoothingRatio = SmoothingRatio
         };
 
         _generator = new VisualPathGenerator(settings);
 
-        VisualPathRequest request = new VisualPathRequest(corridor, start, destination, roads);
-
-        VisualPathResult result = _generator.Generate(request);
+        VisualPathResult result = _generator.Generate(_request);
 
         if (!result.IsValid)
         {
             Debug.LogError(result.Error);
-            return null;
+            return;
         }
 
-        List<Vector3> points = new List<Vector3>(result.FinalPoints);
-        return points;
+        _path = new List<Vector3>(result.FinalPoints);
+    }
+
+    public void DisplayPath()
+    {
+        _lineRenderer.positionCount = _path.Count;
+
+        for (int i = 0; i < _path.Count; i++)
+        {
+            _lineRenderer.SetPosition(i, _path[i]);
+        }
     }
 }

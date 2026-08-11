@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using TGS;
 using UnityEngine;
+using VisualPath;
 using static UnityEngine.UI.Image;
 
 public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActionHandler<AC_UnitMoveCommand>
@@ -59,6 +61,15 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
         _map.MoveUnit(command.ID, selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
 
+
+        List<int> path = listOfResults[0].BuildPath(command.Destination);
+        List<Cell> cellPath = _map.GetCellPath(path);
+        List<VisualHex> listHexes = _gs.PathSystem.ConvertHexes(cellPath);
+
+        Vector3 start = _gs.TGS.CellGetPosition(path[0]);
+        Vector3 end = _gs.TGS.CellGetPosition(path[path.Count - 1]);
+
+        _gs.PathSystem.GeneratePath(listHexes, start, end);
         _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination);
         _gs.SetStateChanges(_map.GetStateChanges());
     }

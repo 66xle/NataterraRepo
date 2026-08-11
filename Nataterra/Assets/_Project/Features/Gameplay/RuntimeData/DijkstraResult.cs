@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class DijkstraResult
@@ -14,12 +15,31 @@ public class DijkstraResult
         if (!Cost.ContainsKey(destination))
             return path;
 
+
+        HashSet<int> visited = new();
         int current = destination;
 
         while (current != -1)
         {
+            if (!visited.Add(current))
+            {
+                Debug.LogError($"Dijkstra path contains a cycle! " + $"Cell {current} was already visited.");
+
+                path.Clear();
+                return path;
+            }
+
             path.Add(current);
-            current = Parent[current];
+
+            if (!Parent.TryGetValue(current, out int parent))
+            {
+                Debug.LogError($"Dijkstra path is missing a parent for cell {current}.");
+
+                path.Clear();
+                return path;
+            }
+
+            current = parent;
         }
 
         path.Reverse();

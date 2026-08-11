@@ -1,8 +1,9 @@
+using PurrNet.Packing;
 using UnityEngine;
 
 namespace VisualPath
 {
-    public readonly struct VisualHex
+    public readonly struct VisualHex : IPackedAuto
     {
         public readonly int Id;
         public readonly Vector3 Center;

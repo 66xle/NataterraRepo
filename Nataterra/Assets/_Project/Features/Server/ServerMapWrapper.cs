@@ -1,6 +1,7 @@
 using PurrNet;
 using PurrNet.Packing;
 using System.Collections.Generic;
+using System.Threading;
 using TGS;
 using UnityEngine;
 
@@ -271,6 +272,18 @@ public class ServerMapWrapper
     public void ClearResult()
     {
         _results.Clear();
+    }
+
+    public List<Cell> GetCellPath(List<int> path)
+    {
+        List<Cell> cellPath = new();
+
+        foreach (int index in path)
+        {
+            cellPath.Add(_cells[index]);
+        }
+
+        return cellPath;
     }
 
     #endregion

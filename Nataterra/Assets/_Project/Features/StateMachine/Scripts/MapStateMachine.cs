@@ -84,6 +84,7 @@ public class MapStateMachine : NetworkBehaviour
 
         Base faction = await GetBase();
         GS.UISystem.Setup(faction);
+        GS.PathSystem.Setup();
 
         await LoadClientMap();
     }

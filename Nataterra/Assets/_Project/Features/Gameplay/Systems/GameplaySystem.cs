@@ -11,17 +11,19 @@ public class GameplaySystem : NetworkBehaviour
 
     public UnitSystem UnitSystem { get; private set; }
     public UISystem UISystem { get; private set; }
+    public PathSystem PathSystem { get; private set; }
 
     public TerrainGridSystem TGS { get; private set; }
 
 
     private Queue<Action> _eventQueue = new();
 
-
+    
     private void Awake()
     {
         UnitSystem = GetComponentInChildren<UnitSystem>();
         UISystem = GetComponentInChildren<UISystem>();
+        PathSystem = GetComponentInChildren<PathSystem>();
     }
 
     public void Setup()
