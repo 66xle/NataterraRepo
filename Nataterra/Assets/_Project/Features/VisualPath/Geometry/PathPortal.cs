@@ -5,9 +5,11 @@ namespace VisualPath
     public sealed class PathPortal
     {
         public VisualHex HexA { get; }
+
         public VisualHex HexB { get; }
 
         public Vector3 PointA { get; }
+
         public Vector3 PointB { get; }
 
         public Vector3 Center { get; }
@@ -16,9 +18,11 @@ namespace VisualPath
 
         public float Length { get; }
 
-        public VisualRoad Road { get; set; }
-
-        public PathPortal(VisualHex hexA, VisualHex hexB, Vector3 pointA, Vector3 pointB)
+        public PathPortal(
+            VisualHex hexA,
+            VisualHex hexB,
+            Vector3 pointA,
+            Vector3 pointB)
         {
             HexA = hexA;
             HexB = hexB;
@@ -26,18 +30,27 @@ namespace VisualPath
             PointA = pointA;
             PointB = pointB;
 
-            Center = (pointA + pointB) * 0.5f;
+            Center =
+                (pointA + pointB) * 0.5f;
 
-            Vector3 direction = pointB - pointA;
+            Vector3 direction =
+                pointB - pointA;
 
-            Length = direction.magnitude;
+            Length =
+                direction.magnitude;
 
-            Direction = Length > Mathf.Epsilon ? direction / Length : Vector3.zero;
+            Direction =
+                Length > Mathf.Epsilon
+                    ? direction / Length
+                    : Vector3.zero;
         }
 
         public Vector3 GetPoint(float t)
         {
-            return Vector3.Lerp(PointA, PointB, Mathf.Clamp01(t));
+            return Vector3.Lerp(
+                PointA,
+                PointB,
+                Mathf.Clamp01(t));
         }
     }
 }

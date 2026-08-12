@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,84 +5,203 @@ namespace VisualPath
 {
     public static class StraightPathOptimizer
     {
-        public static List<Vector3> RemoveRedundantPoints(IReadOnlyList<Vector3> points, IReadOnlyList<PathPortal> portals, float angleTolerance)
+        public static void RemoveRedundantPoints(
+            IReadOnlyList<PortalPathPoint> points,
+            float angleTolerance,
+            out List<Vector3> result,
+            out List<int> portalIndices)
         {
-            if (points == null || points.Count <= 2)
-                return new List<Vector3>(points);
+            result =
+                new List<Vector3>();
 
-            var result = new List<Vector3>();
-            int currentPoint = 0;
+            portalIndices =
+                new List<int>();
 
-            result.Add(points[0]);
-
-            while (currentPoint < points.Count - 1)
+            if (points == null ||
+                points.Count == 0)
             {
-                int furthestValid = currentPoint + 1;
+                return;
+            }
 
-                for (int candidate = currentPoint + 2; candidate < points.Count; candidate++)
+            /*
+             * Always preserve the first point.
+             */
+            AddPoint(
+                result,
+                portalIndices,
+                points[0]);
+
+            if (points.Count == 1)
+            {
+                return;
+            }
+
+            /*
+             * The anchor is the last point that was actually
+             * included in the visual path.
+             */
+            int anchorIndex = 0;
+
+            for (int currentIndex = 1;
+                 currentIndex < points.Count - 1;
+                 currentIndex++)
+            {
+                int nextIndex =
+                    currentIndex + 1;
+
+                PortalPathPoint current =
+                    points[currentIndex];
+
+                /*
+                 * Portal points are important metadata even when
+                 * their position is visually redundant.
+                 *
+                 * Do not use the portal point as a reason to
+                 * permanently discard its identity.
+                 */
+                bool isPortal =
+                    current.PortalIndex >= 0;
+
+                bool straight =
+                    IsEffectivelyStraight(
+                        points[anchorIndex].Position,
+                        current.Position,
+                        points[nextIndex].Position,
+                        angleTolerance);
+
+                /*
+                 * If this point creates a meaningful turn,
+                 * keep it.
+                 */
+                if (!straight)
                 {
-                    if (!CanSkipTo(currentPoint, candidate, points, portals, angleTolerance))
-                        break;
+                    AddPoint(
+                        result,
+                        portalIndices,
+                        current);
 
-                    furthestValid = candidate;
+                    anchorIndex =
+                        currentIndex;
+
+                    continue;
                 }
 
-                result.Add(points[furthestValid]);
-                currentPoint = furthestValid;
+                /*
+                 * The point is redundant geometrically.
+                 *
+                 * If it is a portal, we don't add its position
+                 * to the visual path, but its portal index is
+                 * still preserved separately.
+                 *
+                 * This is handled after the visual optimisation.
+                 */
+                if (isPortal)
+                {
+                    continue;
+                }
             }
 
-            return result;
+            /*
+             * Always preserve the final point.
+             */
+            AddPoint(
+                result,
+                portalIndices,
+                points[points.Count - 1]);
         }
 
-        private static bool CanSkipTo(int fromIndex, int toIndex, IReadOnlyList<Vector3> points, IReadOnlyList<PathPortal> portals, float angleTolerance)
+        // =============================================================
+        // STRAIGHT TEST
+        // =============================================================
+
+        private static bool IsEffectivelyStraight(
+            Vector3 previous,
+            Vector3 current,
+            Vector3 next,
+            float angleTolerance)
         {
-            if (fromIndex < 0 || toIndex >= points.Count || fromIndex >= toIndex)
-                return false;
+            Vector3 directionA =
+                current - previous;
 
-            Vector3 from = points[fromIndex];
-            Vector3 to = points[toIndex];
+            Vector3 directionB =
+                next - current;
 
-            int firstPortal = fromIndex;
-            int lastPortalExclusive = toIndex - 1;
+            /*
+             * Only compare movement on the XZ plane.
+             */
+            directionA.y = 0f;
+            directionB.y = 0f;
 
-            for (int portalIndex = firstPortal; portalIndex < lastPortalExclusive; portalIndex++)
+            if (directionA.sqrMagnitude <=
+                Mathf.Epsilon ||
+                directionB.sqrMagnitude <=
+                Mathf.Epsilon)
             {
-                if (portalIndex < 0 || portalIndex >= portals.Count)
-                    return false;
-
-                PathPortal portal = portals[portalIndex];
-
-                if (!PathCrossesPortal(from, to, portal))
-                    return false;
-            }
-
-            if (fromIndex > 0 && toIndex < points.Count - 1)
-            {
-                Vector3 previous = points[fromIndex - 1];
-                Vector3 next = points[toIndex + 1];
-
-                Vector3 direction = (to - from).normalized;
-                Vector3 previousDirection = (from - previous).normalized;
-                Vector3 nextDirection = (next - to).normalized;
-
-                if (Vector3.Angle(previousDirection, direction) > angleTolerance)
-                    return false;
-
-                if (Vector3.Angle(direction, nextDirection) > angleTolerance)
-                    return false;
-            }
-
-            return true;
-        }
-
-        private static bool PathCrossesPortal(Vector3 from, Vector3 to, PathPortal portal)
-        {
-            if (PathMath.TrySegmentIntersectionXZ(from, to, portal.PointA, portal.PointB, out _))
                 return true;
+            }
 
-            float distance = PathMath.SegmentDistanceXZ(from, to, portal.PointA, portal.PointB, out _, out _);
+            float angle =
+                Vector3.Angle(
+                    directionA,
+                    directionB);
 
-            return distance <= 0.01f;
+            /*
+             * Also handle the case where the directions are
+             * essentially identical.
+             */
+            return angle <=
+                   Mathf.Max(
+                       0f,
+                       angleTolerance);
+        }
+
+        // =============================================================
+        // ADD POINT
+        // =============================================================
+
+        private static void AddPoint(
+            List<Vector3> result,
+            List<int> portalIndices,
+            PortalPathPoint point)
+        {
+            /*
+             * Avoid duplicate positions.
+             */
+            if (result.Count > 0 &&
+                PathMath.DistanceXZ(
+                    result[result.Count - 1],
+                    point.Position) <=
+                0.001f)
+            {
+                /*
+                 * If the duplicate point represents a portal,
+                 * preserve its portal index.
+                 */
+                if (point.PortalIndex >= 0)
+                {
+                    int existingIndex =
+                        portalIndices[
+                            portalIndices.Count - 1];
+
+                    /*
+                     * Don't overwrite another valid portal index.
+                     */
+                    if (existingIndex < 0)
+                    {
+                        portalIndices[
+                            portalIndices.Count - 1] =
+                            point.PortalIndex;
+                    }
+                }
+
+                return;
+            }
+
+            result.Add(
+                point.Position);
+
+            portalIndices.Add(
+                point.PortalIndex);
         }
     }
 }

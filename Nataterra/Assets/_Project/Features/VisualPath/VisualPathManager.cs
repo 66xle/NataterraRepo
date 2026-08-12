@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using VisualPath;
+using DrawXXL;
 
 public class VisualPathManager : MonoBehaviour
 {
@@ -12,11 +12,12 @@ public class VisualPathManager : MonoBehaviour
     [Range(0, 1)] public float EdgeMargin = 0.25f;
     public int PortalRelaxationPasses = 4;
     public float StraightAngleTolerance = 6f;
+    public int SmoothingSamples = 8;
     [Range(0, 1)] public float SmoothingRatio = 0.2f;
 
     [Header("Other")]
     public bool UpdatePath = false;
-    List<VisualRoad> roads = new();
+    public List<Transform> RoadPoints;
 
 
     VisualPathGenerator _generator;
@@ -25,6 +26,7 @@ public class VisualPathManager : MonoBehaviour
     LineRenderer _lineRenderer;
     List<Vector3> _path = new();
 
+    List<VisualRoad> _roads = new();
 
 
     public void Awake()
@@ -41,8 +43,9 @@ public class VisualPathManager : MonoBehaviour
         }
     }
 
-    public void CreateRequest(List<VisualHex> corridor, Vector3 start, Vector3 destination)
+    public void CreateRequest(List<VisualHex> corridor, Vector3 start, Vector3 destination, List<VisualRoad> roads)
     {
+        _roads = roads;
         _request = new VisualPathRequest(corridor, start, destination, roads);
     }
 
@@ -56,6 +59,7 @@ public class VisualPathManager : MonoBehaviour
             EdgeMargin = EdgeMargin,
             PortalRelaxationPasses = PortalRelaxationPasses,
             StraightAngleTolerance = StraightAngleTolerance,
+            SmoothingSamples = SmoothingSamples,
             SmoothingRatio = SmoothingRatio
         };
 
@@ -63,13 +67,15 @@ public class VisualPathManager : MonoBehaviour
 
         VisualPathResult result = _generator.Generate(_request);
 
-        if (!result.IsValid)
+        if (!result.Success)
         {
             Debug.LogError(result.Error);
             return;
         }
 
-        _path = new List<Vector3>(result.FinalPoints);
+        
+
+        _path = new List<Vector3>(result.FinalPath);
     }
 
     public void DisplayPath()
@@ -79,6 +85,16 @@ public class VisualPathManager : MonoBehaviour
         for (int i = 0; i < _path.Count; i++)
         {
             _lineRenderer.SetPosition(i, _path[i]);
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
+
+        for (int i = 0; i < RoadPoints.Count - 1; i++)
+        {
+            DrawBasics.Line(RoadPoints[i].position, RoadPoints[i + 1].position);
         }
     }
 }

@@ -3,7 +3,7 @@ namespace VisualPath
     public enum PathPriorityMode
     {
         OptimizedPathFirst,
-        RoadsFirst
+        PreferRoads
     }
 
     public enum EdgeAvoidanceMode
@@ -56,9 +56,9 @@ namespace VisualPath
         public float StraightAngleTolerance = 6f;
 
         /// <summary>
-        /// Number of smoothing iterations.
+        /// Number of smoothing samples.
         /// </summary>
-        public int SmoothingIterations = 2;
+        public int SmoothingSamples = 2;
 
         /// <summary>
         /// How aggressively turns are rounded.
