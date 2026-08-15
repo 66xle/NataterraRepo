@@ -11,10 +11,19 @@ namespace VisualPath
         private const float GeometryTolerance = 0.0001f;
         private const float MaximumExitAngle = 180f;
 
-        public RoadPathProcessor(
-            VisualPathSettings settings)
+        public RoadPathProcessor(VisualPathSettings settings)
         {
-            this.settings = settings;
+            if (settings == null)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Settings cannot be null.");
+
+                this.settings = new VisualPathSettings();
+            }
+            else
+            {
+                this.settings = settings;
+            }
         }
 
         // ============================================================
@@ -25,16 +34,23 @@ namespace VisualPath
             IReadOnlyList<VisualHex> corridor,
             IReadOnlyList<VisualRoad> roads)
         {
-            if (corridor == null ||
-                corridor.Count < 2 ||
-                roads == null ||
-                roads.Count == 0)
+            if (corridor == null || corridor.Count < 2)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot find road: corridor is invalid.");
+
+                return null;
+            }
+
+            if (roads == null || roads.Count == 0)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot find road: no roads supplied.");
+
                 return null;
             }
 
             VisualRoad bestRoad = null;
-
             int bestSectionLength = 0;
 
             foreach (VisualRoad road in roads)
@@ -82,30 +98,43 @@ namespace VisualPath
             result = null;
 
             if (!IsValidRoad(road))
-                return false;
-
-            if (corridor == null ||
-                corridor.Count < 2)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot build road path: invalid road.");
+
                 return false;
             }
 
-            if (optimizedPath == null ||
-                optimizedPath.Count < 2)
+            if (corridor == null || corridor.Count < 2)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot build road path: invalid corridor.");
+
+                return false;
+            }
+
+            if (optimizedPath == null || optimizedPath.Count < 2)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot build road path: invalid optimized path.");
+
                 return false;
             }
 
             if (optimizedPortalIndices == null ||
-                optimizedPortalIndices.Count !=
-                optimizedPath.Count)
+                optimizedPortalIndices.Count != optimizedPath.Count)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Optimized portal indices do not match optimized path.");
+
                 return false;
             }
 
-            if (portals == null ||
-                portals.Count == 0)
+            if (portals == null || portals.Count == 0)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Cannot build road path: no portals.");
+
                 return false;
             }
 
@@ -114,6 +143,9 @@ namespace VisualPath
                     road,
                     out RoadSection section))
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Could not find a continuous road section in corridor.");
+
                 return false;
             }
 
@@ -127,6 +159,9 @@ namespace VisualPath
                 lastPortal < firstPortal ||
                 lastPortal >= portals.Count)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Calculated road portal range is invalid.");
+
                 return false;
             }
 
@@ -137,13 +172,12 @@ namespace VisualPath
                     out int firstRoadPoint,
                     out int lastRoadPoint))
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Could not find road points covering the road section.");
+
                 return false;
             }
 
-            /*
-             * The entry target is the normal path point before
-             * the road begins.
-             */
             Vector3 entryTarget =
                 FindEntryTarget(
                     optimizedPath,
@@ -151,10 +185,6 @@ namespace VisualPath
                     firstPortal,
                     start);
 
-            /*
-             * The exit target is the normal path point after
-             * the final road hex.
-             */
             Vector3 exitTarget =
                 FindExitTarget(
                     optimizedPath,
@@ -162,9 +192,6 @@ namespace VisualPath
                     lastPortal,
                     end);
 
-            /*
-             * Try both possible directions along the road.
-             */
             RoadTraversal forward =
                 FindForwardTraversal(
                     road,
@@ -185,26 +212,23 @@ namespace VisualPath
                     entryTarget,
                     exitTarget);
 
-            bool forwardValid =
-                forward.IsValid;
+            bool forwardValid = forward.IsValid;
+            bool reverseValid = reverse.IsValid;
 
-            bool reverseValid =
-                reverse.IsValid;
-
-            if (!forwardValid &&
-                !reverseValid)
+            if (!forwardValid && !reverseValid)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Neither forward nor reverse road traversal is valid.");
+
                 return false;
             }
 
             RoadTraversal selected;
 
-            if (forwardValid &&
-                reverseValid)
+            if (forwardValid && reverseValid)
             {
                 selected =
-                    forward.TotalCost <=
-                    reverse.TotalCost
+                    forward.TotalCost <= reverse.TotalCost
                         ? forward
                         : reverse;
             }
@@ -262,12 +286,9 @@ namespace VisualPath
             int currentStart = -1;
             int currentLength = 0;
 
-            for (int i = 0;
-                 i < corridor.Count;
-                 i++)
+            for (int i = 0; i < corridor.Count; i++)
             {
-                int hexId =
-                    corridor[i].Id;
+                int hexId = corridor[i].Id;
 
                 bool covered =
                     road.HexIds.Contains(hexId);
@@ -277,27 +298,18 @@ namespace VisualPath
                         road,
                         hexId);
 
-                if (covered &&
-                    hasRoadPoint)
+                if (covered && hasRoadPoint)
                 {
                     if (currentStart < 0)
-                    {
                         currentStart = i;
-                    }
 
                     currentLength++;
 
-                    if (currentLength >
-                        bestLength)
+                    if (currentLength > bestLength)
                     {
-                        bestLength =
-                            currentLength;
-
-                        bestStart =
-                            currentStart;
-
-                        bestEnd =
-                            i;
+                        bestLength = currentLength;
+                        bestStart = currentStart;
+                        bestEnd = i;
                     }
                 }
                 else
@@ -310,10 +322,6 @@ namespace VisualPath
             if (bestStart < 0)
                 return false;
 
-            /*
-             * A road needs to span at least two corridor hexes
-             * to be useful as a road path.
-             */
             if (bestEnd <= bestStart)
                 return false;
 
@@ -329,15 +337,10 @@ namespace VisualPath
             VisualRoad road,
             int hexId)
         {
-            for (int i = 0;
-                 i < road.PointHexIds.Count;
-                 i++)
+            for (int i = 0; i < road.PointHexIds.Count; i++)
             {
-                if (road.PointHexIds[i] ==
-                    hexId)
-                {
+                if (road.PointHexIds[i] == hexId)
                     return true;
-                }
             }
 
             return false;
@@ -353,9 +356,7 @@ namespace VisualPath
             firstRoadPoint = -1;
             lastRoadPoint = -1;
 
-            for (int i = 0;
-                 i < road.PointHexIds.Count;
-                 i++)
+            for (int i = 0; i < road.PointHexIds.Count; i++)
             {
                 int pointHex =
                     road.PointHexIds[i];
@@ -370,9 +371,7 @@ namespace VisualPath
                 }
 
                 if (firstRoadPoint < 0)
-                {
                     firstRoadPoint = i;
-                }
 
                 lastRoadPoint = i;
             }
@@ -388,15 +387,10 @@ namespace VisualPath
             int start,
             int end)
         {
-            for (int i = start;
-                 i <= end;
-                 i++)
+            for (int i = start; i <= end; i++)
             {
-                if (corridor[i].Id ==
-                    hexId)
-                {
+                if (corridor[i].Id == hexId)
                     return true;
-                }
             }
 
             return false;
@@ -416,27 +410,21 @@ namespace VisualPath
             Vector3 exitTarget)
         {
             VisualHex entryHex =
-                corridor[
-                    section.StartHexIndex];
+                corridor[section.StartHexIndex];
 
             VisualHex exitHex =
-                corridor[
-                    section.EndHexIndex];
+                corridor[section.EndHexIndex];
 
             RoadPoint entry =
-                FindBestEntryPointForward(
+                TryFindBestEntryPointForward(
                     road,
                     firstRoadPoint,
                     entryHex,
                     entryTarget);
 
             if (!entry.IsValid)
-                return default;
+                return RoadTraversal.Invalid;
 
-            /*
-             * The exit is ALWAYS calculated inside the final
-             * corridor hex occupied by the road.
-             */
             RoadPoint exit =
                 FindBestExitPointForward(
                     road,
@@ -446,15 +434,12 @@ namespace VisualPath
                     exitTarget);
 
             if (!exit.IsValid)
-                return default;
+                return RoadTraversal.Invalid;
 
-            /*
-             * The exit must still be ahead of the entry.
-             */
             if (exit.DistanceAlongRoad <=
                 entry.DistanceAlongRoad)
             {
-                return default;
+                return RoadTraversal.Invalid;
             }
 
             float roadDistance =
@@ -491,22 +476,20 @@ namespace VisualPath
             Vector3 exitTarget)
         {
             VisualHex entryHex =
-                corridor[
-                    section.EndHexIndex];
+                corridor[section.EndHexIndex];
 
             VisualHex exitHex =
-                corridor[
-                    section.StartHexIndex];
+                corridor[section.StartHexIndex];
 
             RoadPoint entry =
-                FindBestEntryPointReverse(
+                TryFindBestEntryPointReverse(
                     road,
                     lastRoadPoint,
                     entryHex,
                     entryTarget);
 
             if (!entry.IsValid)
-                return default;
+                return RoadTraversal.Invalid;
 
             RoadPoint exit =
                 FindBestExitPointReverse(
@@ -517,12 +500,12 @@ namespace VisualPath
                     exitTarget);
 
             if (!exit.IsValid)
-                return default;
+                return RoadTraversal.Invalid;
 
             if (exit.DistanceAlongRoad >=
                 entry.DistanceAlongRoad)
             {
-                return default;
+                return RoadTraversal.Invalid;
             }
 
             float roadDistance =
@@ -549,7 +532,7 @@ namespace VisualPath
         // ENTRY POINT
         // ============================================================
 
-        private RoadPoint FindBestEntryPointForward(
+        private RoadPoint TryFindBestEntryPointForward(
             VisualRoad road,
             int firstRoadPoint,
             VisualHex entryHex,
@@ -557,12 +540,13 @@ namespace VisualPath
         {
             return FindBestEntryPointInHex(
                 road,
+                firstRoadPoint,
                 entryHex,
                 target,
                 true);
         }
 
-        private RoadPoint FindBestEntryPointReverse(
+        private RoadPoint TryFindBestEntryPointReverse(
             VisualRoad road,
             int lastRoadPoint,
             VisualHex entryHex,
@@ -570,6 +554,7 @@ namespace VisualPath
         {
             return FindBestEntryPointInHex(
                 road,
+                lastRoadPoint,
                 entryHex,
                 target,
                 false);
@@ -577,36 +562,32 @@ namespace VisualPath
 
         private RoadPoint FindBestEntryPointInHex(
             VisualRoad road,
+            int referenceRoadPoint,
             VisualHex hex,
             Vector3 target,
             bool forward)
         {
             RoadPoint best =
-                default;
+                RoadPoint.Invalid;
 
             float bestDistance =
                 float.MaxValue;
 
-            /*
-             * Check road points that belong to this hex.
-             */
-            for (int i = 0;
-                 i < road.Points.Count;
-                 i++)
+            // --------------------------------------------------------
+            // ROAD VERTICES
+            // --------------------------------------------------------
+
+            for (int i = 0; i < road.Points.Count; i++)
             {
-                if (road.PointHexIds[i] !=
-                    hex.Id)
-                {
+                if (road.PointHexIds[i] != hex.Id)
                     continue;
-                }
 
                 float distance =
                     PathMath.DistanceXZ(
                         road.Points[i],
                         target);
 
-                if (distance <
-                    bestDistance)
+                if (distance < bestDistance)
                 {
                     bestDistance = distance;
 
@@ -623,12 +604,10 @@ namespace VisualPath
                 }
             }
 
-            /*
-             * Check every segment touching this hex.
-             *
-             * This is important because an entry may happen
-             * somewhere along A -> B rather than at the B vertex.
-             */
+            // --------------------------------------------------------
+            // ROAD SEGMENTS
+            // --------------------------------------------------------
+
             for (int i = 0;
                  i < road.Points.Count - 1;
                  i++)
@@ -691,11 +670,9 @@ namespace VisualPath
                         candidate,
                         target);
 
-                if (distance <
-                    bestDistance)
+                if (distance < bestDistance)
                 {
-                    bestDistance =
-                        distance;
+                    bestDistance = distance;
 
                     best =
                         new RoadPoint(
@@ -706,6 +683,13 @@ namespace VisualPath
                                 i,
                                 t));
                 }
+            }
+
+            if (!best.IsValid)
+            {
+                Debug.LogError(
+                    $"[RoadPathProcessor] Could not find entry point in hex {hex.Id}. " +
+                    $"Forward: {forward}, ReferenceRoadPoint: {referenceRoadPoint}");
             }
 
             return best;
@@ -730,19 +714,19 @@ namespace VisualPath
                     true);
 
             if (!best.IsValid)
-                return default;
+                return RoadPoint.Invalid;
 
-            /*
-             * The sample selection itself does NOT consider
-             * road distance from the entry.
-             *
-             * This check only makes sure the selected sample
-             * is actually reachable while travelling forward.
-             */
             if (best.DistanceAlongRoad <=
                 entry.DistanceAlongRoad)
             {
-                return default;
+                Debug.LogError(
+                    $"[RoadPathProcessor] Forward exit is behind entry. " +
+                    $"Entry distance: {entry.DistanceAlongRoad}, " +
+                    $"Exit distance: {best.DistanceAlongRoad}, " +
+                    $"FinalHex: {finalHex.Id}, " +
+                    $"LastRoadPoint: {lastRoadPoint}");
+
+                return RoadPoint.Invalid;
             }
 
             return best;
@@ -763,15 +747,12 @@ namespace VisualPath
                     false);
 
             if (!best.IsValid)
-                return default;
+                return RoadPoint.Invalid;
 
-            /*
-             * Same rule for reverse traversal.
-             */
             if (best.DistanceAlongRoad >=
                 entry.DistanceAlongRoad)
             {
-                return default;
+                return RoadPoint.Invalid;
             }
 
             return best;
@@ -790,7 +771,10 @@ namespace VisualPath
             if (finalHex.Corners == null ||
                 finalHex.Corners.Length < 3)
             {
-                return default;
+                Debug.LogError(
+                    $"[RoadPathProcessor] Final hex {finalHex.Id} has invalid corners.");
+
+                return RoadPoint.Invalid;
             }
 
             var samples =
@@ -801,10 +785,6 @@ namespace VisualPath
                     1,
                     settings.RoadExitSamplesPerSegment);
 
-            /*
-             * Check every road segment that touches the final
-             * road hex.
-             */
             for (int i = 0;
                  i < road.Points.Count - 1;
                  i++)
@@ -827,10 +807,6 @@ namespace VisualPath
                 Vector3 b =
                     road.Points[i + 1];
 
-                /*
-                 * Find the actual portion of the road segment
-                 * that lies inside the final hex.
-                 */
                 if (!TryGetSegmentPortionInsideHex(
                         a,
                         b,
@@ -841,9 +817,6 @@ namespace VisualPath
                     continue;
                 }
 
-                /*
-                 * Sample along the clipped portion.
-                 */
                 for (int sample = 0;
                      sample <= sampleCount;
                      sample++)
@@ -867,9 +840,6 @@ namespace VisualPath
                     Vector3 roadDirection =
                         b - a;
 
-                    /*
-                     * Ignore the Y axis.
-                     */
                     roadDirection.y = 0f;
 
                     if (roadDirection.sqrMagnitude <=
@@ -881,26 +851,21 @@ namespace VisualPath
                     roadDirection.Normalize();
 
                     if (!forward)
-                    {
                         roadDirection = -roadDirection;
-                    }
 
                     Vector3 toTarget =
                         target - position;
 
-                    /*
-                     * Ignore the Y axis for direction
-                     * comparison.
-                     */
                     toTarget.y = 0f;
+
+                    float distance =
+                        PathMath.DistanceXZ(
+                            position,
+                            target);
 
                     if (toTarget.sqrMagnitude <=
                         GeometryTolerance)
                     {
-                        /*
-                         * The sample is essentially already
-                         * at the destination.
-                         */
                         samples.Add(
                             new ExitSample(
                                 position,
@@ -910,6 +875,7 @@ namespace VisualPath
                                     road,
                                     i,
                                     t),
+                                distance,
                                 0f));
 
                         continue;
@@ -921,11 +887,6 @@ namespace VisualPath
                         Vector3.Angle(
                             roadDirection,
                             toTarget);
-
-                    float distance =
-                        PathMath.DistanceXZ(
-                            position,
-                            target);
 
                     samples.Add(
                         new ExitSample(
@@ -942,17 +903,13 @@ namespace VisualPath
             }
 
             if (samples.Count == 0)
-                return default;
+            {
+                Debug.LogError(
+                    $"[RoadPathProcessor] No exit samples found in final hex {finalHex.Id}.");
 
-            /*
-             * --------------------------------------------------------
-             * ANGLE FILTER
-             * --------------------------------------------------------
-             *
-             * First look for samples whose road direction is
-             * reasonably aligned with the direction to the next
-             * normal path point.
-             */
+                return RoadPoint.Invalid;
+            }
+
             float angleRange =
                 Mathf.Clamp(
                     settings.RoadExitAngleRange,
@@ -961,10 +918,11 @@ namespace VisualPath
 
             while (true)
             {
-                bool foundValidSample = false;
+                bool found =
+                    false;
 
                 ExitSample best =
-                    default;
+                    ExitSample.Invalid;
 
                 float bestDistance =
                     float.MaxValue;
@@ -976,22 +934,11 @@ namespace VisualPath
                     ExitSample sample =
                         samples[i];
 
-                    if (sample.Angle >
-                        angleRange)
-                    {
+                    if (sample.Angle > angleRange)
                         continue;
-                    }
 
-                    foundValidSample = true;
+                    found = true;
 
-                    /*
-                     * IMPORTANT:
-                     *
-                     * Once a sample has passed the direction
-                     * filter, selection is based ONLY on the
-                     * shortest direct distance to the next
-                     * normal path point.
-                     */
                     if (sample.DistanceToTarget <
                         bestDistance)
                     {
@@ -1003,7 +950,7 @@ namespace VisualPath
                     }
                 }
 
-                if (foundValidSample)
+                if (found)
                 {
                     return new RoadPoint(
                         best.Position,
@@ -1011,16 +958,8 @@ namespace VisualPath
                         best.DistanceAlongRoad);
                 }
 
-                /*
-                 * No samples matched the current angle range.
-                 *
-                 * Expand the range and try again.
-                 */
-                if (angleRange >=
-                    MaximumExitAngle)
-                {
+                if (angleRange >= MaximumExitAngle)
                     break;
-                }
 
                 angleRange =
                     Mathf.Min(
@@ -1030,31 +969,11 @@ namespace VisualPath
                             angleRange + 5f));
             }
 
-            /*
-             * This should only be reached if something unusual
-             * happened with the sample data.
-             *
-             * Fall back to the globally shortest sample.
-             */
-            ExitSample fallback =
-                samples[0];
+            Debug.LogError(
+                $"[RoadPathProcessor] Could not find a valid exit sample " +
+                $"in final hex {finalHex.Id}.");
 
-            for (int i = 1;
-                 i < samples.Count;
-                 i++)
-            {
-                if (samples[i].DistanceToTarget <
-                    fallback.DistanceToTarget)
-                {
-                    fallback =
-                        samples[i];
-                }
-            }
-
-            return new RoadPoint(
-                fallback.Position,
-                fallback.SegmentIndex,
-                fallback.DistanceAlongRoad);
+            return RoadPoint.Invalid;
         }
 
         // ============================================================
@@ -1074,30 +993,20 @@ namespace VisualPath
             if (hex.Corners == null ||
                 hex.Corners.Length < 3)
             {
+                Debug.LogError(
+                    $"[RoadPathProcessor] Hex {hex.Id} has invalid corners.");
+
                 return false;
             }
 
             bool insideA =
-                IsPointInsideHex(
-                    a,
-                    hex);
+                IsPointInsideHex(a, hex);
 
             bool insideB =
-                IsPointInsideHex(
-                    b,
-                    hex);
+                IsPointInsideHex(b, hex);
 
-            /*
-             * Entire segment is inside.
-             */
-            if (insideA &&
-                insideB)
-            {
-                minT = 0f;
-                maxT = 1f;
-
+            if (insideA && insideB)
                 return true;
-            }
 
             var intersections =
                 new List<float>();
@@ -1127,9 +1036,6 @@ namespace VisualPath
                 }
             }
 
-            /*
-             * A is inside, so the portion begins at A.
-             */
             if (insideA)
             {
                 minT = 0f;
@@ -1141,17 +1047,10 @@ namespace VisualPath
                             intersections,
                             0f);
                 }
-                else
-                {
-                    maxT = 0f;
-                }
 
-                return true;
+                return maxT >= minT;
             }
 
-            /*
-             * B is inside, so the portion ends at B.
-             */
             if (insideB)
             {
                 maxT = 1f;
@@ -1163,20 +1062,10 @@ namespace VisualPath
                             intersections,
                             1f);
                 }
-                else
-                {
-                    minT = 1f;
-                }
 
-                return true;
+                return maxT >= minT;
             }
 
-            /*
-             * Neither endpoint is inside.
-             *
-             * If the segment crosses the hex, there should be
-             * two intersections.
-             */
             if (intersections.Count >= 2)
             {
                 intersections.Sort();
@@ -1205,8 +1094,7 @@ namespace VisualPath
                  i++)
             {
                 if (Mathf.Abs(
-                        values[i] -
-                        value) <=
+                        values[i] - value) <=
                     0.0001f)
                 {
                     return;
@@ -1244,14 +1132,10 @@ namespace VisualPath
                     (point.x - a.x);
 
                 if (cross > 0.0001f)
-                {
                     hasPositive = true;
-                }
 
                 if (cross < -0.0001f)
-                {
                     hasNegative = true;
-                }
 
                 if (hasPositive &&
                     hasNegative)
@@ -1312,8 +1196,7 @@ namespace VisualPath
             }
 
             t =
-                Mathf.Clamp01(
-                    tValue);
+                Mathf.Clamp01(tValue);
 
             return true;
         }
@@ -1322,13 +1205,11 @@ namespace VisualPath
             List<float> values,
             float reference)
         {
-            float best =
-                values[0];
+            float best = values[0];
 
             float bestDistance =
                 Mathf.Abs(
-                    values[0] -
-                    reference);
+                    values[0] - reference);
 
             for (int i = 1;
                  i < values.Count;
@@ -1336,11 +1217,9 @@ namespace VisualPath
             {
                 float distance =
                     Mathf.Abs(
-                        values[i] -
-                        reference);
+                        values[i] - reference);
 
-                if (distance <
-                    bestDistance)
+                if (distance < bestDistance)
                 {
                     bestDistance = distance;
                     best = values[i];
@@ -1354,13 +1233,11 @@ namespace VisualPath
             List<float> values,
             float reference)
         {
-            float best =
-                values[0];
+            float best = values[0];
 
             float bestDistance =
                 Mathf.Abs(
-                    values[0] -
-                    reference);
+                    values[0] - reference);
 
             for (int i = 1;
                  i < values.Count;
@@ -1368,11 +1245,9 @@ namespace VisualPath
             {
                 float distance =
                     Mathf.Abs(
-                        values[i] -
-                        reference);
+                        values[i] - reference);
 
-                if (distance >
-                    bestDistance)
+                if (distance > bestDistance)
                 {
                     bestDistance = distance;
                     best = values[i];
@@ -1398,6 +1273,8 @@ namespace VisualPath
             RoadPoint exit,
             out RoadPathResult result)
         {
+            result = null;
+
             var points =
                 new List<Vector3>();
 
@@ -1449,12 +1326,20 @@ namespace VisualPath
                 end,
                 false);
 
+            if (points.Count < 2)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Forward road path produced fewer than two points.");
+
+                return false;
+            }
+
             result =
                 new RoadPathResult(
                     points,
                     roadFlags);
 
-            return points.Count >= 2;
+            return true;
         }
 
         // ============================================================
@@ -1473,6 +1358,8 @@ namespace VisualPath
             RoadPoint exit,
             out RoadPathResult result)
         {
+            result = null;
+
             var points =
                 new List<Vector3>();
 
@@ -1527,7 +1414,8 @@ namespace VisualPath
                 AddUnique(
                     points,
                     roadFlags,
-                    road.Points[endSegment + 1],
+                    road.Points[
+                        endSegment + 1],
                     true);
             }
 
@@ -1550,12 +1438,20 @@ namespace VisualPath
                 end,
                 false);
 
+            if (points.Count < 2)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Reverse road path produced fewer than two points.");
+
+                return false;
+            }
+
             result =
                 new RoadPathResult(
                     points,
                     roadFlags);
 
-            return points.Count >= 2;
+            return true;
         }
 
         // ============================================================
@@ -1610,18 +1506,6 @@ namespace VisualPath
                     road.Points[i],
                     true);
             }
-
-            /*
-             * Do not add the point after the exit segment.
-             *
-             * This is particularly important when the final
-             * road hex is B and the road continues:
-             *
-             * A -> B -> C
-             *
-             * If the exit is somewhere along B -> C, C must
-             * never be added to the path.
-             */
         }
 
         // ============================================================
@@ -1641,7 +1525,9 @@ namespace VisualPath
                     firstPortal);
 
             if (index < 0)
+            {
                 return;
+            }
 
             for (int i = 1;
                  i < index;
@@ -1668,7 +1554,9 @@ namespace VisualPath
                     lastPortal);
 
             if (index < 0)
+            {
                 return;
+            }
 
             for (int i = index + 1;
                  i < path.Count - 1;
@@ -1690,11 +1578,8 @@ namespace VisualPath
                  i < portalIndices.Count;
                  i++)
             {
-                if (portalIndices[i] ==
-                    portalIndex)
-                {
+                if (portalIndices[i] == portalIndex)
                     return i;
-                }
             }
 
             return -1;
@@ -1808,21 +1693,35 @@ namespace VisualPath
             if (road.Points == null ||
                 road.PointHexIds == null)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Road has null point data.");
+
                 return false;
             }
 
             if (road.Points.Count < 2)
+            {
+                Debug.LogError(
+                    "[RoadPathProcessor] Road must contain at least two points.");
+
                 return false;
+            }
 
             if (road.PointHexIds.Count !=
                 road.Points.Count)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] PointHexIds count must match Points count.");
+
                 return false;
             }
 
             if (road.HexIds == null ||
                 road.HexIds.Count == 0)
             {
+                Debug.LogError(
+                    "[RoadPathProcessor] Road contains no hex IDs.");
+
                 return false;
             }
 
@@ -1877,11 +1776,8 @@ namespace VisualPath
                 int startHexIndex,
                 int endHexIndex)
             {
-                StartHexIndex =
-                    startHexIndex;
-
-                EndHexIndex =
-                    endHexIndex;
+                StartHexIndex = startHexIndex;
+                EndHexIndex = endHexIndex;
             }
         }
 
@@ -1893,6 +1789,12 @@ namespace VisualPath
 
             public bool IsValid =>
                 SegmentIndex >= 0;
+
+            public static RoadPoint Invalid =>
+                new RoadPoint(
+                    Vector3.zero,
+                    -1,
+                    0f);
 
             public RoadPoint(
                 Vector3 position,
@@ -1917,6 +1819,13 @@ namespace VisualPath
                 Entry.IsValid &&
                 Exit.IsValid;
 
+            public static RoadTraversal Invalid =>
+                new RoadTraversal(
+                    RoadPoint.Invalid,
+                    RoadPoint.Invalid,
+                    float.MaxValue,
+                    false);
+
             public RoadTraversal(
                 RoadPoint entry,
                 RoadPoint exit,
@@ -1939,22 +1848,14 @@ namespace VisualPath
             public readonly float DistanceToTarget;
             public readonly float Angle;
 
-            public ExitSample(
-                Vector3 position,
-                int segmentIndex,
-                float segmentT,
-                float distanceAlongRoad,
-                float distanceToTarget)
-            {
-                Position = position;
-                SegmentIndex = segmentIndex;
-                SegmentT = segmentT;
-                DistanceAlongRoad =
-                    distanceAlongRoad;
-                DistanceToTarget =
-                    distanceToTarget;
-                Angle = 0f;
-            }
+            public static ExitSample Invalid =>
+                new ExitSample(
+                    Vector3.zero,
+                    -1,
+                    0f,
+                    0f,
+                    float.MaxValue,
+                    MaximumExitAngle);
 
             public ExitSample(
                 Vector3 position,
