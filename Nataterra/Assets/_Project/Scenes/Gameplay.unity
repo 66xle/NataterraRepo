@@ -259,7 +259,7 @@ Transform:
   m_GameObject: {fileID: 44547942}
   serializedVersion: 2
   m_LocalRotation: {x: -0.07274036, y: -0.19660696, z: 0.012303354, w: -0.97770303}
-  m_LocalPosition: {x: -13.22, y: 0.12, z: 14.29}
+  m_LocalPosition: {x: -12.81, y: 0.12, z: 18.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -734,10 +734,11 @@ MonoBehaviour:
   EdgeAvoidanceAmount: 0.2
   EdgeMargin: 0.25
   PortalRelaxationPasses: 4
-  RoadExitSamplesPerSegment: 10
   StraightAngleTolerance: 6
   SmoothingSamples: 8
   SmoothingRatio: 0
+  RoadExitSamplesPerSegment: 10
+  RoadExitAngleRange: 30
   UpdatePath: 0
   RoadPoints:
   - {fileID: 22836334}

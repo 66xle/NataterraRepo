@@ -11,10 +11,13 @@ public class VisualPathManager : MonoBehaviour
     [Range(0, 1)] public float EdgeAvoidanceAmount = 0.35f;
     [Range(0, 1)] public float EdgeMargin = 0.25f;
     public int PortalRelaxationPasses = 4;
-    public int RoadExitSamplesPerSegment = 10;
     public float StraightAngleTolerance = 6f;
     public int SmoothingSamples = 8;
     [Range(0, 1)] public float SmoothingRatio = 0.2f;
+
+    [Header("Road Exit")]
+    public int RoadExitSamplesPerSegment = 10;
+    public float RoadExitAngleRange = 30f;
 
     [Header("Other")]
     public bool UpdatePath = false;
@@ -62,7 +65,8 @@ public class VisualPathManager : MonoBehaviour
             RoadExitSamplesPerSegment = RoadExitSamplesPerSegment,
             StraightAngleTolerance = StraightAngleTolerance,
             SmoothingSamples = SmoothingSamples,
-            SmoothingRatio = SmoothingRatio
+            SmoothingRatio = SmoothingRatio,
+            RoadExitAngleRange = RoadExitAngleRange
         };
 
         _generator = new VisualPathGenerator(settings);

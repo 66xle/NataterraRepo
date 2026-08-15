@@ -72,5 +72,7 @@ namespace VisualPath
         public float RoadPortalTolerance = 1f;
 
         public int RoadExitSamplesPerSegment = 10;
+
+        public float RoadExitAngleRange = 30f;
     }
 }
