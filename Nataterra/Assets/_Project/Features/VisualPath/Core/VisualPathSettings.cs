@@ -70,5 +70,7 @@ namespace VisualPath
         /// to intersect a portal.
         /// </summary>
         public float RoadPortalTolerance = 1f;
+
+        public int RoadExitSamplesPerSegment = 10;
     }
 }

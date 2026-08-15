@@ -11,6 +11,7 @@ public class VisualPathManager : MonoBehaviour
     [Range(0, 1)] public float EdgeAvoidanceAmount = 0.35f;
     [Range(0, 1)] public float EdgeMargin = 0.25f;
     public int PortalRelaxationPasses = 4;
+    public int RoadExitSamplesPerSegment = 10;
     public float StraightAngleTolerance = 6f;
     public int SmoothingSamples = 8;
     [Range(0, 1)] public float SmoothingRatio = 0.2f;
@@ -58,6 +59,7 @@ public class VisualPathManager : MonoBehaviour
             EdgeAvoidanceAmount = EdgeAvoidanceAmount,
             EdgeMargin = EdgeMargin,
             PortalRelaxationPasses = PortalRelaxationPasses,
+            RoadExitSamplesPerSegment = RoadExitSamplesPerSegment,
             StraightAngleTolerance = StraightAngleTolerance,
             SmoothingSamples = SmoothingSamples,
             SmoothingRatio = SmoothingRatio
