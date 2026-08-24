@@ -17,6 +17,12 @@
       },
       "hash": "6821c571090fc0828accced5dbd7635152c23887"
     },
+    "com.marijnzwemmer.unity-toolbar-extender": {
+      "version": "file:../PurrPackages/com.marijnzwemmer.unity-toolbar-extender-1.4.2.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
     "com.needle.compilation-visualizer": {
       "version": "1.8.9",
       "depth": 0,
@@ -313,7 +319,7 @@
       "url": "https://packages.unity.com"
     },
     "dev.purrnet.purrnet": {
-      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#release",
+      "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.22.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
@@ -321,7 +327,7 @@
         "com.unity.nuget.newtonsoft-json": "3.2.1",
         "com.unity.collections": "2.6.2"
       },
-      "hash": "266cb63efd3d858d6d2fce68c2b0b2364ca78c24"
+      "hash": "36f65b29870502d50dff2eaf3d76bd3eaa6bce43"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
