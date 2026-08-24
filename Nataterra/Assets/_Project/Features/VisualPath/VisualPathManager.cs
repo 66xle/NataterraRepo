@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using VisualPath;
 using DrawXXL;
+using System;
+using SerializeReferenceEditor;
 
 public class VisualPathManager : MonoBehaviour
 {
@@ -18,10 +20,11 @@ public class VisualPathManager : MonoBehaviour
     [Header("Road Exit")]
     public int RoadExitSamplesPerSegment = 10;
     public float RoadExitAngleRange = 30f;
-
+     
     [Header("Other")]
     public bool UpdatePath = false;
     public List<Transform> RoadPoints;
+    [SerializeReference, SR] public List<RoadWrapper> ListOfRoads; 
 
 
     VisualPathGenerator _generator;
@@ -98,9 +101,12 @@ public class VisualPathManager : MonoBehaviour
     {
         DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
 
-        for (int i = 0; i < RoadPoints.Count - 1; i++)
+        foreach (RoadWrapper road in ListOfRoads)
         {
-            DrawBasics.Line(RoadPoints[i].position, RoadPoints[i + 1].position);
+            for (int i = 0; i < road.Points.Count - 1; i++)
+            {
+                DrawBasics.Line(road.Points[i].position, road.Points[i + 1].position);
+            }
         }
     }
 }

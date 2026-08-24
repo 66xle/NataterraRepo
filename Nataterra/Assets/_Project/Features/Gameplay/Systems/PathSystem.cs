@@ -1,3 +1,4 @@
+using DrawXXL;
 using PurrNet;
 using System.Collections.Generic;
 using TGS;
@@ -7,12 +8,13 @@ using VisualPath;
 public class PathSystem : NetworkBehaviour
 {
     public VisualPathManager PathManager;
-
-
+     
     TerrainGridSystem _tgs;
 
     GameObject _currentPathBorder;
 
+
+    
     public void Setup()
     {
         _tgs = TerrainGridSystem.instance;
@@ -23,8 +25,8 @@ public class PathSystem : NetworkBehaviour
     {
         HighlightHexPath(corridors);
 
-        VisualRoad road = CreateVisualRoads();
-        PathManager.CreateRequest(corridors, start, end, new List<VisualRoad>() { road });
+        List<VisualRoad> roads = BuildVisualRoads();
+        PathManager.CreateRequest(corridors, start, end, roads);
         PathManager.GeneratePath();
         PathManager.DisplayPath();
     }
@@ -53,21 +55,27 @@ public class PathSystem : NetworkBehaviour
         return listHex;
     }
 
-    private VisualRoad CreateVisualRoads()
+    private List<VisualRoad> BuildVisualRoads()
     {
-        List<int> hexIds = new();
-        List<Vector3> points = new();
+        List<VisualRoad> roads = new();
 
-        foreach (Transform point in PathManager.RoadPoints)
+        foreach (RoadWrapper road in PathManager.ListOfRoads)
         {
-            points.Add(point.position);
+            List<int> hexIds = new();
+            List<Vector3> points = new();
 
-            Cell cell = _tgs.CellGetAtWorldPosition(point.position);
-            hexIds.Add(cell.index);
+            foreach (Transform point in PathManager.RoadPoints)
+            {
+                points.Add(point.position);
+
+                Cell cell = _tgs.CellGetAtWorldPosition(point.position);
+                hexIds.Add(cell.index);
+            }
+
+            roads.Add(new(1, points, hexIds));
         }
 
-        VisualRoad road = new(1, points, hexIds);
-        return road;
+        return roads;
     }
 
     private void HighlightHexPath(List<VisualHex> corridors)
