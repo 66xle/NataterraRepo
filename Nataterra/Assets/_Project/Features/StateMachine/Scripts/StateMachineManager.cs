@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TGS;
 using TMPro;
 using UnityEngine;
+using PurrNet.Packing;
+using PurrNet.Utils;
 
 public class StateMachineManager : NetworkBehaviour
 {
@@ -49,6 +51,9 @@ public class StateMachineManager : NetworkBehaviour
     async void ClientSetup()
     {
         Debug.Log("Client Setup");
+
+        RegisterType.RegisterEnum<UnitType>();
+        RegisterType.RegisterEnum<Base>();
 
         await MapCtx.SetupClient(CreateDictDatabase());
 
