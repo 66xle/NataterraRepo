@@ -103,7 +103,7 @@ public class HexGrid : MonoBehaviour
 
         TGS.RedrawCells(TGS.cells);
     }
-    public void RegenerateGrid(List<CellData> tgsCells)
+    public void RegenerateGrid(List<CellWrapper> tgsCells)
     {
         TGS.RegenerateFlatToppedHexagonalGrid(tgsCells);
         TGS.CellsUpdateBounds();

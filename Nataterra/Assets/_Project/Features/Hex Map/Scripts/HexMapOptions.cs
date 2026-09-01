@@ -99,7 +99,7 @@ public class HexMapOptions
 
         ResetCells(mapData.hexCells.Count);
 
-        editor.HexGrid.RegenerateGrid(mapData.tgsCells);
+        editor.HexGrid.RegenerateGrid(mapData.ConvertToCells()); 
         editor.LoadCellData(mapData.hexCells);
         editor.SetDropdownScene(mapData.sceneName);
     }

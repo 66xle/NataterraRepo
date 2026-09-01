@@ -25,4 +25,16 @@ public class MapData
         this.row = row;
         this.column = column;
     }
+
+    public List<CellWrapper> ConvertToCells()
+    {
+        List<CellWrapper> cells = new();
+
+        foreach (CellData data in tgsCells)
+        {
+            cells.Add(new CellWrapper(data.center, data.points, data.index, data.canCross));
+        }
+
+        return cells;
+    }
 }

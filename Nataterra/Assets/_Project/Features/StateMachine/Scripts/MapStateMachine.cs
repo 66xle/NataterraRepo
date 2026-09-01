@@ -120,7 +120,7 @@ public class MapStateMachine : NetworkBehaviour
         _tgs.Redraw();
 
         _tgs.SetGridType(GridTopology.Irregular);
-        _tgs.RegenerateFlatToppedHexagonalGrid(mapData.tgsCells);
+        _tgs.RegenerateFlatToppedHexagonalGrid(mapData.ConvertToCells());
         _tgs.CellsUpdateBounds();
         _tgs.CellsUpdateNeighbours();
         _tgs.RedrawCells(_tgs.cells);

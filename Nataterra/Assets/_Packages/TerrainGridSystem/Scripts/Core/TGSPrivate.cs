@@ -1388,7 +1388,7 @@ namespace TGS {
             }
         }
 
-        public void RegenerateFlatToppedHexagonalGrid(List<CellData> tgsCells = null)
+        public void RegenerateFlatToppedHexagonalGrid(List<CellWrapper> tgsCells = null)
         {
             double qx = 1.0 + (_cellColumnCount - 1.0) * 3.0 / 4.0;
             double qy = _cellRowCount + 0.5;
@@ -1427,7 +1427,7 @@ namespace TGS {
                     if (IsLoadingData)
                     {
                         // Data to load
-                        CellData data = tgsCells[cellsCount];
+                        CellWrapper data = tgsCells[cellsCount];
                         cell = new Cell(data.center);
                         cell.index = cellsCount;
                         cell.row = (ushort)j;
