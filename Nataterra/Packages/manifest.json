@@ -11,7 +11,9 @@
   "dependencies": {
     "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.eflatun.scenereference": "git+https://github.com/starikcetin/Eflatun.SceneReference.git#5.0.0",
+    "com.marijnzwemmer.unity-toolbar-extender": "file:../PurrPackages/com.marijnzwemmer.unity-toolbar-extender-1.4.2.tgz",
     "com.needle.compilation-visualizer": "1.8.9",
+    "com.unity.ai.navigation": "2.0.14",
     "com.unity.burst": "1.8.29",
     "com.unity.cinemachine": "3.1.7",
     "com.unity.collab-proxy": "2.12.4",
@@ -27,6 +29,7 @@
     "com.unity.timeline": "1.8.12",
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.11",
+    "dev.purrnet.purrnet": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.22.0",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
@@ -60,8 +63,6 @@
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.marijnzwemmer.unity-toolbar-extender": "file:../PurrPackages/com.marijnzwemmer.unity-toolbar-extender-1.4.2.tgz",
-    "dev.purrnet.purrnet": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet#v1.22.0"
+    "com.unity.modules.xr": "1.0.0"
   }
 }
