@@ -1,9 +1,10 @@
+using DrawXXL;
+using SerializeReferenceEditor;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using VisualPath;
-using DrawXXL;
-using System;
-using SerializeReferenceEditor;
 
 public class VisualPathManager : MonoBehaviour
 {
@@ -20,7 +21,19 @@ public class VisualPathManager : MonoBehaviour
     [Header("Road Exit")]
     public int RoadExitSamplesPerSegment = 10;
     public float RoadExitAngleRange = 30f;
-     
+
+    [Header("NavMesh")]
+    public bool UseNavMesh = false;
+    public NavMeshData NavMeshData;
+    public int NavMeshAreaMask = NavMesh.AllAreas;
+    public float NavMeshSampleDistance = 0.5f;
+    public float NavMeshHeightTolerance = 1f;
+    public float NavMeshValidationSampleDistance = 0.5f;
+    public float NavMeshEdgeAvoidanceDistance = 0.5f;
+    public int NavMeshEdgeAvoidanceIterations = 2;
+    [Range(0, 1)] public float NavMeshEdgeAvoidanceStrength = 1f;
+    public bool ValidateSmoothedPath = true;
+
     [Header("Other")]
     public bool UpdatePath = false;
     public List<Transform> RoadPoints;
@@ -65,14 +78,26 @@ public class VisualPathManager : MonoBehaviour
             EdgeAvoidanceAmount = EdgeAvoidanceAmount,
             EdgeMargin = EdgeMargin,
             PortalRelaxationPasses = PortalRelaxationPasses,
+
             RoadExitSamplesPerSegment = RoadExitSamplesPerSegment,
             StraightAngleTolerance = StraightAngleTolerance,
             SmoothingSamples = SmoothingSamples,
             SmoothingRatio = SmoothingRatio,
-            RoadExitAngleRange = RoadExitAngleRange
+            RoadExitAngleRange = RoadExitAngleRange,
+
+            UseNavMesh = UseNavMesh,
+            NavMeshData = NavMeshData,
+            NavMeshAreaMask = NavMeshAreaMask,
+            NavMeshSampleDistance = NavMeshSampleDistance,
+            NavMeshHeightTolerance = NavMeshHeightTolerance,
+            NavMeshValidationSampleDistance = NavMeshValidationSampleDistance,
+            NavMeshEdgeAvoidanceDistance = NavMeshEdgeAvoidanceDistance,
+            NavMeshEdgeAvoidanceIterations = NavMeshEdgeAvoidanceIterations,
+            NavMeshEdgeAvoidanceStrength = NavMeshEdgeAvoidanceStrength,
+            ValidateSmoothedPath = ValidateSmoothedPath
         };
 
-        _generator = new VisualPathGenerator(settings);
+        _generator = new VisualPathGenerator(settings, NavMeshData);
 
         VisualPathResult result = _generator.Generate(_request);
 

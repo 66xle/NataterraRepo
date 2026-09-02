@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace VisualPath
 {
@@ -11,16 +12,32 @@ namespace VisualPath
 
         private readonly RoadPathProcessor roadProcessor;
 
+        private readonly NavMeshPathProcessor navMeshProcessor;
+
         public VisualPathGenerator(
-            VisualPathSettings settings)
+            VisualPathSettings settings,
+            NavMeshData navMeshData = null)
         {
-            this.settings = settings;
+            this.settings =
+                settings;
+
+            if (navMeshData != null)
+            {
+                this.settings.NavMeshData =
+                    navMeshData;
+            }
 
             portalSolver =
-                new PortalPathSolver(settings);
+                new PortalPathSolver(
+                    settings);
 
             roadProcessor =
-                new RoadPathProcessor(settings);
+                new RoadPathProcessor(
+                    settings);
+
+            navMeshProcessor =
+                new NavMeshPathProcessor(
+                    settings);
         }
 
         public VisualPathResult Generate(
@@ -34,7 +51,8 @@ namespace VisualPath
                     request,
                     out string error))
             {
-                return VisualPathResult.Failed(error);
+                return VisualPathResult.Failed(
+                    error);
             }
 
             // ---------------------------------------------------------
@@ -91,8 +109,14 @@ namespace VisualPath
             }
 
             // ---------------------------------------------------------
-            // Try road
+            // Select preferred path
             // ---------------------------------------------------------
+
+            List<Vector3> selectedPath =
+                null;
+
+            bool usesRoad =
+                false;
 
             if (settings.PathPriority ==
                 PathPriorityMode.PreferRoads)
@@ -120,33 +144,85 @@ namespace VisualPath
                         roadResult.Points != null &&
                         roadResult.Points.Count >= 2)
                     {
-                        List<Vector3> roadFinalPath =
-                            PathSmoother.SmoothTurns(
-                                roadResult.Points,
-                                settings.SmoothingRatio,
-                                settings.SmoothingSamples);
+                        selectedPath =
+                            new List<Vector3>(
+                                roadResult.Points);
 
-                        GuaranteeEndpoints(
-                            roadFinalPath,
-                            request.Start,
-                            request.End);
-
-                        return VisualPathResult.Create(
-                            solution.GetPositions(),
-                            optimizedPath,
-                            roadFinalPath,
-                            true);
+                        usesRoad =
+                            true;
                     }
                 }
             }
 
+            if (selectedPath == null)
+            {
+                selectedPath =
+                    new List<Vector3>(
+                        optimizedPath);
+            }
+
             // ---------------------------------------------------------
-            // Normal path
+            // Guarantee endpoints before NavMesh validation.
+            // ---------------------------------------------------------
+
+            GuaranteeEndpoints(
+                selectedPath,
+                request.Start,
+                request.End);
+
+            // ---------------------------------------------------------
+            // Validate / repair against NavMesh
+            // ---------------------------------------------------------
+
+            if (settings.UseNavMesh)
+            {
+                bool repaired =
+                    navMeshProcessor.TryValidateAndRepairPath(
+                        selectedPath,
+                        request.Corridor,
+                        out List<Vector3> navMeshPath,
+                        out bool usedFallback);
+
+                if (!repaired ||
+                    navMeshPath == null ||
+                    navMeshPath.Count < 2)
+                {
+                    return VisualPathResult.Failed(
+                        "Generated path is not walkable on the NavMesh and no valid corridor-constrained fallback path could be found.");
+                }
+
+                selectedPath =
+                    navMeshPath;
+
+                // Once a NavMesh fallback has replaced part of a road
+                // route, the result is no longer considered a pure
+                // road path.
+                if (usedFallback)
+                {
+                    usesRoad =
+                        false;
+                }
+            }
+
+            // ---------------------------------------------------------
+            // Corridor validation before smoothing.
+            // ---------------------------------------------------------
+
+            if (!CorridorPathValidator.IsPathInsideCorridor(
+                    selectedPath,
+                    request.Corridor))
+            {
+                return VisualPathResult.Failed(
+                    "Generated path leaves the supplied corridor.");
+            }
+
+            // ---------------------------------------------------------
+            // Smooth
             // ---------------------------------------------------------
 
             List<Vector3> finalPath =
                 PathSmoother.SmoothTurns(
-                    optimizedPath,
+                    selectedPath,
                     settings.SmoothingRatio,
                     settings.SmoothingSamples);
 
@@ -156,14 +232,166 @@ namespace VisualPath
                 request.End);
 
             // ---------------------------------------------------------
+            // Validate smoothed path.
+            // ---------------------------------------------------------
+
+            bool finalPathValid =
+                CorridorPathValidator.IsPathInsideCorridor(
+                    finalPath,
+                    request.Corridor);
+
+            if (settings.UseNavMesh &&
+                settings.ValidateSmoothedPath)
+            {
+                finalPathValid =
+                    finalPathValid &&
+                    IsNavMeshPathValid(
+                        finalPath);
+            }
+
+            // ---------------------------------------------------------
+            // If smoothing created an invalid path, use the validated
+            // unsmoothed path instead.
+            // ---------------------------------------------------------
+
+            if (!finalPathValid)
+            {
+                finalPath =
+                    new List<Vector3>(
+                        selectedPath);
+
+                GuaranteeEndpoints(
+                    finalPath,
+                    request.Start,
+                    request.End);
+            }
+
+            // ---------------------------------------------------------
             // Return
             // ---------------------------------------------------------
 
             return VisualPathResult.Create(
                 solution.GetPositions(),
-                optimizedPath,
+                selectedPath,
                 finalPath,
-                false);
+                usesRoad);
+        }
+
+        // =============================================================
+        // NAVMESH
+        // =============================================================
+
+        private bool IsNavMeshPathValid(
+            IReadOnlyList<Vector3> path)
+        {
+            if (path == null ||
+                path.Count < 2)
+            {
+                return false;
+            }
+
+            for (int i = 0;
+                 i < path.Count;
+                 i++)
+            {
+                if (!TrySampleNavMesh(
+                        path[i],
+                        out _))
+                {
+                    return false;
+                }
+            }
+
+            for (int i = 0;
+                 i < path.Count - 1;
+                 i++)
+            {
+                if (!TrySampleNavMesh(
+                        path[i],
+                        out NavMeshHit startHit))
+                {
+                    return false;
+                }
+
+                if (!TrySampleNavMesh(
+                        path[i + 1],
+                        out NavMeshHit endHit))
+                {
+                    return false;
+                }
+
+                if (NavMesh.Raycast(
+                        startHit.position,
+                        endHit.position,
+                        out _,
+                        settings.NavMeshAreaMask))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// XZ-based NavMesh sampling with an independent Y tolerance.
+        /// </summary>
+        private bool TrySampleNavMesh(
+            Vector3 position,
+            out NavMeshHit hit)
+        {
+            hit = default;
+
+            float xzDistance =
+                Mathf.Max(
+                    0.01f,
+                    settings.NavMeshSampleDistance);
+
+            float heightTolerance =
+                Mathf.Max(
+                    0.01f,
+                    settings.NavMeshHeightTolerance);
+
+            float searchRadius =
+                Mathf.Sqrt(
+                    xzDistance * xzDistance +
+                    heightTolerance * heightTolerance);
+
+            if (!NavMesh.SamplePosition(
+                    position,
+                    out NavMeshHit candidate,
+                    searchRadius,
+                    settings.NavMeshAreaMask))
+            {
+                return false;
+            }
+
+            float actualXZDistance =
+                PathMath.DistanceXZ(
+                    position,
+                    candidate.position);
+
+            float actualHeightDifference =
+                Mathf.Abs(
+                    position.y -
+                    candidate.position.y);
+
+            if (actualXZDistance >
+                xzDistance)
+            {
+                return false;
+            }
+
+            if (actualHeightDifference >
+                heightTolerance)
+            {
+                return false;
+            }
+
+            hit =
+                candidate;
+
+            return true;
         }
 
         // =============================================================
@@ -196,7 +424,8 @@ namespace VisualPath
                     return null;
                 }
 
-                portals.Add(portal);
+                portals.Add(
+                    portal);
             }
 
             return portals;
@@ -255,11 +484,13 @@ namespace VisualPath
                 return;
             }
 
-            path[0] = start;
+            path[0] =
+                start;
 
             if (path.Count > 1)
             {
-                path[path.Count - 1] = end;
+                path[path.Count - 1] =
+                    end;
             }
         }
     }

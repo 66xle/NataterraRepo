@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace VisualPath
 {
     public enum PathPriorityMode
@@ -14,65 +16,114 @@ namespace VisualPath
 
     public sealed class VisualPathSettings
     {
-        /// <summary>
-        /// Determines whether the normal optimised path
-        /// or a valid road path gets priority.
-        /// </summary>
-        public PathPriorityMode PathPriority = PathPriorityMode.OptimizedPathFirst;
+        public PathPriorityMode PathPriority =
+            PathPriorityMode.OptimizedPathFirst;
+
+        public EdgeAvoidanceMode EdgeAvoidanceMode =
+            EdgeAvoidanceMode.PortalCenterBias;
+
+        public float EdgeAvoidanceAmount =
+            0.5f;
+
+        public float EdgeMargin =
+            0.5f;
+
+        public int PortalRelaxationPasses =
+            4;
+
+        public float StraightAngleTolerance =
+            6f;
+
+        public int SmoothingSamples =
+            2;
+
+        public float SmoothingRatio =
+            0.22f;
+
+        public float RoadPortalTolerance =
+            1f;
+
+        public int RoadExitSamplesPerSegment =
+            10;
+
+        public float RoadExitAngleRange =
+            30f;
+
+        // =============================================================
+        // NAVMESH
+        // =============================================================
 
         /// <summary>
-        /// Determines how portal edge avoidance works.
+        /// Enables NavMesh walkability validation and fallback routing.
         /// </summary>
-        public EdgeAvoidanceMode EdgeAvoidanceMode = EdgeAvoidanceMode.PortalCenterBias;
+        public bool UseNavMesh =
+            false;
 
         /// <summary>
-        /// Amount used by the selected edge avoidance mode.
+        /// NavMeshData associated with this path request.
         ///
-        /// PortalCenterBias:
-        /// 0 = no bias
-        /// 1 = completely centre
+        /// The NavMeshData must already be registered with Unity's
+        /// NavMesh system before path generation.
+        /// </summary>
+        public UnityEngine.AI.NavMeshData NavMeshData;
+
+        /// <summary>
+        /// Areas considered walkable.
+        /// </summary>
+        public int NavMeshAreaMask =
+            UnityEngine.AI.NavMesh.AllAreas;
+
+        /// <summary>
+        /// Maximum distance used when projecting a visual path point
+        /// onto the NavMesh.
+        /// </summary>
+        public float NavMeshSampleDistance =
+            0.5f;
+
+        /// <summary>
+        /// Maximum allowed vertical difference between the visual path
+        /// point and the NavMesh.
         ///
-        /// StayAwayFromEdge:
-        /// 0.0 = can use entire portal
-        /// 0.2 = stay at least 20% from either end
-        /// 0.5 = only centre point is available
+        /// This is evaluated independently from NavMeshSampleDistance.
         /// </summary>
-        public float EdgeAvoidanceAmount = 0.5f;
+        public float NavMeshHeightTolerance =
+            1f;
 
         /// <summary>
-        /// Physical margin from the ends of the shared edge.
-        /// This is applied before the edge avoidance mode.
+        /// Desired distance between fallback path points when additional
+        /// validation samples are required.
         /// </summary>
-        public float EdgeMargin = 0.5f;
+        public float NavMeshValidationSampleDistance =
+            0.5f;
 
         /// <summary>
-        /// Number of portal optimisation passes.
+        /// Desired physical clearance from NavMesh boundaries for
+        /// fallback path corners.
         /// </summary>
-        public int PortalRelaxationPasses = 4;
+        public float NavMeshEdgeAvoidanceDistance =
+            0.5f;
 
         /// <summary>
-        /// Maximum angle considered effectively straight.
+        /// Number of times NavMesh fallback corners may be pushed away
+        /// from nearby NavMesh edges.
         /// </summary>
-        public float StraightAngleTolerance = 6f;
+        public int NavMeshEdgeAvoidanceIterations =
+            2;
 
         /// <summary>
-        /// Number of smoothing samples.
+        /// Strength of NavMesh edge avoidance.
+        ///
+        /// 0 = no movement.
+        /// 1 = full requested clearance.
         /// </summary>
-        public int SmoothingSamples = 2;
+        public float NavMeshEdgeAvoidanceStrength =
+            1f;
 
         /// <summary>
-        /// How aggressively turns are rounded.
+        /// If true, the smoothed path is also validated against the
+        /// NavMesh and corridor.
         /// </summary>
-        public float SmoothingRatio = 0.22f;
-
-        /// <summary>
-        /// Distance within which a road is considered
-        /// to intersect a portal.
-        /// </summary>
-        public float RoadPortalTolerance = 1f;
-
-        public int RoadExitSamplesPerSegment = 10;
-
-        public float RoadExitAngleRange = 30f;
+        public bool ValidateSmoothedPath =
+            true;
     }
 }

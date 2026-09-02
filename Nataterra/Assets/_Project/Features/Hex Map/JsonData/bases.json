@@ -21,7 +21,7 @@
             "faction": -1
         },
         {
-            "biome": -1,
+            "biome": 0,
             "resource": -1,
             "faction": -1
         },
@@ -31,53 +31,8 @@
             "faction": -1
         },
         {
-            "biome": -1,
+            "biome": 0,
             "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": 1,
-            "resource": 0,
             "faction": -1
         },
         {
@@ -102,11 +57,56 @@
         },
         {
             "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 1,
             "resource": 0,
             "faction": -1
         },
         {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
             "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": 0,
+            "faction": -1
+        },
+        {
+            "biome": 0,
             "resource": -1,
             "faction": -1
         },
@@ -126,7 +126,7 @@
             "faction": 1
         },
         {
-            "biome": -1,
+            "biome": 5,
             "resource": -1,
             "faction": -1
         },
@@ -186,7 +186,7 @@
             "faction": -1
         },
         {
-            "biome": -1,
+            "biome": 5,
             "resource": -1,
             "faction": -1
         },
@@ -201,7 +201,57 @@
             "faction": -1
         },
         {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
             "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": -1,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
+            "resource": -1,
+            "faction": -1
+        },
+        {
+            "biome": 0,
             "resource": -1,
             "faction": -1
         },
@@ -236,57 +286,7 @@
             "faction": -1
         },
         {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
-            "resource": -1,
-            "faction": -1
-        },
-        {
-            "biome": -1,
+            "biome": 0,
             "resource": -1,
             "faction": -1
         },
@@ -530,7 +530,7 @@
                 }
             ],
             "index": 4,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -598,7 +598,7 @@
                 }
             ],
             "index": 6,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -768,7 +768,7 @@
                 }
             ],
             "index": 11,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -802,7 +802,7 @@
                 }
             ],
             "index": 12,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -836,7 +836,7 @@
                 }
             ],
             "index": 13,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -870,7 +870,7 @@
                 }
             ],
             "index": 14,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -938,7 +938,7 @@
                 }
             ],
             "index": 16,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1108,7 +1108,7 @@
                 }
             ],
             "index": 21,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1244,7 +1244,7 @@
                 }
             ],
             "index": 25,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1652,7 +1652,7 @@
                 }
             ],
             "index": 37,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1754,7 +1754,7 @@
                 }
             ],
             "index": 40,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1788,7 +1788,7 @@
                 }
             ],
             "index": 41,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1822,7 +1822,7 @@
                 }
             ],
             "index": 42,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1856,7 +1856,7 @@
                 }
             ],
             "index": 43,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -1992,7 +1992,7 @@
                 }
             ],
             "index": 47,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -2026,7 +2026,7 @@
                 }
             ],
             "index": 48,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -2060,7 +2060,7 @@
                 }
             ],
             "index": 49,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -2094,7 +2094,7 @@
                 }
             ],
             "index": 50,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
@@ -2332,7 +2332,7 @@
                 }
             ],
             "index": 57,
-            "canCross": false
+            "canCross": true
         },
         {
             "center": {
