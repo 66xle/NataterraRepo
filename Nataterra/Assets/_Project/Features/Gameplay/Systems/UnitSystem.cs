@@ -1,6 +1,7 @@
 using PurrNet;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class UnitSystem : NetworkBehaviour
 {
@@ -37,6 +38,9 @@ public class UnitSystem : NetworkBehaviour
         GameObject prefab = _gs.MSM.GetUnitPrefab(type);
 
         GameObject newUnit = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        NavMesh.SamplePosition(spawnPosition, out NavMeshHit hit, 1f, -1);
+        newUnit.GetComponent<NavMeshAgent>().Warp(hit.position);
+
         _gs.MSM.AddUnitObject(GUID, newUnit);
     }
 
@@ -47,7 +51,10 @@ public class UnitSystem : NetworkBehaviour
         {
             GameObject moveUnit = _gs.MSM.GetUnitObject(guid);
 
-            moveUnit.transform.position = _gs.TGS.CellGetPosition(destination);
+            Vector3 cellPos = _gs.TGS.CellGetPosition(destination);
+            NavMesh.SamplePosition(cellPos, out NavMeshHit hit, 1f, -1);
+
+            moveUnit.GetComponent<NavMeshAgent>().SetDestination(hit.position);
         }
     }
 }

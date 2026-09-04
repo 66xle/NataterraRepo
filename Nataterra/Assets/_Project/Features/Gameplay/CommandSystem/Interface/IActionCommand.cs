@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IActionCommand : IPackedAuto
 {
-    public PlayerID ID { get; set; }
+    public PlayerID PlayerID { get; set; }
 }

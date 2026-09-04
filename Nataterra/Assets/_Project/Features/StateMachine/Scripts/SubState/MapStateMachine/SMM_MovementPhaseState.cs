@@ -57,7 +57,8 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
         MapCtx.SelectedUnits = units;
 
-        bool flying = Extensions.Contains(units, false, units => units.IsFlying) ? false : true;
+        // If all units are flying set to true
+        bool flying = Extensions.EqualAll(units, true, units => units.IsFlying);
 
         DijkstraResult result = MapCtx.CalculateMovementRange(MapCtx.LocalPlayerID, origin, lowestMovement, TGS.cells, MapCtx.GetState(), flying);
         MapCtx.MovementResult = result;

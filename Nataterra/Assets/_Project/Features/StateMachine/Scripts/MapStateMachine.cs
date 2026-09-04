@@ -172,7 +172,7 @@ public class MapStateMachine : NetworkBehaviour
         if (command == null)
             return;
 
-        command.ID = info.sender;
+        command.PlayerID = info.sender;
 
         _serverMap.HandleCommand(command);
     }
@@ -375,4 +375,67 @@ public class MapStateMachine : NetworkBehaviour
         return 1;
     }
 
+    public List<int> FindShortestPathWithinMovementRange(int startCell, int destination, List<Cell> cells, List<HexCellState> state, DijkstraResult movementRange, PlayerID id, bool flying = false)
+    {
+        Queue<int> open = new();
+        HashSet<int> visited = new();
+        Dictionary<int, int> parent = new();
+
+        open.Enqueue(startCell);
+        visited.Add(startCell);
+        parent[startCell] = -1;
+
+        while (open.Count > 0)
+        {
+            int current = open.Dequeue();
+
+            if (current == destination)
+                break;
+
+            Cell cell = cells[current];
+
+            foreach (Cell neighbour in cell.neighbours)
+            {
+                int neighbourIndex = neighbour.index;
+
+                // Must remain inside the original movement range.
+                if (!movementRange.Contains(neighbourIndex))
+                    continue;
+
+                // Already visited.
+                if (visited.Contains(neighbourIndex))
+                    continue;
+
+                HexCellState neighbourState = state[neighbourIndex];
+
+                if (neighbourIndex != destination)
+                {
+                    int movementCost = GetMovementCost(id, neighbour, neighbourState, flying);
+
+                    if (movementCost == -1)
+                        continue;
+                }
+
+                visited.Add(neighbourIndex);
+                parent[neighbourIndex] = current;
+                open.Enqueue(neighbourIndex);
+            }
+        }
+
+        if (!visited.Contains(destination))
+            return new List<int>();
+
+        List<int> path = new();
+        int currentCell = destination;
+
+        while (currentCell != -1)
+        {
+            path.Add(currentCell);
+            currentCell = parent[currentCell];
+        }
+
+        path.Reverse();
+
+        return path;
+    }
 }

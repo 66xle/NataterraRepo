@@ -17,12 +17,12 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
     public void Handle(AC_UnitInitialSpawnCommand command)
     {
-        Base faction = _map.GetFaction(command.ID);
+        Base faction = _map.GetFaction(command.PlayerID);
         int cellIndex = _map.GetBaseCellIndex(faction);
 
         // Get Starting Unit
         List<UnitType> units = _map.FactionSettings[faction].StartingUnits;
-        List<string> GUIDs = _map.AddUnit(command.ID, units, cellIndex);
+        List<string> GUIDs = _map.AddUnit(command.PlayerID, units, cellIndex);
 
         _gs.UnitSystem.SpawnUnitToAll(units, GUIDs, cellIndex);
         _gs.SetStateChanges(_map.GetStateChanges());
@@ -30,23 +30,23 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
 
     public void Handle(AC_UnitMoveCommand command)
     {
-        if (command.ID != _map.CurrentPlayerTurn)
+        if (command.PlayerID != _map.CurrentPlayerTurn)
             return;
 
-        List<Unit> selectedUnits = _map.GetUnits(command.ID, command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
+        List<Unit> selectedUnits = _map.GetUnits(command.PlayerID, command.SelectedIndex, command.ListOfUnitGUID, command.ListOfUnitType);
 
         if (selectedUnits == null || selectedUnits.Count != command.ListOfUnitGUID.Count)
             return;
 
+        // Used to determine each unit's movement cost
         List<DijkstraResult> listOfResults = new();
-
         foreach (Unit unit in selectedUnits)
         {
             DijkstraResult result = _map.GetPathfindingResult(unit.GUID);
 
             if (result == null)
             {
-                result = _gs.MSM.CalculateMovementRange(command.ID, unit.CellOrigin, unit.Movement, _map.GetCells(), _map.GetState(), unit.IsFlying);
+                result = _gs.MSM.CalculateMovementRange(command.PlayerID, unit.CellOrigin, unit.Movement, _map.GetCells(), _map.GetState(), unit.IsFlying);
                 _map.StoreResult(unit.GUID, result);
             }
 
@@ -59,10 +59,21 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
             listOfResults.Add(result);
         }
 
-        _map.MoveUnit(command.ID, selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
+        // Used to calculate current unit's pathing
+        int origin = _gs.MSM.GetOrigin(selectedUnits, command.SelectedIndex, out bool IsOrigin);
+        int lowestMovement = _gs.MSM.GetLowestMovement(selectedUnits, IsOrigin);
+        bool flying = Extensions.EqualAll(selectedUnits, true, units => units.IsFlying);
+        DijkstraResult groupResult = _gs.MSM.CalculateMovementRange(command.PlayerID, origin, lowestMovement, _map.GetCells(), _map.GetState(), flying);
+
+        List<int> path = _gs.MSM.FindShortestPathWithinMovementRange(command.SelectedIndex, command.Destination, _map.GetCells(), _map.GetState(), groupResult, command.PlayerID, flying);
 
 
-        List<int> path = listOfResults[0].BuildPath(command.Destination);
+
+        // Save unit's new position
+        _map.MoveUnit(command.PlayerID, selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
+
+
+        //List<int> path = listOfResults[0].BuildPath(command.Destination);
         List<Cell> cellPath = _map.GetCellPath(path);
         List<VisualHex> listHexes = _gs.PathSystem.ConvertHexes(cellPath);
 
