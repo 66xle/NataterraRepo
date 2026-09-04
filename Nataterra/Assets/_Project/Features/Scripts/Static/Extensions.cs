@@ -73,19 +73,19 @@ public static class Extensions
     }
 
 
-    public static bool Contains<T, TKey>(List<T> list, TKey value, Func<T, TKey> selector)
+    public static bool EqualAll<T, TKey>(List<T> list, TKey value, Func<T, TKey> selector)
     {
         var comparer = EqualityComparer<TKey>.Default;
 
         foreach (T item in list)
         {
-            if (!comparer.Equals(selector(item), value))
+            if (comparer.Equals(selector(item), value))
                 continue;
 
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
     public static bool Contains<T, TKey>(List<T> list, TKey value, Func<T, TKey> selector, out T found)
     {
