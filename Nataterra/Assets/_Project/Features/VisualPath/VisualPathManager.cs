@@ -69,7 +69,7 @@ public class VisualPathManager : MonoBehaviour
         _request = new VisualPathRequest(corridor, start, destination, roads);
     }
 
-    public void GeneratePath()
+    public List<Vector3> GeneratePath()
     {
         VisualPathSettings settings = new VisualPathSettings
         {
@@ -104,12 +104,12 @@ public class VisualPathManager : MonoBehaviour
         if (!result.Success)
         {
             Debug.LogError(result.Error);
-            return;
+            return null;
         }
 
-        
-
         _path = new List<Vector3>(result.FinalPath);
+
+        return _path;
     }
 
     public void DisplayPath()

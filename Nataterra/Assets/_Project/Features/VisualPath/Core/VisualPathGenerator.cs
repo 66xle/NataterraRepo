@@ -43,9 +43,9 @@ namespace VisualPath
         public VisualPathResult Generate(
             VisualPathRequest request)
         {
-            // ---------------------------------------------------------
-            // Validate
-            // ---------------------------------------------------------
+            // =========================================================
+            // VALIDATE
+            // =========================================================
 
             if (!Validate(
                     request,
@@ -55,9 +55,9 @@ namespace VisualPath
                     error);
             }
 
-            // ---------------------------------------------------------
-            // Create portals
-            // ---------------------------------------------------------
+            // =========================================================
+            // CREATE PORTALS
+            // =========================================================
 
             List<PathPortal> portals =
                 CreatePortals(
@@ -69,9 +69,9 @@ namespace VisualPath
                     "Failed to create path portals.");
             }
 
-            // ---------------------------------------------------------
-            // Generate portal path
-            // ---------------------------------------------------------
+            // =========================================================
+            // GENERATE PORTAL PATH
+            // =========================================================
 
             PortalPathSolution solution =
                 portalSolver.Solve(
@@ -87,9 +87,9 @@ namespace VisualPath
                     "Failed to generate visual path.");
             }
 
-            // ---------------------------------------------------------
-            // Optimise path
-            // ---------------------------------------------------------
+            // =========================================================
+            // OPTIMIZE
+            // =========================================================
 
             List<Vector3> optimizedPath;
 
@@ -108,9 +108,9 @@ namespace VisualPath
                     "Failed to optimize visual path.");
             }
 
-            // ---------------------------------------------------------
-            // Select preferred path
-            // ---------------------------------------------------------
+            // =========================================================
+            // ROAD PATH
+            // =========================================================
 
             List<Vector3> selectedPath =
                 null;
@@ -161,18 +161,18 @@ namespace VisualPath
                         optimizedPath);
             }
 
-            // ---------------------------------------------------------
-            // Guarantee endpoints before NavMesh validation.
-            // ---------------------------------------------------------
+            // =========================================================
+            // ENDPOINTS
+            // =========================================================
 
             GuaranteeEndpoints(
                 selectedPath,
                 request.Start,
                 request.End);
 
-            // ---------------------------------------------------------
-            // Validate / repair against NavMesh
-            // ---------------------------------------------------------
+            // =========================================================
+            // NAVMESH VALIDATION / REPAIR
+            // =========================================================
 
             if (settings.UseNavMesh)
             {
@@ -194,9 +194,6 @@ namespace VisualPath
                 selectedPath =
                     navMeshPath;
 
-                // Once a NavMesh fallback has replaced part of a road
-                // route, the result is no longer considered a pure
-                // road path.
                 if (usedFallback)
                 {
                     usesRoad =
@@ -204,9 +201,9 @@ namespace VisualPath
                 }
             }
 
-            // ---------------------------------------------------------
-            // Corridor validation before smoothing.
-            // ---------------------------------------------------------
+            // =========================================================
+            // CORRIDOR VALIDATION
+            // =========================================================
 
             if (!CorridorPathValidator.IsPathInsideCorridor(
                     selectedPath,
@@ -216,9 +213,9 @@ namespace VisualPath
                     "Generated path leaves the supplied corridor.");
             }
 
-            // ---------------------------------------------------------
-            // Smooth
-            // ---------------------------------------------------------
+            // =========================================================
+            // SMOOTH
+            // =========================================================
 
             List<Vector3> finalPath =
                 PathSmoother.SmoothTurns(
@@ -231,11 +228,25 @@ namespace VisualPath
                 request.Start,
                 request.End);
 
-            // ---------------------------------------------------------
-            // Validate smoothed path.
-            // ---------------------------------------------------------
+            // =========================================================
+            // MATCH SMOOTHED PATH TO NAVMESH HEIGHT
+            // =========================================================
+
+            if (settings.UseNavMesh)
+            {
+                if (!ProjectPathToNavMeshHeight(
+                        finalPath))
+                {
+                    finalPath = null;
+                }
+            }
+
+            // =========================================================
+            // VALIDATE FINAL PATH
+            // =========================================================
 
             bool finalPathValid =
+                finalPath != null &&
                 CorridorPathValidator.IsPathInsideCorridor(
                     finalPath,
                     request.Corridor);
@@ -249,10 +260,9 @@ namespace VisualPath
                         finalPath);
             }
 
-            // ---------------------------------------------------------
-            // If smoothing created an invalid path, use the validated
-            // unsmoothed path instead.
-            // ---------------------------------------------------------
+            // =========================================================
+            // FALLBACK TO UNSMOOTHED PATH
+            // =========================================================
 
             if (!finalPathValid)
             {
@@ -266,9 +276,9 @@ namespace VisualPath
                     request.End);
             }
 
-            // ---------------------------------------------------------
-            // Return
-            // ---------------------------------------------------------
+            // =========================================================
+            // RESULT
+            // =========================================================
 
             return VisualPathResult.Create(
                 solution.GetPositions(),
@@ -278,7 +288,7 @@ namespace VisualPath
         }
 
         // =============================================================
-        // NAVMESH
+        // NAVMESH VALIDATION
         // =============================================================
 
         private bool IsNavMeshPathValid(
@@ -290,6 +300,7 @@ namespace VisualPath
                 return false;
             }
 
+            // Validate every point.
             for (int i = 0;
                  i < path.Count;
                  i++)
@@ -302,6 +313,7 @@ namespace VisualPath
                 }
             }
 
+            // Validate every segment.
             for (int i = 0;
                  i < path.Count - 1;
                  i++)
@@ -334,7 +346,8 @@ namespace VisualPath
         }
 
         /// <summary>
-        /// XZ-based NavMesh sampling with an independent Y tolerance.
+        /// Samples the NavMesh using an XZ distance and an independent
+        /// Y tolerance.
         /// </summary>
         private bool TrySampleNavMesh(
             Vector3 position,
@@ -390,6 +403,50 @@ namespace VisualPath
 
             hit =
                 candidate;
+
+            return true;
+        }
+
+        // =============================================================
+        // NAVMESH HEIGHT
+        // =============================================================
+
+        /// <summary>
+        /// Projects the path vertically onto the NavMesh.
+        ///
+        /// X and Z are preserved.
+        /// Only Y is changed.
+        /// </summary>
+        private bool ProjectPathToNavMeshHeight(
+            List<Vector3> path)
+        {
+            if (path == null ||
+                path.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0;
+                 i < path.Count;
+                 i++)
+            {
+                Vector3 point =
+                    path[i];
+
+                if (!TrySampleNavMesh(
+                        point,
+                        out NavMeshHit hit))
+                {
+                    return false;
+                }
+
+                // Preserve the generated X/Z position.
+                point.y =
+                    hit.position.y;
+
+                path[i] =
+                    point;
+            }
 
             return true;
         }

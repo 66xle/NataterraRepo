@@ -1,4 +1,3 @@
-using DrawXXL;
 using PurrNet;
 using System.Collections.Generic;
 using TGS;
@@ -20,15 +19,16 @@ public class PathSystem : NetworkBehaviour
         _tgs = TerrainGridSystem.instance;
     }
 
-    [ObserversRpc]
-    public void GeneratePath(List<VisualHex> corridors, Vector3 start, Vector3 end)
+    public List<Vector3> GeneratePath(List<VisualHex> corridors, Vector3 start, Vector3 end)
     {
         HighlightHexPath(corridors);
 
         List<VisualRoad> roads = BuildVisualRoads();
         PathManager.CreateRequest(corridors, start, end, roads);
-        PathManager.GeneratePath();
+        List<Vector3> path = PathManager.GeneratePath();
         PathManager.DisplayPath();
+
+        return path;
     }
 
     public List<VisualHex> ConvertHexes(List<Cell> tgsCells)

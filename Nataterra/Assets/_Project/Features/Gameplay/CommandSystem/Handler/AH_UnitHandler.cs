@@ -68,20 +68,16 @@ public class AH_UnitHandler : IActionHandler<AC_UnitInitialSpawnCommand>, IActio
         List<int> path = _gs.MSM.FindShortestPathWithinMovementRange(command.SelectedIndex, command.Destination, _map.GetCells(), _map.GetState(), groupResult, command.PlayerID, flying);
 
 
-
         // Save unit's new position
         _map.MoveUnit(command.PlayerID, selectedUnits, command.SelectedIndex, command.Destination, listOfResults);
 
-
-        //List<int> path = listOfResults[0].BuildPath(command.Destination);
         List<Cell> cellPath = _map.GetCellPath(path);
         List<VisualHex> listHexes = _gs.PathSystem.ConvertHexes(cellPath);
-
+        
         Vector3 start = _gs.TGS.CellGetPosition(path[0]);
         Vector3 end = _gs.TGS.CellGetPosition(path[path.Count - 1]);
 
-        _gs.PathSystem.GeneratePath(listHexes, start, end);
-        _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, command.Destination);
+        _gs.UnitSystem.MoveUnit(command.ListOfUnitGUID, listHexes, start, end);
         _gs.SetStateChanges(_map.GetStateChanges());
     }
 }

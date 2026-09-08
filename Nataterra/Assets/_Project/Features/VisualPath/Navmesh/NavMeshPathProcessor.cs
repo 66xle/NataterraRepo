@@ -21,7 +21,6 @@ namespace VisualPath
             out bool usedFallback)
         {
             result = null;
-
             usedFallback = false;
 
             if (sourcePath == null ||
@@ -40,7 +39,7 @@ namespace VisualPath
             }
 
             // ---------------------------------------------------------
-            // Validate the complete path first.
+            // First try the original path.
             // ---------------------------------------------------------
 
             if (IsPathWalkable(
@@ -50,10 +49,21 @@ namespace VisualPath
                     new List<Vector3>(
                         sourcePath);
 
+                // Match the path to the actual NavMesh height.
+                if (!ProjectPathToNavMeshHeight(
+                        result))
+                {
+                    result = null;
+
+                    return false;
+                }
+
                 return true;
             }
 
             // ---------------------------------------------------------
+            // Original path is not completely walkable.
+            //
             // Repair invalid segments individually.
             // ---------------------------------------------------------
 
@@ -84,6 +94,12 @@ namespace VisualPath
                     continue;
                 }
 
+                // -----------------------------------------------------
+                // Invalid segment.
+                //
+                // Generate a NavMesh fallback between the two points.
+                // -----------------------------------------------------
+
                 if (!TryBuildFallback(
                         start,
                         end,
@@ -108,7 +124,7 @@ namespace VisualPath
             }
 
             // ---------------------------------------------------------
-            // Final validation.
+            // Validate repaired path.
             // ---------------------------------------------------------
 
             if (!IsPathWalkable(
@@ -119,9 +135,23 @@ namespace VisualPath
                 return false;
             }
 
+            // The repaired path must remain inside the original
+            // corridor.
             if (!CorridorPathValidator.IsPathInsideCorridor(
                     repaired,
                     corridor))
+            {
+                result = null;
+
+                return false;
+            }
+
+            // ---------------------------------------------------------
+            // Match every point to NavMesh height.
+            // ---------------------------------------------------------
+
+            if (!ProjectPathToNavMeshHeight(
+                    repaired))
             {
                 result = null;
 
@@ -147,6 +177,7 @@ namespace VisualPath
                 return false;
             }
 
+            // Every point must correspond to the NavMesh.
             for (int i = 0;
                  i < path.Count;
                  i++)
@@ -159,6 +190,7 @@ namespace VisualPath
                 }
             }
 
+            // Every segment must be traversable.
             for (int i = 0;
                  i < path.Count - 1;
                  i++)
@@ -200,13 +232,15 @@ namespace VisualPath
         }
 
         /// <summary>
-        /// Finds a NavMesh position using an XZ radius and an
-        /// independent Y tolerance.
+        /// Samples the NavMesh using:
         ///
-        /// Unity's SamplePosition uses a 3D radius internally, so we
-        /// search using a radius large enough to encompass the desired
-        /// XZ/Y cylinder and then explicitly reject candidates that
-        /// fall outside either constraint.
+        /// XZ <= NavMeshSampleDistance
+        /// Y  <= NavMeshHeightTolerance
+        ///
+        /// Unity's SamplePosition uses a spherical 3D radius, so the
+        /// search radius encompasses both tolerances. The resulting
+        /// candidate is then explicitly checked using separate XZ/Y
+        /// limits.
         /// </summary>
         private bool TrySampleNavMesh(
             Vector3 position,
@@ -224,18 +258,6 @@ namespace VisualPath
                     0.01f,
                     settings.NavMeshHeightTolerance);
 
-            // The cylinder defined by:
-            //
-            // XZ <= xzDistance
-            // Y  <= heightTolerance
-            //
-            // is contained inside a sphere whose radius is:
-            //
-            // sqrt(xzDistance^2 + heightTolerance^2)
-            //
-            // This ensures SamplePosition does not miss a valid point
-            // simply because its vertical difference is larger than
-            // the XZ radius.
             float searchRadius =
                 Mathf.Sqrt(
                     xzDistance * xzDistance +
@@ -260,19 +282,11 @@ namespace VisualPath
                     position.y -
                     candidate.position.y);
 
-            // ---------------------------------------------------------
-            // XZ constraint
-            // ---------------------------------------------------------
-
             if (actualXZDistance >
                 xzDistance)
             {
                 return false;
             }
-
-            // ---------------------------------------------------------
-            // Y constraint
-            // ---------------------------------------------------------
 
             if (actualHeightDifference >
                 heightTolerance)
@@ -287,7 +301,51 @@ namespace VisualPath
         }
 
         // =============================================================
-        // FALLBACK
+        // NAVMESH HEIGHT
+        // =============================================================
+
+        /// <summary>
+        /// Changes only the Y coordinate of each point so that it
+        /// matches the NavMesh height.
+        ///
+        /// X and Z are deliberately preserved.
+        /// </summary>
+        private bool ProjectPathToNavMeshHeight(
+            List<Vector3> path)
+        {
+            if (path == null ||
+                path.Count == 0)
+            {
+                return false;
+            }
+
+            for (int i = 0;
+                 i < path.Count;
+                 i++)
+            {
+                Vector3 point =
+                    path[i];
+
+                if (!TrySampleNavMesh(
+                        point,
+                        out NavMeshHit hit))
+                {
+                    return false;
+                }
+
+                // Preserve X/Z exactly.
+                point.y =
+                    hit.position.y;
+
+                path[i] =
+                    point;
+            }
+
+            return true;
+        }
+
+        // =============================================================
+        // FALLBACK PATH
         // =============================================================
 
         private bool TryBuildFallback(
@@ -335,42 +393,48 @@ namespace VisualPath
                 new List<Vector3>(
                     navMeshPath.corners.Length);
 
-            // ---------------------------------------------------------
-            // Preserve the original visual path height.
-            // ---------------------------------------------------------
-
+            // Keep original X/Z for the endpoints.
+            // Their Y will be projected to the NavMesh below.
             fallback.Add(
                 start);
 
+            // NavMesh corners already contain their NavMesh height.
             for (int i = 1;
                  i < navMeshPath.corners.Length - 1;
                  i++)
             {
-                Vector3 corner =
-                    navMeshPath.corners[i];
-
-                corner.y =
-                    GetInterpolatedHeight(
-                        start,
-                        end,
-                        corner);
-
                 fallback.Add(
-                    corner);
+                    navMeshPath.corners[i]);
             }
 
             fallback.Add(
                 end);
 
+            // Ensure all points use the actual NavMesh height.
+            if (!ProjectPathToNavMeshHeight(
+                    fallback))
+            {
+                return false;
+            }
+
             // ---------------------------------------------------------
-            // Apply NavMesh edge avoidance.
+            // Apply edge avoidance.
             // ---------------------------------------------------------
 
             ApplyEdgeAvoidance(
                 fallback);
 
+            // Edge avoidance changes X/Z, so sample the NavMesh again
+            // to make sure every modified point has the correct height.
+            if (!ProjectPathToNavMeshHeight(
+                    fallback))
+            {
+                return false;
+            }
+
             // ---------------------------------------------------------
-            // Fallback must remain inside corridor.
+            // Fallback must remain inside the original corridor.
+            // Corridor validation is intentionally XZ-only.
             // ---------------------------------------------------------
 
             if (!CorridorPathValidator.IsPathInsideCorridor(
@@ -381,7 +445,7 @@ namespace VisualPath
             }
 
             // ---------------------------------------------------------
-            // Edge avoidance must not make the path unwalkable.
+            // Fallback must still be walkable.
             // ---------------------------------------------------------
 
             if (!IsPathWalkable(
@@ -478,12 +542,6 @@ namespace VisualPath
                         edgeHit.normal *
                         offset;
 
-                    candidateA.y =
-                        original.y;
-
-                    candidateB.y =
-                        original.y;
-
                     bool validA =
                         IsPointWalkable(
                             candidateA);
@@ -561,51 +619,6 @@ namespace VisualPath
             }
 
             return hit.distance;
-        }
-
-        // =============================================================
-        // HEIGHT
-        // =============================================================
-
-        private float GetInterpolatedHeight(
-            Vector3 start,
-            Vector3 end,
-            Vector3 point)
-        {
-            Vector3 direction =
-                end - start;
-
-            direction.y = 0f;
-
-            float lengthSq =
-                direction.sqrMagnitude;
-
-            if (lengthSq <=
-                Mathf.Epsilon)
-            {
-                return Mathf.Lerp(
-                    start.y,
-                    end.y,
-                    0.5f);
-            }
-
-            float t =
-                Vector3.Dot(
-                    new Vector3(
-                        point.x - start.x,
-                        0f,
-                        point.z - start.z),
-                    direction)
-                /
-                lengthSq;
-
-            t =
-                Mathf.Clamp01(t);
-
-            return Mathf.Lerp(
-                start.y,
-                end.y,
-                t);
         }
 
         // =============================================================

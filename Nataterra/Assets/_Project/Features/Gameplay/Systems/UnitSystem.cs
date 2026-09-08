@@ -1,7 +1,10 @@
 using PurrNet;
 using System.Collections.Generic;
+using System.IO;
+using TGS;
 using UnityEngine;
 using UnityEngine.AI;
+using VisualPath;
 
 public class UnitSystem : NetworkBehaviour
 {
@@ -38,23 +41,21 @@ public class UnitSystem : NetworkBehaviour
         GameObject prefab = _gs.MSM.GetUnitPrefab(type);
 
         GameObject newUnit = Instantiate(prefab, spawnPosition, Quaternion.identity);
-        NavMesh.SamplePosition(spawnPosition, out NavMeshHit hit, 1f, -1);
-        newUnit.GetComponent<NavMeshAgent>().Warp(hit.position);
+        newUnit.GetComponent<UnitAI>().SetPosition(spawnPosition);
 
         _gs.MSM.AddUnitObject(GUID, newUnit);
     }
 
     [ObserversRpc]
-    public void MoveUnit(List<string> GUIDs, int destination)
+    public void MoveUnit(List<string> GUIDs, List<VisualHex> listHexes, Vector3 start, Vector3 end)
     {
+        List<Vector3> path = _gs.PathSystem.GeneratePath(listHexes, start, end);
+        if (path == null) return;
+
         foreach (string guid in GUIDs)
         {
             GameObject moveUnit = _gs.MSM.GetUnitObject(guid);
-
-            Vector3 cellPos = _gs.TGS.CellGetPosition(destination);
-            NavMesh.SamplePosition(cellPos, out NavMeshHit hit, 1f, -1);
-
-            moveUnit.GetComponent<NavMeshAgent>().SetDestination(hit.position);
+            moveUnit.GetComponent<UnitAI>().SetPath(path);
         }
     }
 }
