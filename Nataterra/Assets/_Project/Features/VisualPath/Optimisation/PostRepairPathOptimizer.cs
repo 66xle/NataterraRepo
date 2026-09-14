@@ -143,7 +143,7 @@ namespace VisualPath
             }
 
             if (!IsPathWalkable(
-                    optimized))
+                optimized))
             {
                 return false;
             }
@@ -304,11 +304,31 @@ namespace VisualPath
                 return false;
             }
 
-            return !NavMesh.Raycast(
-                startHit.position,
-                endHit.position,
-                out _,
-                settings.NavMeshAreaMask);
+            NavMeshPath path =
+                new NavMeshPath();
+
+            if (!NavMesh.CalculatePath(
+                    startHit.position,
+                    endHit.position,
+                    settings.NavMeshAreaMask,
+                    path))
+            {
+                return false;
+            }
+
+            if (path.status !=
+                NavMeshPathStatus.PathComplete)
+            {
+                return false;
+            }
+
+            if (path.corners == null ||
+                path.corners.Length != 2)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         // =============================================================

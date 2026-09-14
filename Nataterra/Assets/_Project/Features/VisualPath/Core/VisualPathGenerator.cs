@@ -222,32 +222,40 @@ namespace VisualPath
                 selectedPath =
                     navMeshPath;
 
-                // -----------------------------------------------------
+                // =====================================================
                 // POST-REPAIR OPTIMIZATION
+                //
+                // Run exactly once after NavMesh validation/repair.
+                //
+                // This optimizes the complete path produced by the
+                // NavMesh stage, regardless of whether a fallback was
+                // actually required.
+                // =====================================================
+
+                if (postRepairOptimizer.TryOptimize(
+                        selectedPath,
+                        request.Corridor,
+                        out List<Vector3> postRepairPath))
+                {
+                    selectedPath =
+                        postRepairPath;
+                }
+
+                // -----------------------------------------------------
+                // If a fallback was used, part of the original road
+                // route may have been replaced.
                 // -----------------------------------------------------
 
                 if (usedFallback)
                 {
-                    if (postRepairOptimizer.TryOptimize(
-                            selectedPath,
-                            request.Corridor,
-                            out List<Vector3> postRepairPath))
-                    {
-                        selectedPath =
-                            postRepairPath;
-                    }
-
-                    // A fallback may have replaced part of a road
-                    // route, so do not continue reporting this as a
-                    // complete road path.
                     usesRoad =
                         false;
-
-                    GuaranteeEndpoints(
-                        selectedPath,
-                        request.Start,
-                        request.End);
                 }
+
+                GuaranteeEndpoints(
+                    selectedPath,
+                    request.Start,
+                    request.End);
 
                 // =====================================================
                 // NAVMESH EDGE AVOIDANCE
@@ -255,9 +263,8 @@ namespace VisualPath
                 // Apply this to EVERY selected path, regardless of
                 // whether NavMesh repair was required.
                 //
-                // This happens after all repair and post-repair
-                // optimization so we only avoid edges on the complete
-                // current path.
+                // This happens after the single post-repair
+                // optimization pass.
                 // =====================================================
 
                 if (!navMeshProcessor.TryApplyEdgeAvoidance(
@@ -319,13 +326,9 @@ namespace VisualPath
             //
             // Smoothing can move interior points toward NavMesh edges.
             //
-            // Therefore the actual final path gets its own edge
-            // avoidance pass.
-            //
-            // Because ApplyEdgeAvoidance only moves points that are
-            // within the configured edge-avoidance distance, points
-            // already moved away during the selected-path pass will
-            // generally remain unchanged here.
+            // This is NOT followed by PostRepairPathOptimizer.
+            // The post-repair optimizer only runs once, before the
+            // first edge-avoidance pass.
             // =========================================================
 
             if (settings.UseNavMesh &&
@@ -369,11 +372,14 @@ namespace VisualPath
             // =========================================================
             // FALLBACK TO UNSMOOTHED PATH
             //
-            // IMPORTANT:
+            // selectedPath has already gone through:
             //
-            // selectedPath has ALREADY gone through edge avoidance.
-            // Therefore falling back to it still gives us an
-            // edge-avoided final path.
+            // 1. NavMesh repair
+            // 2. Post-repair optimization
+            // 3. NavMesh edge avoidance
+            //
+            // Therefore this is already a valid optimized,
+            // edge-avoided unsmoothed path.
             // =========================================================
 
             if (!finalPathValid)
