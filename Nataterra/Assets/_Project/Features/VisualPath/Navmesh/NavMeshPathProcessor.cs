@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -43,28 +43,11 @@ namespace VisualPath
                 return false;
             }
 
-            // =========================================================
-            // WORKING PATH
-            //
-            // repairedSegments[i] tells us whether the segment:
-            //
-            // path[i] -> path[i + 1]
-            //
-            // was already produced by a NavMesh repair.
-            //
-            // Those segments do not need to be checked again during
-            // the later segment-validation pass.
-            // =========================================================
-
             List<Vector3> workingPath =
                 new List<Vector3>();
 
             List<bool> repairedSegments =
                 new List<bool>();
-
-            // =========================================================
-            // POINT VALIDATION / REPAIR
-            // =========================================================
 
             if (!TryValidateAndRepairPoints(
                     sourcePath,
@@ -81,15 +64,6 @@ namespace VisualPath
                 return false;
             }
 
-            // =========================================================
-            // SEGMENT VALIDATION / REPAIR
-            //
-            // This happens AFTER point repair.
-            //
-            // Any segment created by a point repair is already marked
-            // as repaired and is therefore skipped.
-            // =========================================================
-
             if (!TryValidateAndRepairSegments(
                     workingPath,
                     repairedSegments,
@@ -104,17 +78,11 @@ namespace VisualPath
                 return false;
             }
 
-            // =========================================================
-            // FINAL VALIDATION
-            // =========================================================
-
             if (workingPath.Count < 2)
             {
                 return false;
             }
 
-            // Project the repaired/validated path onto the NavMesh
-            // before the final NavMesh checks.
             if (!ProjectPathToNavMeshHeight(
                     workingPath))
             {
@@ -146,12 +114,6 @@ namespace VisualPath
 
         // =============================================================
         // NAVMESH EDGE AVOIDANCE
-        //
-        // This is intentionally public because edge avoidance must be
-        // applied to ALL final paths, not only fallback paths.
-        //
-        // The caller should pass a complete path after all NavMesh
-        // repair/post-repair optimization has finished.
         // =============================================================
 
         public bool TryApplyEdgeAvoidance(
@@ -170,34 +132,15 @@ namespace VisualPath
                 return false;
             }
 
-            // ---------------------------------------------------------
-            // Edge avoidance modifies only interior points.
-            //
-            // Start and end therefore remain untouched.
-            // ---------------------------------------------------------
-
             bool modified =
                 ApplyEdgeAvoidance(
-                    path);
-
-            // ---------------------------------------------------------
-            // If nothing moved, the path already satisfies the current
-            // edge avoidance settings.
-            //
-            // There is no need to project or recalculate it.
-            // ---------------------------------------------------------
+                    path,
+                    corridor);
 
             if (!modified)
             {
                 return true;
             }
-
-            // ---------------------------------------------------------
-            // Edge avoidance moved points horizontally.
-            //
-            // Project the modified points back onto the NavMesh only
-            // AFTER all edge avoidance iterations have completed.
-            // ---------------------------------------------------------
 
             if (!ProjectPathToNavMeshHeight(
                     path))
@@ -205,24 +148,12 @@ namespace VisualPath
                 return false;
             }
 
-            // ---------------------------------------------------------
-            // Edge avoidance can potentially move a point outside the
-            // supplied corridor.
-            // ---------------------------------------------------------
-
             if (!CorridorPathValidator.IsPathInsideCorridor(
                     path,
                     corridor))
             {
                 return false;
             }
-
-            // ---------------------------------------------------------
-            // The modified path must now be directly walkable.
-            //
-            // Every segment must produce exactly two CalculatePath
-            // corners.
-            // ---------------------------------------------------------
 
             if (!IsPathWalkable(
                     path))
@@ -255,10 +186,6 @@ namespace VisualPath
                 Vector3 point =
                     sourcePath[currentIndex];
 
-                // -----------------------------------------------------
-                // POINT IS VALID
-                // -----------------------------------------------------
-
                 if (TrySampleNavMesh(
                         point,
                         out NavMeshHit hit))
@@ -277,12 +204,6 @@ namespace VisualPath
                     continue;
                 }
 
-                // -----------------------------------------------------
-                // POINT IS INVALID
-                //
-                // Find the closest valid point before and after it.
-                // -----------------------------------------------------
-
                 if (!TryFindPointRepairBounds(
                         sourcePath,
                         currentIndex,
@@ -294,11 +215,6 @@ namespace VisualPath
                 {
                     return false;
                 }
-
-                // -----------------------------------------------------
-                // Calculate the NavMesh repair between the two valid
-                // anchor points.
-                // -----------------------------------------------------
 
                 if (!TryBuildFallback(
                         beforePoint,
@@ -319,14 +235,6 @@ namespace VisualPath
                 {
                     return false;
                 }
-
-                // -----------------------------------------------------
-                // The previous valid source point should already be
-                // represented by workingPath.
-                //
-                // The fallback contains beforePoint and afterPoint,
-                // so add the fallback starting at point 1.
-                // -----------------------------------------------------
 
                 for (int i = 0;
                      i < fallbackPath.Count;
@@ -360,11 +268,6 @@ namespace VisualPath
                         true);
                 }
 
-                // -----------------------------------------------------
-                // Everything from beforeIndex through afterIndex has
-                // been replaced by the NavMesh solution.
-                // -----------------------------------------------------
-
                 currentIndex =
                     afterIndex + 1;
             }
@@ -390,10 +293,6 @@ namespace VisualPath
 
             beforePoint = default;
             afterPoint = default;
-
-            // =========================================================
-            // SEARCH BACKWARD
-            // =========================================================
 
             for (int i = invalidIndex - 1;
                  i >= 0;
@@ -429,10 +328,6 @@ namespace VisualPath
             {
                 return false;
             }
-
-            // =========================================================
-            // SEARCH FORWARD
-            // =========================================================
 
             for (int i = invalidIndex + 1;
                  i < sourcePath.Count;
@@ -473,10 +368,6 @@ namespace VisualPath
             {
                 return false;
             }
-
-            // =========================================================
-            // VERIFY BOTH ANCHORS AGAIN
-            // =========================================================
 
             if (!TrySampleNavMesh(
                     beforePoint,
@@ -533,10 +424,6 @@ namespace VisualPath
             while (segmentIndex <
                    path.Count - 1)
             {
-                // -----------------------------------------------------
-                // Already repaired.
-                // -----------------------------------------------------
-
                 if (repairedSegments[segmentIndex])
                 {
                     segmentIndex++;
@@ -550,10 +437,6 @@ namespace VisualPath
                 Vector3 end =
                     path[segmentIndex + 1];
 
-                // -----------------------------------------------------
-                // Segment is directly walkable.
-                // -----------------------------------------------------
-
                 if (IsSegmentWalkable(
                         start,
                         end))
@@ -562,10 +445,6 @@ namespace VisualPath
 
                     continue;
                 }
-
-                // -----------------------------------------------------
-                // Segment is invalid.
-                // -----------------------------------------------------
 
                 if (!TryBuildFallback(
                         start,
@@ -586,16 +465,6 @@ namespace VisualPath
                 {
                     return false;
                 }
-
-                // -----------------------------------------------------
-                // Replace:
-                //
-                // start -> end
-                //
-                // with:
-                //
-                // start -> fallback... -> end
-                // -----------------------------------------------------
 
                 int oldSegmentEndIndex =
                     segmentIndex + 1;
@@ -627,8 +496,6 @@ namespace VisualPath
                         true);
                 }
 
-                // These segments were already generated by
-                // TryBuildFallback(), so they are not checked again.
                 segmentIndex +=
                     numberOfNewSegments;
             }
@@ -638,11 +505,6 @@ namespace VisualPath
 
         // =============================================================
         // SHARED NAVMESH REPAIR
-        //
-        // No edge avoidance happens here.
-        //
-        // Edge avoidance is applied once to the complete path later,
-        // after all repairs and post-repair optimization are complete.
         // =============================================================
 
         private bool TryBuildFallback(
@@ -655,10 +517,6 @@ namespace VisualPath
         {
             fallbackPath = null;
             blockerRequests = null;
-
-            // =========================================================
-            // PREPARE ANCHORS
-            // =========================================================
 
             List<Vector3> anchors =
                 new List<Vector3>
@@ -678,10 +536,6 @@ namespace VisualPath
 
             afterPoint =
                 anchors[1];
-
-            // =========================================================
-            // CALCULATE PATH
-            // =========================================================
 
             NavMeshPath navMeshPath =
                 new NavMeshPath();
@@ -706,19 +560,11 @@ namespace VisualPath
                 new List<Vector3>(
                     navMeshPath.corners);
 
-            // =========================================================
-            // PROJECT CALCULATED CORNERS
-            // =========================================================
-
             if (!ProjectPathToNavMeshHeight(
                     path))
             {
                 return false;
             }
-
-            // =========================================================
-            // CORRIDOR VALIDATION
-            // =========================================================
 
             if (!CorridorPathValidator.IsPathInsideCorridor(
                     path,
@@ -733,14 +579,6 @@ namespace VisualPath
                 return false;
             }
 
-            // =========================================================
-            // FALLBACK IS VALID
-            //
-            // Edge avoidance is deliberately NOT applied here.
-            // The complete path will receive edge avoidance after all
-            // point and segment repairs have finished.
-            // =========================================================
-
             fallbackPath =
                 path;
 
@@ -749,15 +587,6 @@ namespace VisualPath
 
         // =============================================================
         // PATH WALKABILITY
-        //
-        // Every point must be on the NavMesh.
-        //
-        // Every segment must produce exactly TWO CalculatePath
-        // corners.
-        //
-        // More than two corners means CalculatePath needed to route
-        // around something, so the original straight segment is not
-        // considered directly walkable.
         // =============================================================
 
         private bool IsPathWalkable(
@@ -768,10 +597,6 @@ namespace VisualPath
             {
                 return false;
             }
-
-            // ---------------------------------------------------------
-            // POINT VALIDATION
-            // ---------------------------------------------------------
 
             for (int i = 0;
                  i < path.Count;
@@ -784,10 +609,6 @@ namespace VisualPath
                     return false;
                 }
             }
-
-            // ---------------------------------------------------------
-            // SEGMENT VALIDATION
-            // ---------------------------------------------------------
 
             for (int i = 0;
                  i < path.Count - 1;
@@ -806,25 +627,6 @@ namespace VisualPath
 
         // =============================================================
         // SEGMENT WALKABILITY
-        //
-        // IMPORTANT:
-        //
-        // corners.Length == 2 is required.
-        //
-        // 2 corners:
-        //
-        // A ---------------- B
-        //
-        // means the NavMesh can travel directly between the points.
-        //
-        // 3+ corners:
-        //
-        // A --------+
-        //            |
-        //            +------- B
-        //
-        // means CalculatePath had to route around something, so the
-        // original segment is considered invalid.
         // =============================================================
 
         private bool IsSegmentWalkable(
@@ -964,17 +766,20 @@ namespace VisualPath
 
         // =============================================================
         // EDGE AVOIDANCE
-        //
-        // Returns true only if at least one point was actually moved.
-        //
-        // Start and end are intentionally excluded.
         // =============================================================
 
         private bool ApplyEdgeAvoidance(
-            List<Vector3> path)
+            List<Vector3> path,
+            IReadOnlyList<VisualHex> corridor)
         {
             if (path == null ||
-                path.Count < 2)
+                path.Count < 3)
+            {
+                return false;
+            }
+
+            if (corridor == null ||
+                corridor.Count == 0)
             {
                 return false;
             }
@@ -986,6 +791,13 @@ namespace VisualPath
                 return false;
             }
 
+            float strength =
+                Mathf.Clamp01(
+                    settings.NavMeshEdgeAvoidanceStrength);
+
+            float avoidanceDistance =
+                settings.NavMeshEdgeAvoidanceDistance;
+
             bool modified =
                 false;
 
@@ -994,12 +806,27 @@ namespace VisualPath
                  settings.NavMeshEdgeAvoidanceIterations;
                  iteration++)
             {
+                bool changedThisIteration =
+                    false;
+
                 for (int i = 1;
                      i < path.Count - 1;
                      i++)
                 {
                     Vector3 point =
                         path[i];
+
+                    if (!NavMesh.SamplePosition(
+                            point,
+                            out NavMeshHit pointHit,
+                            settings.NavMeshSampleDistance,
+                            settings.NavMeshAreaMask))
+                    {
+                        continue;
+                    }
+
+                    point =
+                        pointHit.position;
 
                     if (!NavMesh.FindClosestEdge(
                             point,
@@ -1009,64 +836,393 @@ namespace VisualPath
                         continue;
                     }
 
-                    float distance =
+                    float currentDistance =
                         PathMath.DistanceXZ(
                             point,
                             edgeHit.position);
 
-                    if (distance >=
-                        settings.NavMeshEdgeAvoidanceDistance)
+                    if (currentDistance >=
+                        avoidanceDistance)
                     {
+                        path[i] =
+                            point;
+
                         continue;
                     }
 
-                    Vector3 away =
-                        point -
-                        edgeHit.position;
-
-                    away.y =
-                        0f;
-
-                    float magnitude =
-                        away.magnitude;
-
-                    if (magnitude <=
-                        0.001f)
-                    {
-                        continue;
-                    }
-
-                    away /=
-                        magnitude;
-
-                    float normalized =
-                        1f -
-                        Mathf.Clamp01(
-                            distance /
-                            settings.NavMeshEdgeAvoidanceDistance);
+                    float requiredOffset =
+                        avoidanceDistance -
+                        currentDistance;
 
                     float offset =
-                        normalized *
-                        settings.NavMeshEdgeAvoidanceStrength;
+                        requiredOffset *
+                        strength;
 
-                    Vector3 newPoint =
+                    if (offset <=
+                        0.0001f)
+                    {
+                        continue;
+                    }
+
+                    // Determine the direction away from the edge.
+                    //
+                    // If the point is not on the edge, the direction
+                    // comes directly from edge to point.
+                    //
+                    // If the point is effectively on the edge, the
+                    // direction cannot be determined from those two
+                    // positions, so candidate directions are generated.
+
+                    if (!TryGetEdgeAvoidanceDirection(
+                            path,
+                            corridor,
+                            i,
+                            point,
+                            edgeHit,
+                            offset,
+                            out Vector3 away))
+                    {
+                        continue;
+                    }
+
+                    Vector3 candidate =
                         point +
                         away *
                         offset;
 
-                    // Do not project here.
+                    // Validate the candidate against the NavMesh.
                     //
-                    // Projection happens once after ALL edge avoidance
-                    // iterations have completed.
+                    // The candidate itself is retained. We do not
+                    // replace it with the SamplePosition result.
+
+                    if (!NavMesh.SamplePosition(
+                            candidate,
+                            out _,
+                            settings.NavMeshSampleDistance,
+                            settings.NavMeshAreaMask))
+                    {
+                        continue;
+                    }
+
+                    if (!IsPointInsideCorridor(
+                            candidate,
+                            corridor))
+                    {
+                        continue;
+                    }
+
+                    // Compare against the original edge position.
+
+                    float candidateDistance =
+                        PathMath.DistanceXZ(
+                            candidate,
+                            edgeHit.position);
+
+                    if (candidateDistance <=
+                        currentDistance + 0.0001f)
+                    {
+                        continue;
+                    }
+
+                    // Make sure moving this waypoint does not break
+                    // either connected segment.
+
+                    if (!IsEdgeAvoidanceCandidateValid(
+                            path,
+                            i,
+                            candidate))
+                    {
+                        continue;
+                    }
+
                     path[i] =
-                        newPoint;
+                        candidate;
 
                     modified =
                         true;
+
+                    changedThisIteration =
+                        true;
+                }
+
+                if (!changedThisIteration)
+                {
+                    break;
                 }
             }
 
             return modified;
+        }
+
+        // =============================================================
+        // GET EDGE AVOIDANCE DIRECTION
+        //
+        // First try to determine the direction directly from:
+        //
+        // point - edge position
+        //
+        // If that vector is effectively zero, generate candidates to
+        // determine which direction moves the point away from the edge.
+        // =============================================================
+
+        private bool TryGetEdgeAvoidanceDirection(
+            List<Vector3> path,
+            IReadOnlyList<VisualHex> corridor,
+            int index,
+            Vector3 point,
+            NavMeshHit edgeHit,
+            float offset,
+            out Vector3 direction)
+        {
+            direction =
+                point -
+                edgeHit.position;
+
+            direction.y =
+                0f;
+
+            float magnitude =
+                direction.magnitude;
+
+            // We already know the direction away from the edge.
+
+            if (magnitude > 0.001f)
+            {
+                direction /=
+                    magnitude;
+
+                return true;
+            }
+
+            // We cannot determine a direction from the point and edge
+            // position because they are effectively the same position.
+            //
+            // Generate candidate positions to determine the direction.
+
+            return TryGetDirectionFromCandidates(
+                path,
+                corridor,
+                index,
+                point,
+                edgeHit,
+                offset,
+                out direction);
+        }
+
+        // =============================================================
+        // GET DIRECTION FROM CANDIDATES
+        //
+        // Candidate positions are generated around the current point.
+        //
+        // The best valid candidate is the one that:
+        //
+        // 1. Is on the NavMesh.
+        // 2. Is inside the corridor.
+        // 3. Preserves both connected path segments.
+        // 4. Produces the greatest distance from the original edge hit.
+        //
+        // The returned value is only the direction.
+        // The caller performs the actual movement.
+        // =============================================================
+
+        private bool TryGetDirectionFromCandidates(
+            List<Vector3> path,
+            IReadOnlyList<VisualHex> corridor,
+            int index,
+            Vector3 point,
+            NavMeshHit edgeHit,
+            float offset,
+            out Vector3 direction)
+        {
+            direction =
+                default;
+
+            List<Vector3> candidates =
+                new List<Vector3>();
+
+            Vector3 normal =
+                edgeHit.normal;
+
+            normal.y =
+                0f;
+
+            if (normal.sqrMagnitude >
+                0.000001f)
+            {
+                normal.Normalize();
+
+                candidates.Add(
+                    point +
+                    normal *
+                    offset);
+
+                candidates.Add(
+                    point -
+                    normal *
+                    offset);
+            }
+
+            // If the edge normal cannot provide a usable direction,
+            // try horizontal directions around the point.
+
+            if (candidates.Count == 0)
+            {
+                const int radialCount = 8;
+
+                for (int i = 0;
+                     i < radialCount;
+                     i++)
+                {
+                    float angle =
+                        (360f / radialCount) *
+                        i;
+
+                    float radians =
+                        angle *
+                        Mathf.Deg2Rad;
+
+                    Vector3 radial =
+                        new Vector3(
+                            Mathf.Cos(radians),
+                            0f,
+                            Mathf.Sin(radians));
+
+                    candidates.Add(
+                        point +
+                        radial *
+                        offset);
+                }
+            }
+
+            float bestDistance =
+                PathMath.DistanceXZ(
+                    point,
+                    edgeHit.position);
+
+            bool found =
+                false;
+
+            Vector3 bestCandidate =
+                point;
+
+            for (int i = 0;
+                 i < candidates.Count;
+                 i++)
+            {
+                Vector3 candidate =
+                    candidates[i];
+
+                if (!NavMesh.SamplePosition(
+                        candidate,
+                        out _,
+                        settings.NavMeshSampleDistance,
+                        settings.NavMeshAreaMask))
+                {
+                    continue;
+                }
+
+                if (!IsPointInsideCorridor(
+                        candidate,
+                        corridor))
+                {
+                    continue;
+                }
+
+                float candidateDistance =
+                    PathMath.DistanceXZ(
+                        candidate,
+                        edgeHit.position);
+
+                if (candidateDistance <=
+                    bestDistance + 0.0001f)
+                {
+                    continue;
+                }
+
+                if (!IsEdgeAvoidanceCandidateValid(
+                        path,
+                        index,
+                        candidate))
+                {
+                    continue;
+                }
+
+                bestDistance =
+                    candidateDistance;
+
+                bestCandidate =
+                    candidate;
+
+                found =
+                    true;
+            }
+
+            if (!found)
+            {
+                return false;
+            }
+
+            Vector3 result =
+                bestCandidate -
+                point;
+
+            result.y =
+                0f;
+
+            float resultMagnitude =
+                result.magnitude;
+
+            if (resultMagnitude <=
+                0.001f)
+            {
+                return false;
+            }
+
+            direction =
+                result /
+                resultMagnitude;
+
+            return true;
+        }
+
+        // =============================================================
+        // EDGE AVOIDANCE CANDIDATE VALIDATION
+        // =============================================================
+
+        private bool IsEdgeAvoidanceCandidateValid(
+            List<Vector3> path,
+            int index,
+            Vector3 candidate)
+        {
+            if (path == null ||
+                index <= 0 ||
+                index >= path.Count - 1)
+            {
+                return false;
+            }
+
+            if (!TrySampleNavMesh(
+                    candidate,
+                    out _))
+            {
+                return false;
+            }
+
+            if (!IsSegmentWalkable(
+                    path[index - 1],
+                    candidate))
+            {
+                return false;
+            }
+
+            if (!IsSegmentWalkable(
+                    candidate,
+                    path[index + 1]))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         // =============================================================
@@ -1238,10 +1394,6 @@ namespace VisualPath
                 return null;
             }
 
-            // ---------------------------------------------------------
-            // Find the first point outside the corridor.
-            // ---------------------------------------------------------
-
             Vector3 outsidePoint =
                 default;
 
@@ -1271,10 +1423,6 @@ namespace VisualPath
                 return null;
             }
 
-            // ---------------------------------------------------------
-            // Find the actual map hex containing the outside point.
-            // ---------------------------------------------------------
-
             if (!TryFindContainingHex(
                     outsidePoint,
                     allHexes,
@@ -1285,11 +1433,6 @@ namespace VisualPath
 
             var requests =
                 new List<NavMeshBlockerRequest>();
-
-            // ---------------------------------------------------------
-            // Find every corridor hex sharing an actual edge with the
-            // outside hex.
-            // ---------------------------------------------------------
 
             for (int i = 0;
                  i < corridor.Count;
