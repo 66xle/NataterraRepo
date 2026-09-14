@@ -24,7 +24,7 @@ public class PathSystem : NetworkBehaviour
         HighlightHexPath(corridors);
 
         List<VisualRoad> roads = BuildVisualRoads();
-        PathManager.CreateRequest(corridors, start, end, roads);
+        PathManager.CreateRequest(corridors, start, end, roads, ConvertHexes(_tgs.cells));
         List<Vector3> path = PathManager.GeneratePath();
         PathManager.DisplayPath();
 

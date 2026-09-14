@@ -53,77 +53,63 @@ namespace VisualPath
         // NAVMESH
         // =============================================================
 
-        /// <summary>
-        /// Enables NavMesh walkability validation and fallback routing.
-        /// </summary>
         public bool UseNavMesh =
             false;
 
-        /// <summary>
-        /// NavMeshData associated with this path request.
-        ///
-        /// The NavMeshData must already be registered with Unity's
-        /// NavMesh system before path generation.
-        /// </summary>
         public UnityEngine.AI.NavMeshData NavMeshData;
 
-        /// <summary>
-        /// Areas considered walkable.
-        /// </summary>
         public int NavMeshAreaMask =
             UnityEngine.AI.NavMesh.AllAreas;
 
-        /// <summary>
-        /// Maximum distance used when projecting a visual path point
-        /// onto the NavMesh.
-        /// </summary>
         public float NavMeshSampleDistance =
             0.5f;
 
-        /// <summary>
-        /// Maximum allowed vertical difference between the visual path
-        /// point and the NavMesh.
-        ///
-        /// This is evaluated independently from NavMeshSampleDistance.
-        /// </summary>
         public float NavMeshHeightTolerance =
             1f;
 
-        /// <summary>
-        /// Desired distance between fallback path points when additional
-        /// validation samples are required.
-        /// </summary>
         public float NavMeshValidationSampleDistance =
             0.5f;
 
-        /// <summary>
-        /// Desired physical clearance from NavMesh boundaries for
-        /// fallback path corners.
-        /// </summary>
         public float NavMeshEdgeAvoidanceDistance =
             0.5f;
 
-        /// <summary>
-        /// Number of times NavMesh fallback corners may be pushed away
-        /// from nearby NavMesh edges.
-        /// </summary>
         public int NavMeshEdgeAvoidanceIterations =
             2;
 
-        /// <summary>
-        /// Strength of NavMesh edge avoidance.
-        ///
-        /// 0 = no movement.
-        /// 1 = full requested clearance.
-        /// </summary>
         public float NavMeshEdgeAvoidanceStrength =
             1f;
 
-        /// <summary>
-        /// If true, the smoothed path is also validated against the
-        /// NavMesh and corridor.
-        /// </summary>
         public bool ValidateSmoothedPath =
             true;
+
+        // =============================================================
+        // TEMPORARY NAVMESH BLOCKERS
+        // =============================================================
+
+        /// <summary>
+        /// Maximum number of temporary corridor-edge blockers that may
+        /// be created during a single generation attempt.
+        /// </summary>
+        public int NavMeshMaxBlockerRetries =
+            10;
+
+        /// <summary>
+        /// Amount added to the blocker width beyond the actual shared
+        /// hex edge.
+        ///
+        /// A small value helps ensure the carved obstacle fully closes
+        /// the entrance.
+        /// </summary>
+        public float NavMeshBlockerEdgePadding =
+            0.05f;
+
+        /// <summary>
+        /// Multiplier applied to the prefab's local X scale when sizing
+        /// the blocker to the shared edge.
+        ///
+        /// The prefab's local X axis is assumed to be its width.
+        /// </summary>
+        public float NavMeshBlockerWidthMultiplier =
+            1f;
     }
 }

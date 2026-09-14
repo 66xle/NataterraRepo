@@ -7,6 +7,10 @@ namespace VisualPath
     {
         private const float Tolerance = 0.001f;
 
+        // =============================================================
+        // PATH VALIDATION
+        // =============================================================
+
         public static bool IsPathInsideCorridor(
             IReadOnlyList<Vector3> path,
             IReadOnlyList<VisualHex> corridor)
@@ -19,6 +23,10 @@ namespace VisualPath
                 return false;
             }
 
+            // ---------------------------------------------------------
+            // Validate every point.
+            // ---------------------------------------------------------
+
             for (int i = 0;
                  i < path.Count;
                  i++)
@@ -30,6 +38,10 @@ namespace VisualPath
                     return false;
                 }
             }
+
+            // ---------------------------------------------------------
+            // Validate every segment.
+            // ---------------------------------------------------------
 
             for (int i = 0;
                  i < path.Count - 1;
@@ -46,6 +58,10 @@ namespace VisualPath
 
             return true;
         }
+
+        // =============================================================
+        // CORRIDOR POINT
+        // =============================================================
 
         public static bool IsPointInsideCorridor(
             Vector3 point,
@@ -71,6 +87,29 @@ namespace VisualPath
             return false;
         }
 
+        // =============================================================
+        // PUBLIC HEX VALIDATION
+        // =============================================================
+
+        /// <summary>
+        /// Determines whether a point is inside the supplied hex.
+        ///
+        /// The test is performed in X/Z only. Y is ignored.
+        /// Points on the hex boundary are considered inside.
+        /// </summary>
+        public static bool IsPointInsideHexPublic(
+            Vector3 point,
+            VisualHex hex)
+        {
+            return IsPointInsideHex(
+                point,
+                hex);
+        }
+
+        // =============================================================
+        // SEGMENT VALIDATION
+        // =============================================================
+
         public static bool IsSegmentInsideCorridor(
             Vector3 start,
             Vector3 end,
@@ -81,6 +120,10 @@ namespace VisualPath
             {
                 return false;
             }
+
+            // ---------------------------------------------------------
+            // Both endpoints must be inside the corridor.
+            // ---------------------------------------------------------
 
             if (!IsPointInsideCorridor(
                     start,
@@ -95,6 +138,11 @@ namespace VisualPath
             {
                 return false;
             }
+
+            // ---------------------------------------------------------
+            // Find all intersections between the segment and corridor
+            // hex boundaries.
+            // ---------------------------------------------------------
 
             var intersections =
                 new List<float>();
@@ -141,6 +189,13 @@ namespace VisualPath
 
             intersections.Sort();
 
+            // ---------------------------------------------------------
+            // Test the midpoint of every interval between intersections.
+            //
+            // If any interval lies outside every corridor hex, the
+            // segment leaves the corridor.
+            // ---------------------------------------------------------
+
             for (int i = 0;
                  i < intersections.Count - 1;
                  i++)
@@ -176,6 +231,10 @@ namespace VisualPath
             return true;
         }
 
+        // =============================================================
+        // HEX POINT TEST
+        // =============================================================
+
         private static bool IsPointInsideHex(
             Vector3 point,
             VisualHex hex)
@@ -188,8 +247,11 @@ namespace VisualPath
 
             bool inside = false;
 
-            float x = point.x;
-            float z = point.z;
+            float x =
+                point.x;
+
+            float z =
+                point.z;
 
             for (int i = 0;
                  i < hex.Corners.Length;
@@ -203,6 +265,10 @@ namespace VisualPath
                         (i + 1) %
                         hex.Corners.Length];
 
+                // -----------------------------------------------------
+                // Points directly on an edge are considered inside.
+                // -----------------------------------------------------
+
                 if (DistanceToSegmentXZ(
                         point,
                         a,
@@ -210,6 +276,10 @@ namespace VisualPath
                 {
                     return true;
                 }
+
+                // -----------------------------------------------------
+                // Standard X/Z ray-casting test.
+                // -----------------------------------------------------
 
                 bool intersects =
                     ((a.z > z) != (b.z > z)) &&
@@ -221,12 +291,17 @@ namespace VisualPath
 
                 if (intersects)
                 {
-                    inside = !inside;
+                    inside =
+                        !inside;
                 }
             }
 
             return inside;
         }
+
+        // =============================================================
+        // DISTANCE TO EDGE
+        // =============================================================
 
         private static float DistanceToSegmentXZ(
             Vector3 point,
@@ -269,6 +344,10 @@ namespace VisualPath
                 projection);
         }
 
+        // =============================================================
+        // SEGMENT INTERSECTION
+        // =============================================================
+
         private static bool TryGetSegmentIntersectionT(
             Vector3 a,
             Vector3 b,
@@ -283,7 +362,8 @@ namespace VisualPath
                 (b.z - a.z) *
                 (d.x - c.x);
 
-            if (Mathf.Abs(denominator) <
+            if (Mathf.Abs(
+                    denominator) <
                 0.00001f)
             {
                 t = 0f;
@@ -305,7 +385,7 @@ namespace VisualPath
                     (d.z - c.z)
                  -
                  (c.z - a.z) *
-                    (d.x - c.x))
+                    (d.x - a.x))
                 /
                 denominator;
 

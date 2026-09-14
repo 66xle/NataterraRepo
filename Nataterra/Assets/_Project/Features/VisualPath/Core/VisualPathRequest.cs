@@ -5,17 +5,35 @@ namespace VisualPath
 {
     public sealed class VisualPathRequest
     {
-        public IReadOnlyList<VisualHex> Corridor { get; }
-        public Vector3 Start { get; }
-        public Vector3 End { get; }
-        public IReadOnlyList<VisualRoad> Roads { get; }
+        public readonly IReadOnlyList<VisualHex> Corridor;
+        public readonly IReadOnlyList<VisualHex> AllHexes;
 
-        public VisualPathRequest(IReadOnlyList<VisualHex> corridor, Vector3 start, Vector3 end, IReadOnlyList<VisualRoad> roads = null)
+        public readonly Vector3 Start;
+        public readonly Vector3 End;
+
+        public readonly IReadOnlyList<VisualRoad> Roads;
+
+        public VisualPathRequest(
+            IReadOnlyList<VisualHex> corridor,
+            Vector3 start,
+            Vector3 end,
+            IReadOnlyList<VisualRoad> roads = null,
+            IReadOnlyList<VisualHex> allHexes = null)
         {
-            Corridor = corridor;
-            Start = start;
-            End = end;
-            Roads = roads;
+            Corridor =
+                corridor;
+
+            AllHexes =
+                allHexes;
+
+            Start =
+                start;
+
+            End =
+                end;
+
+            Roads =
+                roads;
         }
     }
 }

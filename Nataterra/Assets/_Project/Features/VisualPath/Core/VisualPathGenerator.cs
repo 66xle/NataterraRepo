@@ -9,10 +9,9 @@ namespace VisualPath
         private readonly VisualPathSettings settings;
 
         private readonly PortalPathSolver portalSolver;
-
         private readonly RoadPathProcessor roadProcessor;
-
         private readonly NavMeshPathProcessor navMeshProcessor;
+        private readonly PostRepairPathOptimizer postRepairOptimizer;
 
         public VisualPathGenerator(
             VisualPathSettings settings,
@@ -38,11 +37,27 @@ namespace VisualPath
             navMeshProcessor =
                 new NavMeshPathProcessor(
                     settings);
+
+            postRepairOptimizer =
+                new PostRepairPathOptimizer(
+                    settings);
         }
 
         public VisualPathResult Generate(
             VisualPathRequest request)
         {
+            return Generate(
+                request,
+                out _);
+        }
+
+        public VisualPathResult Generate(
+            VisualPathRequest request,
+            out List<NavMeshBlockerRequest> blockerRequests)
+        {
+            blockerRequests =
+                null;
+
             // =========================================================
             // VALIDATE
             // =========================================================
@@ -92,7 +107,6 @@ namespace VisualPath
             // =========================================================
 
             List<Vector3> optimizedPath;
-
             List<int> portalIndices;
 
             StraightPathOptimizer.RemoveRedundantPoints(
@@ -180,25 +194,84 @@ namespace VisualPath
                     navMeshProcessor.TryValidateAndRepairPath(
                         selectedPath,
                         request.Corridor,
+                        request.AllHexes,
                         out List<Vector3> navMeshPath,
-                        out bool usedFallback);
+                        out bool usedFallback,
+                        out blockerRequests);
 
-                if (!repaired ||
-                    navMeshPath == null ||
+                if (!repaired)
+                {
+                    if (blockerRequests != null &&
+                        blockerRequests.Count > 0)
+                    {
+                        return VisualPathResult.Failed(
+                            "NavMesh fallback left the corridor and requires temporary corridor blockers.");
+                    }
+
+                    return VisualPathResult.Failed(
+                        "Generated path is not walkable on the NavMesh and no valid corridor-constrained fallback path could be found.");
+                }
+
+                if (navMeshPath == null ||
                     navMeshPath.Count < 2)
                 {
                     return VisualPathResult.Failed(
-                        "Generated path is not walkable on the NavMesh and no valid corridor-constrained fallback path could be found.");
+                        "NavMesh repair produced an invalid path.");
                 }
 
                 selectedPath =
                     navMeshPath;
 
+                // -----------------------------------------------------
+                // POST-REPAIR OPTIMIZATION
+                // -----------------------------------------------------
+
                 if (usedFallback)
                 {
+                    if (postRepairOptimizer.TryOptimize(
+                            selectedPath,
+                            request.Corridor,
+                            out List<Vector3> postRepairPath))
+                    {
+                        selectedPath =
+                            postRepairPath;
+                    }
+
+                    // A fallback may have replaced part of a road
+                    // route, so do not continue reporting this as a
+                    // complete road path.
                     usesRoad =
                         false;
+
+                    GuaranteeEndpoints(
+                        selectedPath,
+                        request.Start,
+                        request.End);
                 }
+
+                // =====================================================
+                // NAVMESH EDGE AVOIDANCE
+                //
+                // Apply this to EVERY selected path, regardless of
+                // whether NavMesh repair was required.
+                //
+                // This happens after all repair and post-repair
+                // optimization so we only avoid edges on the complete
+                // current path.
+                // =====================================================
+
+                if (!navMeshProcessor.TryApplyEdgeAvoidance(
+                        selectedPath,
+                        request.Corridor))
+                {
+                    return VisualPathResult.Failed(
+                        "NavMesh edge avoidance produced a path that is no longer valid.");
+                }
+
+                GuaranteeEndpoints(
+                    selectedPath,
+                    request.Start,
+                    request.End);
             }
 
             // =========================================================
@@ -242,6 +315,39 @@ namespace VisualPath
             }
 
             // =========================================================
+            // FINAL NAVMESH EDGE AVOIDANCE
+            //
+            // Smoothing can move interior points toward NavMesh edges.
+            //
+            // Therefore the actual final path gets its own edge
+            // avoidance pass.
+            //
+            // Because ApplyEdgeAvoidance only moves points that are
+            // within the configured edge-avoidance distance, points
+            // already moved away during the selected-path pass will
+            // generally remain unchanged here.
+            // =========================================================
+
+            if (settings.UseNavMesh &&
+                finalPath != null)
+            {
+                if (!navMeshProcessor.TryApplyEdgeAvoidance(
+                        finalPath,
+                        request.Corridor))
+                {
+                    finalPath = null;
+                }
+
+                if (finalPath != null)
+                {
+                    GuaranteeEndpoints(
+                        finalPath,
+                        request.Start,
+                        request.End);
+                }
+            }
+
+            // =========================================================
             // VALIDATE FINAL PATH
             // =========================================================
 
@@ -262,6 +368,12 @@ namespace VisualPath
 
             // =========================================================
             // FALLBACK TO UNSMOOTHED PATH
+            //
+            // IMPORTANT:
+            //
+            // selectedPath has ALREADY gone through edge avoidance.
+            // Therefore falling back to it still gives us an
+            // edge-avoided final path.
             // =========================================================
 
             if (!finalPathValid)
@@ -289,6 +401,11 @@ namespace VisualPath
 
         // =============================================================
         // NAVMESH VALIDATION
+        //
+        // A segment is valid only when CalculatePath produces exactly
+        // two corners.
+        //
+        // NavMesh.Raycast is intentionally not used.
         // =============================================================
 
         private bool IsNavMeshPathValid(
@@ -300,7 +417,10 @@ namespace VisualPath
                 return false;
             }
 
-            // Validate every point.
+            // ---------------------------------------------------------
+            // POINT VALIDATION
+            // ---------------------------------------------------------
+
             for (int i = 0;
                  i < path.Count;
                  i++)
@@ -313,30 +433,39 @@ namespace VisualPath
                 }
             }
 
-            // Validate every segment.
+            // ---------------------------------------------------------
+            // SEGMENT VALIDATION
+            // ---------------------------------------------------------
+
             for (int i = 0;
                  i < path.Count - 1;
                  i++)
             {
-                if (!TrySampleNavMesh(
+                NavMeshPath navMeshPath =
+                    new NavMeshPath();
+
+                bool calculated =
+                    NavMesh.CalculatePath(
                         path[i],
-                        out NavMeshHit startHit))
-                {
-                    return false;
-                }
-
-                if (!TrySampleNavMesh(
                         path[i + 1],
-                        out NavMeshHit endHit))
+                        settings.NavMeshAreaMask,
+                        navMeshPath);
+
+                if (!calculated)
                 {
                     return false;
                 }
 
-                if (NavMesh.Raycast(
-                        startHit.position,
-                        endHit.position,
-                        out _,
-                        settings.NavMeshAreaMask))
+                if (navMeshPath.status !=
+                    NavMeshPathStatus.PathComplete)
+                {
+                    return false;
+                }
+
+                // Exactly two corners means the segment can be
+                // travelled directly.
+                if (navMeshPath.corners == null ||
+                    navMeshPath.corners.Length != 2)
                 {
                     return false;
                 }
@@ -345,10 +474,10 @@ namespace VisualPath
             return true;
         }
 
-        /// <summary>
-        /// Samples the NavMesh using an XZ distance and an independent
-        /// Y tolerance.
-        /// </summary>
+        // =============================================================
+        // NAVMESH SAMPLING
+        // =============================================================
+
         private bool TrySampleNavMesh(
             Vector3 position,
             out NavMeshHit hit)
@@ -367,8 +496,10 @@ namespace VisualPath
 
             float searchRadius =
                 Mathf.Sqrt(
-                    xzDistance * xzDistance +
-                    heightTolerance * heightTolerance);
+                    xzDistance *
+                    xzDistance +
+                    heightTolerance *
+                    heightTolerance);
 
             if (!NavMesh.SamplePosition(
                     position,
@@ -411,12 +542,6 @@ namespace VisualPath
         // NAVMESH HEIGHT
         // =============================================================
 
-        /// <summary>
-        /// Projects the path vertically onto the NavMesh.
-        ///
-        /// X and Z are preserved.
-        /// Only Y is changed.
-        /// </summary>
         private bool ProjectPathToNavMeshHeight(
             List<Vector3> path)
         {
@@ -440,7 +565,6 @@ namespace VisualPath
                     return false;
                 }
 
-                // Preserve the generated X/Z position.
                 point.y =
                     hit.position.y;
 
@@ -517,6 +641,16 @@ namespace VisualPath
             {
                 error =
                     "Corridor contains only one hex.";
+
+                return false;
+            }
+
+            if (settings.UseNavMesh &&
+                (request.AllHexes == null ||
+                 request.AllHexes.Count == 0))
+            {
+                error =
+                    "NavMesh validation requires the full map hex collection in VisualPathRequest.AllHexes.";
 
                 return false;
             }
