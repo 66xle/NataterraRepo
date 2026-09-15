@@ -47,9 +47,9 @@ public class UnitSystem : NetworkBehaviour
     }
 
     [ObserversRpc]
-    public void MoveUnit(List<string> GUIDs, List<VisualHex> listHexes, Vector3 start, Vector3 end)
+    public async void MoveUnit(List<string> GUIDs, List<VisualHex> listHexes, Vector3 start, Vector3 end)
     {
-        List<Vector3> path = _gs.PathSystem.GeneratePath(listHexes, start, end);
+        List<Vector3> path = await _gs.PathSystem.GeneratePath(listHexes, start, end);
         if (path == null) return;
 
         foreach (string guid in GUIDs)

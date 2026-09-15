@@ -1,5 +1,6 @@
 using PurrNet;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TGS;
 using UnityEngine;
 using VisualPath;
@@ -19,13 +20,13 @@ public class PathSystem : NetworkBehaviour
         _tgs = TerrainGridSystem.instance;
     }
 
-    public List<Vector3> GeneratePath(List<VisualHex> corridors, Vector3 start, Vector3 end)
+    public async Task<List<Vector3>> GeneratePath(List<VisualHex> corridors, Vector3 start, Vector3 end)
     {
         HighlightHexPath(corridors);
 
         List<VisualRoad> roads = BuildVisualRoads();
         PathManager.CreateRequest(corridors, start, end, roads, ConvertHexes(_tgs.cells));
-        List<Vector3> path = PathManager.GeneratePath();
+        List<Vector3> path = await PathManager.GeneratePath();
         PathManager.DisplayPath();
 
         return path;

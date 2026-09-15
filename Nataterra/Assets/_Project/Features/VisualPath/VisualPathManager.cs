@@ -3,6 +3,7 @@ using SerializeReferenceEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using VisualPath;
@@ -52,6 +53,7 @@ public class VisualPathManager : MonoBehaviour
         new();
 
     Coroutine _generationRoutine;
+    private TaskCompletionSource<List<Vector3>> _generationTask;
 
     bool _generationRunning;
 
@@ -116,28 +118,25 @@ public class VisualPathManager : MonoBehaviour
     // GENERATE
     // =============================================================
 
-    public List<Vector3> GeneratePath()
+    public Task<List<Vector3>> GeneratePath()
     {
         if (_generationRunning)
-            return _path;
+            return _generationTask.Task;
 
         if (_generationRoutine != null)
         {
-            StopCoroutine(
-                _generationRoutine);
+            StopCoroutine(_generationRoutine);
         }
 
-        _generationRoutine =
-            StartCoroutine(
-                GeneratePathRoutine());
+        _generationTask = new TaskCompletionSource<List<Vector3>>();
+        _generationRoutine = StartCoroutine(GeneratePathRoutine());
 
-        return _path;
+        return _generationTask.Task;
     }
 
     public IEnumerator GeneratePathRoutine()
     {
-        _generationRunning =
-            true;
+        _generationRunning = true;
 
         // ---------------------------------------------------------
         // Remove blockers from the previous generation.
@@ -260,17 +259,13 @@ public class VisualPathManager : MonoBehaviour
 
             if (result.Success)
             {
-                _path =
-                    new List<Vector3>(
-                        result.FinalPath);
+                _path = new List<Vector3>(result.FinalPath);
+                _generationTask.TrySetResult(_path);
 
                 DisplayPath();
 
-                _generationRunning =
-                    false;
-
-                _generationRoutine =
-                    null;
+                _generationRunning = false;
+                _generationRoutine = null;
 
                 yield break;
             }
