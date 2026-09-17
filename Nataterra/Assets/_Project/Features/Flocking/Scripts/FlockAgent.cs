@@ -1,6 +1,8 @@
+using DrawXXL;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static Codice.Client.Common.WebApi.WebApiEndpoints;
 
 public class FlockAgent : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class FlockAgent : MonoBehaviour
     Vector3 _destination;
 
     List<FlockAgent> _listOfNeighbours = new();
+    List<Vector3> _path = new();
+
 
     float _separationDistanceSqr;
     float _alignmentDistanceSqr;
@@ -18,6 +22,9 @@ public class FlockAgent : MonoBehaviour
     bool _hasArrived = true;
 
     public Vector3 Velocity => _agent ? _agent.velocity : Vector3.zero;
+
+    // Debug
+    public Vector3 Destination => _destination;
 
 
     private void Awake()
@@ -34,6 +41,12 @@ public class FlockAgent : MonoBehaviour
     {
         if (_hasArrived) return;
 
+        ArriveAtDestination();
+        Flocking();
+    }
+
+    void Flocking()
+    {
         _separationDistanceSqr = FS.SeparationDistance * FS.SeparationDistance;
         _alignmentDistanceSqr = FS.AlignmentDistance * FS.AlignmentDistance;
         _cohesionDistanceSqr = FS.CohesionDistance * FS.CohesionDistance;
@@ -45,7 +58,7 @@ public class FlockAgent : MonoBehaviour
                                                    //ComputeEdgeAvoidance() * FS.EdgeWeight;
 
 
-        Vector3 targetDir = _destination - transform.position;
+        Vector3 targetDir = (_destination - transform.position) * FS.PathWeight;
 
         var acceleration = (targetDir + steering).normalized * FS.AccelerationForce;
         var nextVelocity = _agent.velocity + acceleration * Time.deltaTime;
@@ -115,34 +128,34 @@ public class FlockAgent : MonoBehaviour
         return count > 0 ? (center / count - position).normalized : Vector3.zero;
     }
 
-    Vector3 ComputeEdgeAvoidance()
-    {
-        var velocity = _agent.velocity;
-        if (velocity.sqrMagnitude < 0.0001f) return Vector3.zero;
-
-        var direction = velocity.normalized;
-        var position = transform.position;
-        var avoidance = Vector3.zero;
-
-        if (!NavMesh.FindClosestEdge(position, out NavMeshHit hit, -1))
-            return Vector3.zero;
-
-        float distance = hit.distance;
-        if (distance >= FS.EdgeLookAhead)
-            return Vector3.zero;
-
-        // Is the agent moving toward the edge?
-        float towardEdge = Vector3.Dot(direction, -hit.normal);
-        if (towardEdge <= 0f)
-            return Vector3.zero;
-
-        float strength = 1f - Mathf.Clamp01(distance / FS.EdgeLookAhead);
-
-
-        return hit.normal * (strength * towardEdge); ;
-    }
 
     public void ConfigureSpeed(float speed) => FS.MaxSpeed = Mathf.Max(0.1f, speed);
+
+
+    void ArriveAtDestination()
+    {
+        Vector3 agentPos = transform.position;
+
+        float distance = Vector3.Distance(_destination, agentPos);
+
+        FlockDebug.Instance.DrawAgentTarget(agentPos, _destination, Color.red);
+
+        if (distance > FS.ArrivalDistance) return;
+
+        FlockDebug.Instance.DrawAgentTarget(agentPos, _destination, Color.green);
+
+        
+
+        if (_path.Count > 0)
+        {
+            SetDestination(_path[0]);
+        }
+        else
+        {
+            SetArrival();
+        }
+    }
+
 
     public void SetArrival()
     {
@@ -154,15 +167,24 @@ public class FlockAgent : MonoBehaviour
 
     public void SetDestination(Vector3 target)
     {
+        _path.RemoveAt(0);
+
         _hasArrived = false;
         _destination = target;
 
         _agent.SetDestination(target);
     }
 
+    public void AddDestination(Vector3 target)
+    {
+        _path.Add(target);
+
+        if (_hasArrived)
+            SetDestination(_path[0]);
+    }
+
     public void SetNeighbours(List<FlockAgent> neighbours)
     {
         _listOfNeighbours = neighbours;
     }
-
 }

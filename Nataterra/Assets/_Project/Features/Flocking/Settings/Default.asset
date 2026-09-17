@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Default
   m_EditorClassIdentifier: Flocking::FlockSetting
   MaxSpeed: 7
-  AccelerationForce: 18
-  RotationSharpness: 10
+  AccelerationForce: 50
+  RotationSharpness: 20
+  ArrivalDistance: 4
   SeparationDistance: 5
   AlignmentDistance: 7
-  CohesionDistance: 10
-  SeparationWeight: 5
-  AlignmentWeight: 3
+  CohesionDistance: 9
+  SeparationWeight: 4
+  AlignmentWeight: 3.5
   CohesionWeight: 1.2
-  EdgeWeight: 3
-  EdgeProbeRadius: 0.45
-  EdgeLookAhead: 3.5
+  EdgeWeight: 2
+  EdgeLookAhead: 5

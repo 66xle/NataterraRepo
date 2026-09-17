@@ -14,7 +14,6 @@ public class FlockingManager : MonoBehaviour
 
     [Header("Movement")]
     [Min(0.1f)] public float BaseSpeed = 7f;
-    public float FlockBoundRadius = 30f;
     public float ArrivalDistance = 3f;
 
     List<FlockAgent> _agents = new();
@@ -58,7 +57,7 @@ public class FlockingManager : MonoBehaviour
 
     private void Update()
     {
-        ArriveAtDestination();
+        //ArriveAtDestination();
     }
 
 
@@ -95,20 +94,22 @@ public class FlockingManager : MonoBehaviour
         return center / _agents.Count;
     }
 
-    public void SetDestination(Vector3 target)
+    public void AddDestination(Vector3 target)
     {
-        _destination = target;
+        FlockDebug.Instance.AddPoint(target);
 
-        Debug.Log(target);
+        _destination = target;
 
         foreach (FlockAgent agent in _agents)
         {
-            agent.SetDestination(target);
+            agent.AddDestination(target);
         }
     }
 
     public void SetNeighbours()
     {
+        FlockDebug.Instance.SetAgents(_agents);
+
         foreach (FlockAgent agent in _agents)
         {
             List<FlockAgent> neighbours = new(_agents);

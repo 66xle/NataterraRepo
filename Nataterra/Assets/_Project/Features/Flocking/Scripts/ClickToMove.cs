@@ -21,7 +21,7 @@ public class ClickToMove : MonoBehaviour
 
             if (!NavMesh.SamplePosition(hit.point, out NavMeshHit navHit, 2f, NavMesh.AllAreas)) return;
 
-            FlockingManager.SetDestination(navHit.position);
+            FlockingManager.AddDestination(navHit.position);
         }
     }
 }
