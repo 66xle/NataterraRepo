@@ -1,0 +1,18 @@
+{
+    "name": "Flocking",
+    "rootNamespace": "",
+    "references": [
+        "GUID:88be65f96b86746888c927a5c8ff3534",
+        "GUID:5fd453cd0d182422093c4a764fd5eadb",
+        "GUID:6babdba9f8b742f40904649736008000"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

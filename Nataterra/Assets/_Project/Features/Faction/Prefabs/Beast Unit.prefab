@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 3834988761649023824}
   - component: {fileID: 4484903406507487321}
   - component: {fileID: 3671582335572671142}
-  - component: {fileID: 7796950474427893965}
+  - component: {fileID: 3067496360927318245}
   m_Layer: 0
   m_Name: Beast Unit
   m_TagString: Untagged
@@ -249,7 +249,7 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &7796950474427893965
+--- !u!114 &3067496360927318245
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -258,12 +258,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6562541755985119412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88a425a0727488f42a1be16456a9874d, type: 3}
+  m_Script: {fileID: 11500000, guid: 27b13b2273f643b44a55161019a0985c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: FactionData::UnitAI
-  MoveDuration: 1
-  MinSpeed: 10
-  MaxSpeed: 20
-  StoppingDistance: 2
-  RotationSpeed: 5
-  SampleDistance: 1
+  m_EditorClassIdentifier: Flocking::FlockAgent
+  FS: {fileID: 11400000, guid: 4e4b1130f726fa241a2fb6162646345b, type: 2}
