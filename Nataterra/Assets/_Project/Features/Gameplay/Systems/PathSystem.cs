@@ -27,7 +27,6 @@ public class PathSystem : NetworkBehaviour
         List<VisualRoad> roads = BuildVisualRoads();
         PathManager.CreateRequest(corridors, start, end, roads, ConvertHexes(_tgs.cells));
         List<Vector3> path = await PathManager.GeneratePath();
-        PathManager.DisplayPath();
 
         return path;
     }

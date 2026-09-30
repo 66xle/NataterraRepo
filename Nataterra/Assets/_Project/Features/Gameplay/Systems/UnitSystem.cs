@@ -41,7 +41,7 @@ public class UnitSystem : NetworkBehaviour
         GameObject prefab = _gs.MSM.GetUnitPrefab(type);
 
         GameObject newUnit = Instantiate(prefab, spawnPosition, Quaternion.identity);
-        newUnit.GetComponent<UnitAI>().SetPosition(spawnPosition);
+        newUnit.GetComponent<FlockAgent>().SetPosition(spawnPosition);
 
         _gs.MSM.AddUnitObject(GUID, newUnit);
     }
@@ -52,10 +52,23 @@ public class UnitSystem : NetworkBehaviour
         List<Vector3> path = await _gs.PathSystem.GeneratePath(listHexes, start, end);
         if (path == null) return;
 
+        List<FlockAgent> agents = new();
+
         foreach (string guid in GUIDs)
         {
             GameObject moveUnit = _gs.MSM.GetUnitObject(guid);
-            moveUnit.GetComponent<UnitAI>().SetPath(path);
+            FlockAgent agent = moveUnit.GetComponent<FlockAgent>();
+            
+            agents.Add(agent);
         }
+
+        foreach (FlockAgent agent in agents)
+        {
+            agent.SetPath(new(path));
+            agent.SetNeighbours(agents);
+        }
+
+        FlockDebug.Instance.SetPath(new(path));
+        FlockDebug.Instance.SetAgents(agents);
     }
 }

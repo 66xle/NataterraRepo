@@ -19,9 +19,11 @@ public class FlockSetting : ScriptableObject
     public float SeparationWeight = 1.6f;
     public float AlignmentWeight = 1f;
     public float CohesionWeight = 1.2f;
-    public float EdgeWeight = 3f;
-    public float PathWeight = 2f;
+    public float DestinationWeight = 2f;
+    public float ToPathWeight = 2f;
 
     [Header("Edge Avoidance")]
-    public float EdgeLookAhead = 3.5f;
+    public float EdgeNormalWeight = 3f;
+    public float EdgeDistance = 3f;
+    public float EdgeDynamicMaxStrength = 5f;
 }

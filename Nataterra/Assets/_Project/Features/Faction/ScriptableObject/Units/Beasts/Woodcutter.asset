@@ -21,7 +21,7 @@ MonoBehaviour:
   Health: 6
   Initiative: 1
   Group: 3
-  Movement: 2
+  Movement: 5
   FoodCost: 2
   WoodCost: 0
   MetalCost: 0

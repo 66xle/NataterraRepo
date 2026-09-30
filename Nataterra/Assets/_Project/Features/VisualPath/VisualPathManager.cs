@@ -262,7 +262,7 @@ public class VisualPathManager : MonoBehaviour
                 _path = new List<Vector3>(result.FinalPath);
                 _generationTask.TrySetResult(_path);
 
-                DisplayPath();
+                //DisplayPath();
 
                 _generationRunning = false;
                 _generationRoutine = null;
@@ -545,28 +545,27 @@ public class VisualPathManager : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        DrawBasics.usedUnityLineDrawingMethod =
-            DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
+        //DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
 
-        if (ListOfRoads == null)
-            return;
+        //if (ListOfRoads == null)
+        //    return;
 
-        foreach (RoadWrapper road in ListOfRoads)
-        {
-            if (road == null ||
-                road.Points == null)
-            {
-                continue;
-            }
+        //foreach (RoadWrapper road in ListOfRoads)
+        //{
+        //    if (road == null ||
+        //        road.Points == null)
+        //    {
+        //        continue;
+        //    }
 
-            for (int i = 0;
-                 i < road.Points.Count - 1;
-                 i++)
-            {
-                DrawBasics.Line(
-                    road.Points[i].position,
-                    road.Points[i + 1].position);
-            }
-        }
+        //    for (int i = 0;
+        //         i < road.Points.Count - 1;
+        //         i++)
+        //    {
+        //        DrawBasics.Line(
+        //            road.Points[i].position,
+        //            road.Points[i + 1].position);
+        //    }
+        //}
     }
 }

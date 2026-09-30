@@ -1,3 +1,4 @@
+using CodiceApp;
 using DrawXXL;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,15 +33,16 @@ public class FlockDebug : MonoBehaviour
 
     private void Update()
     {
-        DrawPath();
         RemovePoint();
     }
 
     void DrawPath()
     {
+        DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.debugLines;
+
         for (int i = 1; i < Path.Count; i++) 
         {
-            DrawBasics.Line(Path[i - 1], Path[i], Color.blue);
+            DrawBasics.Line(Path[i - 1], Path[i], Color.purple);
         }
     }
 
@@ -64,18 +66,34 @@ public class FlockDebug : MonoBehaviour
             Path.RemoveAt(0);
     }
 
+    public void SetPath(List<Vector3> path)
+    {
+        Path = path;
+    }
+
     public void SetAgents(List<FlockAgent> agents)
     {
         Agents = agents;
     }
 
-    public void DrawAgentTarget(Vector3 position, Vector3 target, Color color)
+    public void DrawVector(Vector3 position, Vector3 target, Color color)
     {
-        DrawBasics.Vector(position, target, Color.red, 0, "", 1f);
+        DrawBasics.Vector(position, target, color, 0, "", 1f);
+    }
+
+    public void DrawLine(Vector3 position, Vector3 target, Color color)
+    {
+        DrawBasics.Line(position, target, color);
     }
 
     public void AddPoint(Vector3 point)
     {
         Path.Add(point);
+    }
+
+    private void OnDrawGizmos()
+    {
+        DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
+        DrawPath();
     }
 }
