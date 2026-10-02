@@ -31,39 +31,25 @@ public class FlockDebug : MonoBehaviour
         DrawBasics.coneLength_interpretation_forStraightVectors = DrawBasics.LengthInterpretation.absoluteUnits;
     }
 
-    private void Update()
-    {
-        RemovePoint();
-    }
-
     void DrawPath()
     {
-        DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.debugLines;
-
         for (int i = 1; i < Path.Count; i++) 
         {
-            DrawBasics.Line(Path[i - 1], Path[i], Color.purple);
+            DrawBasics.Line(Path[i - 1], Path[i], Color.purple, 0.1f);
         }
     }
 
-    void RemovePoint()
+    void RemovePath()
     {
         if (Path.Count == 0) return;
 
-        int lowestIndex = 10000;
-
         foreach (FlockAgent agent in Agents)
         {
-            if (!Path.Contains(agent.Destination)) continue;
-
-            int index = Path.IndexOf(agent.Destination);
-
-            if (index < lowestIndex)
-                lowestIndex = index;
+            if (agent.HasArrived) continue;
+            return;
         }
 
-        if (lowestIndex > 0)
-            Path.RemoveAt(0);
+        Path.Clear();
     }
 
     public void SetPath(List<Vector3> path)
@@ -88,12 +74,18 @@ public class FlockDebug : MonoBehaviour
 
     public void AddPoint(Vector3 point)
     {
+        RemovePath();
+
         Path.Add(point);
     }
 
     private void OnDrawGizmos()
     {
         DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.gizmoLines;
+
         DrawPath();
+
+
+        DrawBasics.usedUnityLineDrawingMethod = DrawBasics.UsedUnityLineDrawingMethod.debugLines;
     }
 }

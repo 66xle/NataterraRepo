@@ -14,9 +14,11 @@ public class FlockAgent : MonoBehaviour
 
     NavMeshAgent _agent;
     Vector3 _destination;
+    Vector3 _target;
 
     List<FlockAgent> _listOfNeighbours = new();
     List<Vector3> _path = new();
+    int _currentSegmentIndex;
     Vector3 _prevPoint;
 
 
@@ -29,7 +31,7 @@ public class FlockAgent : MonoBehaviour
     public Vector3 Velocity => _agent ? _agent.velocity : Vector3.zero;
 
     // Debug
-    public Vector3 Destination => _destination;
+    public bool HasArrived => _hasArrived;
 
 
     private void Awake()
@@ -48,6 +50,8 @@ public class FlockAgent : MonoBehaviour
 
         ArriveAtDestination();
         Flocking();
+        UpdateCurrentSegment();
+        PathFollowing();
     }
 
     void Flocking()
@@ -81,27 +85,31 @@ public class FlockAgent : MonoBehaviour
         }
     }
 
-    Vector3 GetPathPosition(Vector3 point)
+    Vector3 GetPathPosition(Vector3 point, int segmentIndex)
     {
-        Vector3 segment = _destination - _prevPoint;
-        float t = Vector3.Dot(point - _prevPoint, segment) / segment.sqrMagnitude;
+        Vector3 destination = _path[segmentIndex + 1];
+        Vector3 current = _path[segmentIndex];
+
+        Vector3 segment = destination - current;
+        float t = Vector3.Dot(point - current, segment) / segment.sqrMagnitude;
+
         t = Mathf.Clamp01(t);
 
-        Vector3 closestPoint = _prevPoint + segment * t;
+        Vector3 closestPoint = current + segment * t;
         return closestPoint;
     }
 
+    
+
     Vector3 ComputeSeek()
     {
-        Vector3 desired_velocity = (_destination - transform.position).normalized * FS.MaxSpeed;
+        Vector3 desired_velocity = (_target - transform.position).normalized * FS.MaxSpeed;
         Vector3 steering = desired_velocity - _agent.velocity;
         return steering;
     }
 
     Vector3 ComputeEdgeAvoidance()
     {
-        //Vector3 aheadPos = transform.position + _agent.velocity.normalized * FS.EdgeLookAhead;
-
         NavMeshHit hit;
         if (!NavMesh.FindClosestEdge(transform.position, out hit, -1))
             return Vector3.zero;
@@ -120,7 +128,7 @@ public class FlockAgent : MonoBehaviour
 
         
 
-        Vector3 pathPos = GetPathPosition(edgePos);
+        Vector3 pathPos = GetPathPosition(edgePos, _currentSegmentIndex);
         Vector3 toPathDir = (pathPos - edgePos).normalized * FS.ToPathWeight;
 
 
@@ -246,31 +254,80 @@ public class FlockAgent : MonoBehaviour
     public void ConfigureSpeed(float speed) => FS.MaxSpeed = Mathf.Max(0.1f, speed);
 
 
+    Vector3 GetLookAheadPosition(Vector3 currentPos, int segmentIndex, float lookAheadDistance)
+    {
+        Vector3 pos = currentPos;
+
+        while (segmentIndex < _path.Count - 1)
+        {
+            Vector3 segmentStart = _path[segmentIndex];
+            Vector3 segmentEnd = _path[segmentIndex + 1];
+            segmentStart.y = currentPos.y;
+            segmentEnd.y = currentPos.y;
+
+            Vector3 pathDir = (segmentEnd - segmentStart).normalized;
+
+            float distanceToEnd = Mathf.Max(0f, Vector3.Dot(segmentEnd - pos, pathDir));
+
+            // Look-ahead is somewhere on this segment.
+            if (distanceToEnd >= lookAheadDistance)
+            {
+                return pos + pathDir * lookAheadDistance;
+            }
+
+            // Look-ahead crosses this segment.
+            lookAheadDistance -= distanceToEnd;
+            pos = segmentEnd;
+            segmentIndex++;
+        }
+
+        // We've reached the end of the path.
+        return _destination;
+    }
+
+    void UpdateCurrentSegment()
+    {
+        if (_currentSegmentIndex >= _path.Count - 2) return;
+
+        Vector3 waypoint = _path[_currentSegmentIndex + 1];
+        Vector3 segmentDir = (_path[_currentSegmentIndex + 1] - _path[_currentSegmentIndex]).normalized;
+
+        Vector3 currentPathPos = GetPathPosition(transform.position, _currentSegmentIndex);
+        float distanceToWaypoint = Vector3.Distance(currentPathPos, waypoint);
+
+        if (distanceToWaypoint < FS.ArrivalDistance)
+        {
+            _currentSegmentIndex++;
+        }
+
+        DrawBasics.PointTag(transform.position, _currentSegmentIndex.ToString(), Color.white, 0, 3f);
+    }
+
+    void PathFollowing()
+    {
+        Vector3 currentPathPos = GetPathPosition(transform.position, _currentSegmentIndex);
+        Vector3 aheadPathPos = GetLookAheadPosition(currentPathPos, _currentSegmentIndex, FS.ArrivalDistance);
+
+        FlockDebug.Instance.DrawVector(transform.position, aheadPathPos, Color.blue);
+
+        _target = aheadPathPos;
+        _agent.SetDestination(aheadPathPos);
+    }
+
     void ArriveAtDestination()
     {
         float distance = Vector3.Distance(transform.position, _destination);
 
-        FlockDebug.Instance.DrawVector(transform.position, _destination, Color.blue);
-
         if (distance > FS.ArrivalDistance) return;
 
-        FlockDebug.Instance.DrawVector(transform.position, _destination, Color.green);
-
-        if (_path.Count > 0)
-        {
-            SetDestination(_path[0]);
-        }
-        else
-        {
-            SetArrival();
-        }
+        SetArrival();
     }
-
 
     public void SetArrival()
     {
         _hasArrived = true;
         _agent.ResetPath();
+        _agent.isStopped = true;
 
         Debug.Log("Stop");
     }
@@ -279,8 +336,10 @@ public class FlockAgent : MonoBehaviour
     {
         _path = path;
 
-        _destination = _path[0];
-        SetDestination(_path[1]);
+        _currentSegmentIndex = 0;
+
+        _destination = _path[^1];
+        _hasArrived = false;
     }
 
     public void SetPosition(Vector3 position)
@@ -294,25 +353,19 @@ public class FlockAgent : MonoBehaviour
         _agent.Warp(hit.position);
     }
 
-    public void SetDestination(Vector3 target)
-    {
-        _prevPoint = _destination;
-
-        _hasArrived = false;
-        _destination = target;
-
-        _agent.SetDestination(target);
-
-        _path.Remove(_prevPoint);
-        _path.Remove(_destination);
-    }
 
     public void AddDestination(Vector3 target)
     {
-        _path.Add(target);
-
         if (_hasArrived)
-            SetDestination(_path[0]);
+        {
+            _currentSegmentIndex = 0;
+            _path.Clear();
+            _path.Add(transform.position);
+        }
+
+        _path.Add(target);
+        _destination = target;
+        _hasArrived = false;
     }
 
     public void SetNeighbours(List<FlockAgent> neighbours)
