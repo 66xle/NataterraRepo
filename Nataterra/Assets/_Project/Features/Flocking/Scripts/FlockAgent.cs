@@ -65,7 +65,7 @@ public class FlockAgent : MonoBehaviour
             ComputeAlignment() * FS.AlignmentWeight +
             ComputeCohesion() * FS.CohesionWeight;
 
-        Vector3 edgeAvoid = ComputeEdgeFollowing(_target);
+        Vector3 edgeAvoid = ComputeEdgeFollowing();
 
         if (edgeAvoid == Vector3.zero)
             steering += ComputeSeek() * FS.DestinationWeight;
@@ -104,6 +104,20 @@ public class FlockAgent : MonoBehaviour
         return closestPoint;
     }
 
+    bool IsInSegment(Vector3 position, int segmentIndex, out float progress)
+    {
+        Vector3 destination = _path[segmentIndex + 1];
+        Vector3 current = _path[segmentIndex];
+
+        Vector3 segment = destination - current;
+        float t = Vector3.Dot(position - current, segment) / segment.sqrMagnitude;
+
+        t = Mathf.Clamp01(t);
+
+        progress = t;
+
+        return t > 0 && t < 1f;
+    }
     
 
     Vector3 ComputeSeek()
@@ -113,7 +127,7 @@ public class FlockAgent : MonoBehaviour
         return steering;
     }
 
-    Vector3 ComputeEdgeFollowing(Vector3 lookAheadPos)
+    Vector3 ComputeEdgeFollowing()
     {
         if (!NavMesh.FindClosestEdge(transform.position, out NavMeshHit hit, -1))
             return Vector3.zero;
@@ -129,7 +143,8 @@ public class FlockAgent : MonoBehaviour
 
         if (distance > _agent.radius)
         {
-            if (NavMesh.Raycast(transform.position, lookAheadPos, out NavMeshHit raycastHit, NavMesh.AllAreas))
+            NavMesh.SamplePosition(new Vector3(transform.position.x, edgePos.y, transform.position.z), out NavMeshHit surfaceHit, 0.3f, NavMesh.AllAreas);
+            if (!NavMesh.Raycast(surfaceHit.position, _target, out NavMeshHit raycastHit, NavMesh.AllAreas))
                 return Vector3.zero;
         }
 
@@ -145,10 +160,14 @@ public class FlockAgent : MonoBehaviour
         Vector3 tangentB = -tangentA;
 
         // Choose the tangent that generally takes us toward the path look-ahead.
-        Vector3 toLookAhead = lookAheadPos - transform.position;
+        Vector3 currentPathPos = _path[_currentSegmentIndex + 1];
+        Vector3 toLookAhead = currentPathPos - transform.position;
         toLookAhead.y = 0f;
 
-        Vector3 wallDirection = Vector3.Dot(tangentA, toLookAhead) > Vector3.Dot(tangentB, toLookAhead) ? tangentA : tangentB;
+        float a = Vector3.Dot(tangentA, toLookAhead);
+        float b = Vector3.Dot(tangentB, toLookAhead);
+
+        Vector3 wallDirection = a > b ? tangentA : tangentB;
 
         // Keep the agent slightly inside the NavMesh.
         float distanceError = FS.EdgeDistance - distance;
@@ -160,7 +179,7 @@ public class FlockAgent : MonoBehaviour
         // Convert desired velocity to steering.
         Vector3 steering = desiredVelocity - _agent.velocity;
 
-        FlockDebug.Instance.DrawLine(transform.position, edgePos, Color.yellow);
+        DrawBasics.Line(transform.position, edgePos, Color.yellow, 0, distance.ToString());
         FlockDebug.Instance.DrawVector(transform.position, transform.position + edgeNormal * 2f, Color.magenta);
         FlockDebug.Instance.DrawVector(transform.position, transform.position + wallDirection * 2f, Color.cyan);
 
@@ -172,10 +191,10 @@ public class FlockAgent : MonoBehaviour
         Vector3 edgeDirection = Vector3.zero;
         float length = 0.5f;
 
-        bool up = NavMesh.SamplePosition(position + Vector3.forward, out _, length, NavMesh.AllAreas);
-        bool left = NavMesh.SamplePosition(position + Vector3.left, out _, length, NavMesh.AllAreas);
-        bool right = NavMesh.SamplePosition(position + Vector3.right, out _, length, NavMesh.AllAreas);
-        bool down = NavMesh.SamplePosition(position + Vector3.back, out _, length, NavMesh.AllAreas);
+        bool up = NavMesh.SamplePosition(position + Vector3.forward * 0.3f, out _, length, NavMesh.AllAreas);
+        bool left = NavMesh.SamplePosition(position + Vector3.left * 0.3f, out _, length, NavMesh.AllAreas);
+        bool right = NavMesh.SamplePosition(position + Vector3.right * 0.3f, out _, length, NavMesh.AllAreas);
+        bool down = NavMesh.SamplePosition(position + Vector3.back * 0.3f, out _, length, NavMesh.AllAreas);
         
         if (!up)
             edgeDirection -= Vector3.forward;
@@ -309,12 +328,19 @@ public class FlockAgent : MonoBehaviour
         Vector3 waypoint = _path[_currentSegmentIndex + 1];
         Vector3 segmentDir = (_path[_currentSegmentIndex + 1] - _path[_currentSegmentIndex]).normalized;
 
+        
         Vector3 currentPathPos = GetPathPosition(transform.position, _currentSegmentIndex);
+
+        DrawBasics.PointTag(currentPathPos, "Player Position");
+
         float distanceToWaypoint = Vector3.Distance(currentPathPos, waypoint);
 
-        if (distanceToWaypoint < FS.ArrivalDistance)
+        if (IsInSegment(transform.position, _currentSegmentIndex, out float progress))
         {
-            _currentSegmentIndex++;
+            if (distanceToWaypoint < FS.ArrivalDistance && progress > 0.5f)
+            {
+                _currentSegmentIndex++;
+            }
         }
 
         DrawBasics.PointTag(transform.position, _currentSegmentIndex.ToString(), Color.white, 0, 3f);
@@ -351,6 +377,7 @@ public class FlockAgent : MonoBehaviour
 
     public void SetPath(List<Vector3> path)
     {
+        _path.Clear();
         _path = path;
 
         _currentSegmentIndex = 0;
