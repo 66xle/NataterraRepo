@@ -49,9 +49,9 @@ public class FlockAgent : MonoBehaviour
         if (_hasArrived) return;
 
         ArriveAtDestination();
-        Flocking();
         UpdateCurrentSegment();
         PathFollowing();
+        Flocking();
     }
 
     void Flocking()
@@ -63,9 +63,14 @@ public class FlockAgent : MonoBehaviour
         Vector3 steering =
             ComputeSeparation() * FS.SeparationWeight +
             ComputeAlignment() * FS.AlignmentWeight +
-            ComputeCohesion() * FS.CohesionWeight +
-            ComputeSeek() * FS.DestinationWeight +
-            ComputeEdgeAvoidance();
+            ComputeCohesion() * FS.CohesionWeight;
+
+        Vector3 edgeAvoid = ComputeEdgeFollowing(_target);
+
+        if (edgeAvoid == Vector3.zero)
+            steering += ComputeSeek() * FS.DestinationWeight;
+        else
+            steering += edgeAvoid;
 
 
         var acceleration = (steering).normalized * FS.AccelerationForce;
@@ -108,46 +113,58 @@ public class FlockAgent : MonoBehaviour
         return steering;
     }
 
-    Vector3 ComputeEdgeAvoidance()
+    Vector3 ComputeEdgeFollowing(Vector3 lookAheadPos)
     {
-        NavMeshHit hit;
-        if (!NavMesh.FindClosestEdge(transform.position, out hit, -1))
+        if (!NavMesh.FindClosestEdge(transform.position, out NavMeshHit hit, -1))
             return Vector3.zero;
+
 
         Vector3 edgePos = hit.position;
-        if (NavMesh.Raycast(transform.position, edgePos, out hit, -1))
-            return Vector3.zero;
-
-        FlockDebug.Instance.DrawLine(transform.position, edgePos, Color.yellow);
-
 
         float distance = Vector3.Distance(transform.position, new Vector3(edgePos.x, transform.position.y, edgePos.z));
 
         if (distance > FS.EdgeDistance)
             return Vector3.zero;
 
-        
 
-        Vector3 pathPos = GetPathPosition(edgePos, _currentSegmentIndex);
-        Vector3 toPathDir = (pathPos - edgePos).normalized * FS.ToPathWeight;
+        if (distance > _agent.radius)
+        {
+            if (NavMesh.Raycast(transform.position, lookAheadPos, out NavMeshHit raycastHit, NavMesh.AllAreas))
+                return Vector3.zero;
+        }
 
+        // Your existing method gives us the direction back onto the NavMesh.
+        Vector3 edgeNormal = GetEdgeDirection(edgePos).normalized;
 
-        Vector3 normalDir = GetEdgeDirection(edgePos);
-
-        edgePos.y = transform.position.y;
-        distance = Vector3.Distance(transform.position, edgePos);
-
-        float magnitude = distance == 0 ? normalDir.magnitude : distance;
-
-        // Stronger force when closer to edge
-        float strength = FS.EdgeNormalWeight * Mathf.InverseLerp(FS.EdgeDynamicMaxStrength, 0f, normalDir.magnitude);
-        normalDir = normalDir * strength;
+        if (edgeNormal == Vector3.zero)
+            return Vector3.zero;
 
 
-        FlockDebug.Instance.DrawVector(transform.position, transform.position + toPathDir, Color.darkCyan);
-        FlockDebug.Instance.DrawVector(transform.position, transform.position + normalDir, Color.mediumPurple);
+        // The wall has two possible directions we can travel along.
+        Vector3 tangentA = Vector3.Cross(Vector3.up, edgeNormal).normalized;
+        Vector3 tangentB = -tangentA;
 
-        return (toPathDir) + (normalDir);
+        // Choose the tangent that generally takes us toward the path look-ahead.
+        Vector3 toLookAhead = lookAheadPos - transform.position;
+        toLookAhead.y = 0f;
+
+        Vector3 wallDirection = Vector3.Dot(tangentA, toLookAhead) > Vector3.Dot(tangentB, toLookAhead) ? tangentA : tangentB;
+
+        // Keep the agent slightly inside the NavMesh.
+        float distanceError = FS.EdgeDistance - distance;
+        Vector3 stayAwayFromEdge = edgeNormal * distanceError;
+
+        // Wall-following desired velocity.
+        Vector3 desiredVelocity = wallDirection * FS.MaxSpeed + stayAwayFromEdge * FS.EdgeNormalWeight;
+
+        // Convert desired velocity to steering.
+        Vector3 steering = desiredVelocity - _agent.velocity;
+
+        FlockDebug.Instance.DrawLine(transform.position, edgePos, Color.yellow);
+        FlockDebug.Instance.DrawVector(transform.position, transform.position + edgeNormal * 2f, Color.magenta);
+        FlockDebug.Instance.DrawVector(transform.position, transform.position + wallDirection * 2f, Color.cyan);
+
+        return steering;
     }
 
     Vector3 GetEdgeDirection(Vector3 position)
