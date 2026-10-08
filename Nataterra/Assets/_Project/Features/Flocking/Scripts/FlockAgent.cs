@@ -160,8 +160,7 @@ public class FlockAgent : MonoBehaviour
         Vector3 tangentB = -tangentA;
 
         // Choose the tangent that generally takes us toward the path look-ahead.
-        Vector3 currentPathPos = _path[_currentSegmentIndex + 1];
-        Vector3 toLookAhead = currentPathPos - transform.position;
+        Vector3 toLookAhead = _target - transform.position;
         toLookAhead.y = 0f;
 
         float a = Vector3.Dot(tangentA, toLookAhead);

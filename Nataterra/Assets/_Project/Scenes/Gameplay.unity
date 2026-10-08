@@ -1128,7 +1128,7 @@ MonoBehaviour:
   NavMeshSampleDistance: 0.5
   NavMeshHeightTolerance: 5
   NavMeshValidationSampleDistance: 0.5
-  NavMeshEdgeAvoidanceDistance: 0.5
+  NavMeshEdgeAvoidanceDistance: 2
   NavMeshEdgeAvoidanceIterations: 2
   NavMeshEdgeAvoidanceStrength: 1
   ValidateSmoothedPath: 1

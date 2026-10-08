@@ -12,17 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2f65e053807114fb97a868ebf6c8d0, type: 3}
   m_Name: Default
   m_EditorClassIdentifier: Flocking::FlockSetting
-  MaxSpeed: 10
+  MaxSpeed: 7
   AccelerationForce: 50
   RotationSharpness: 10
-  ArrivalDistance: 2
-  SeparationDistance: 3
+  ArrivalDistance: 3
+  SeparationDistance: 5
   AlignmentDistance: 7
   CohesionDistance: 9
-  SeparationWeight: 5
-  AlignmentWeight: 3
+  SeparationWeight: 13
+  AlignmentWeight: 5
   CohesionWeight: 1.2
-  EdgeNormalWeight: 5
-  DestinationWeight: 2
+  DestinationWeight: 1
   ToPathWeight: 2
+  EdgeNormalWeight: 8
   EdgeDistance: 2
+  EdgeDynamicMaxStrength: 8

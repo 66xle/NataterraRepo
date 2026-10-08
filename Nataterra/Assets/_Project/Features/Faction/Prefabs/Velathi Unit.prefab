@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 8642918082477185686}
   - component: {fileID: 3834988761649023824}
   - component: {fileID: 4484903406507487321}
-  - component: {fileID: 2877909017822695854}
+  - component: {fileID: 4121756820376997747}
+  - component: {fileID: 618974407763413920}
   m_Layer: 0
   m_Name: Velathi Unit
   m_TagString: Untagged
@@ -113,7 +114,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2877909017822695854
+--- !u!195 &4121756820376997747
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6562541755985119412}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.5
+  m_WalkableMask: 1
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &618974407763413920
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,6 +145,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6562541755985119412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88a425a0727488f42a1be16456a9874d, type: 3}
+  m_Script: {fileID: 11500000, guid: 27b13b2273f643b44a55161019a0985c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: FactionData::UnitAI
+  m_EditorClassIdentifier: Flocking::FlockAgent
+  FS: {fileID: 11400000, guid: 4e4b1130f726fa241a2fb6162646345b, type: 2}

@@ -15,7 +15,7 @@ MonoBehaviour:
   Settings:
     Faction: 0
     WorkerUnit: 100
-    StartingUnits: 64000000
+    StartingUnits: 640000006400000064000000
   ListOfUnits:
   - {fileID: 11400000, guid: e07cedc3a23f961438c5b02f6f422a26, type: 2}
   - {fileID: 11400000, guid: f3708edfa8d94d74ab9747d4f630d738, type: 2}
