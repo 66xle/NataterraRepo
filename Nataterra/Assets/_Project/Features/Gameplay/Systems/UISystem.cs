@@ -130,4 +130,9 @@ public class UISystem : NetworkBehaviour
         Vector3 position = _gs.TGS.CellGetPosition(cellIndex);
         _uiManager.ShowSelectionIcons(dictTypes, position);
     }
+
+    public void ClearSelectionIcons()
+    {
+        _uiManager.ClearSelectionIcons();
+    }
 }

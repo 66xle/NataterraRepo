@@ -27,10 +27,13 @@ public partial class UIManager : MonoBehaviour
     List<UnitUI> _listOfUnitUI = new();
 
     MapStateMachine MapCtx;
+    UnitSelectionRadial radical;
 
     private void Awake()
     {
         InstanceHandler.RegisterInstance(this);
+
+        radical = UnitSelectionParent.GetComponent<UnitSelectionRadial>();
     }
 
     private void OnDestroy()
@@ -97,13 +100,35 @@ public partial class UIManager : MonoBehaviour
 
     public void ShowSelectionIcons(Dictionary<UnitType, Group> dictTypes, Vector3 spawnPosition)
     {
+        List<Transform> icons = new();
+
         foreach (UnitType type in dictTypes.Keys)
         {
             Vector3 dir = spawnPosition - Camera.main.transform.position;
-            GameObject icon = Instantiate(UnitSelectionIcon, spawnPosition, Quaternion.LookRotation(dir), UnitSelectionParent);
+            GameObject icon = Instantiate(UnitSelectionIcon, UnitSelectionParent);
 
-            XRayImageTexture xray = icon.GetComponent<XRayImageTexture>();
+            UnitSelectionIcon xray = icon.GetComponent<UnitSelectionIcon>();
             xray.SetMaterial(DictUnitTextures[type]);
+
+            icons.Add(icon.transform);
         }
+
+        for (int i = 0; i < 3f; i++)
+        {
+            Vector3 dir = spawnPosition - Camera.main.transform.position;
+            GameObject icon = Instantiate(UnitSelectionIcon, UnitSelectionParent);
+
+            UnitSelectionIcon xray = icon.GetComponent<UnitSelectionIcon>();
+            xray.SetMaterial(DictUnitTextures[UnitType.Woodcutter]);
+
+            icons.Add(icon.transform);
+        }
+
+        radical.SetIcons(icons, spawnPosition);
+    }
+
+    public void ClearSelectionIcons()
+    {
+        radical.Clear();
     }
 }

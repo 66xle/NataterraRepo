@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class XRayImageTexture : MonoBehaviour
+public class UnitSelectionIcon : MonoBehaviour
 {
     public Material XrayMaterial;
     Image sourceImage;
