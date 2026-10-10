@@ -245,6 +245,11 @@ public class MapStateMachine : NetworkBehaviour
         return _state[cellIndex].DictOfGroups[_localPlayerID][unitTypes[0]].ListOfUnits;
     }
 
+    public Dictionary<UnitType, Group> GetDictOfUnitTypes(int cellIndex)
+    {
+        return _state[cellIndex].DictOfGroups[_localPlayerID];
+    }
+
 
     public int GetOrigin(List<Unit> units, int selectedIndex, out bool IsOrigin)
     {

@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using PurrNet;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UISystem : NetworkBehaviour
@@ -119,5 +121,13 @@ public class UISystem : NetworkBehaviour
     public void EnableEndPhaseButton(bool value)
     { 
         _uiManager.EnableEndPhaseButton(value);
+    }
+
+
+
+    public void ShowSelectionIcons(Dictionary<UnitType, Group> dictTypes, int cellIndex)
+    {
+        Vector3 position = _gs.TGS.CellGetPosition(cellIndex);
+        _uiManager.ShowSelectionIcons(dictTypes, position);
     }
 }

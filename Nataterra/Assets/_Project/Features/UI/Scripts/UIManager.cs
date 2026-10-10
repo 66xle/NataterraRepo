@@ -1,17 +1,28 @@
+using Alchemy.Serialization;
 using PurrNet;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+[AlchemySerialize]
+public partial class UIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text PhaseTitle;
     [SerializeField] Button EndPhaseButton;
 
+    [Header("Development")]
     [SerializeField] GameObject UnitUIPrefab;
     [SerializeField] Transform UnitUIParent;
+
+    [Header("Selection")]
+    [SerializeField] GameObject UnitSelectionIcon;
+    [SerializeField] Transform UnitSelectionParent;
+
+    [AlchemySerializeField, NonSerialized]
+    public Dictionary<UnitType, Texture2D> DictUnitTextures = new();
 
     List<UnitUI> _listOfUnitUI = new();
 
@@ -81,5 +92,18 @@ public class UIManager : MonoBehaviour
     public void EnableEndPhaseButton(bool value)
     {
         EndPhaseButton.interactable = value;
+    }
+
+
+    public void ShowSelectionIcons(Dictionary<UnitType, Group> dictTypes, Vector3 spawnPosition)
+    {
+        foreach (UnitType type in dictTypes.Keys)
+        {
+            Vector3 dir = spawnPosition - Camera.main.transform.position;
+            GameObject icon = Instantiate(UnitSelectionIcon, spawnPosition, Quaternion.LookRotation(dir), UnitSelectionParent);
+
+            XRayImageTexture xray = icon.GetComponent<XRayImageTexture>();
+            xray.SetMaterial(DictUnitTextures[type]);
+        }
     }
 }

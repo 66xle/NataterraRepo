@@ -89,8 +89,11 @@ public class SMM_MapState : GameplayBaseState
                 return;
 
             List<Unit> units = MapCtx.GetUnitList(cellIndex);
+            Dictionary<UnitType, Group> dictTypes = MapCtx.GetDictOfUnitTypes(cellIndex);
+
+            MapCtx.GS.UISystem.ShowSelectionIcons(dictTypes, cellIndex);
             
-            MapCtx.OnSelectUnit?.Invoke(units);
+            //MapCtx.OnSelectUnit?.Invoke(units);
         }
     }
 }

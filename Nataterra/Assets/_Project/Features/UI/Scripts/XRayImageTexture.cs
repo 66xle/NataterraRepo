@@ -3,14 +3,12 @@ using UnityEngine.UI;
 
 public class XRayImageTexture : MonoBehaviour
 {
-    [SerializeField] Texture texture;
-
-    public Material runtimeMaterial;
+    public Material XrayMaterial;
     Image sourceImage;
 
-    void Start()
+    public void SetMaterial(Texture2D texture)
     {
-        Material newMat = new Material(runtimeMaterial);
+        Material newMat = new Material(XrayMaterial);
         newMat.SetTexture("_MainTex", texture);
 
         sourceImage = GetComponent<Image>();
@@ -19,7 +17,7 @@ public class XRayImageTexture : MonoBehaviour
 
     void OnDestroy()
     {
-        if (runtimeMaterial != null)
-            Destroy(runtimeMaterial);
+        if (XrayMaterial != null)
+            Destroy(XrayMaterial);
     }
 }
