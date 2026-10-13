@@ -611,7 +611,7 @@ MonoBehaviour:
   EndPhaseButton: {fileID: 1610157731}
   UnitUIPrefab: {fileID: 747202489709594155, guid: 5231f4e94bf8c2749a38527c728f9032, type: 3}
   UnitUIParent: {fileID: 1377129564}
-  UnitSelectionIcon: {fileID: 1714345382328395953, guid: b3e145d8a71d02242bd72c8fd187b1d0, type: 3}
+  UnitSelectionIcon: {fileID: 6909059400024341524, guid: 49db194880221184ea74d70b6666deae, type: 3}
   UnitSelectionParent: {fileID: 1217169458}
   __alchemySerializationData_UIManager:
     DictUnitTextures:

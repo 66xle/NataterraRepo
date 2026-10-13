@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using HunterGoodin.DynamicObjectPooler;
 
 [AlchemySerialize]
 public partial class UIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text PhaseTitle;
     [SerializeField] Button EndPhaseButton;
-
+    
     [Header("Development")]
     [SerializeField] GameObject UnitUIPrefab;
     [SerializeField] Transform UnitUIParent;
@@ -27,13 +28,14 @@ public partial class UIManager : MonoBehaviour
     List<UnitUI> _listOfUnitUI = new();
 
     MapStateMachine MapCtx;
-    UnitSelectionRadial radical;
+    UnitSelectionRadial _radical;
+    List<Transform> _icons = new();
 
     private void Awake()
     {
         InstanceHandler.RegisterInstance(this);
 
-        radical = UnitSelectionParent.GetComponent<UnitSelectionRadial>();
+        _radical = UnitSelectionParent.GetComponent<UnitSelectionRadial>();
     }
 
     private void OnDestroy()
@@ -105,7 +107,8 @@ public partial class UIManager : MonoBehaviour
         foreach (UnitType type in dictTypes.Keys)
         {
             Vector3 dir = spawnPosition - Camera.main.transform.position;
-            GameObject icon = Instantiate(UnitSelectionIcon, UnitSelectionParent);
+
+            GameObject icon = ObjectPoolManager.Instance.SpawnObject(UnitSelectionIcon, UnitSelectionParent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
 
             UnitSelectionIcon xray = icon.GetComponent<UnitSelectionIcon>();
             xray.SetMaterial(DictUnitTextures[type]);
@@ -116,19 +119,29 @@ public partial class UIManager : MonoBehaviour
         for (int i = 0; i < 3f; i++)
         {
             Vector3 dir = spawnPosition - Camera.main.transform.position;
-            GameObject icon = Instantiate(UnitSelectionIcon, UnitSelectionParent);
 
-            UnitSelectionIcon xray = icon.GetComponent<UnitSelectionIcon>();
-            xray.SetMaterial(DictUnitTextures[UnitType.Woodcutter]);
+            GameObject icon = ObjectPoolManager.Instance.SpawnObject(UnitSelectionIcon, UnitSelectionParent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
+            
+            UnitSelectionIcon selectionIcon = icon.GetComponent<UnitSelectionIcon>();
+            selectionIcon.SetMaterial(DictUnitTextures[UnitType.Woodcutter]);
 
             icons.Add(icon.transform);
         }
 
-        radical.SetIcons(icons, spawnPosition);
+        _icons = icons;
+        _radical.SetIcons(icons, spawnPosition);
     }
 
     public void ClearSelectionIcons()
     {
-        radical.Clear();
+        if (_icons.Count == 0) 
+            return;
+
+        foreach (Transform icon in _icons)
+        {
+            ObjectPoolManager.Instance.ReturnObjectToPool(icon.gameObject, ObjectPoolManager.PoolType.SelectionIcon);
+        }
+
+        _icons.Clear();
     }
 }
