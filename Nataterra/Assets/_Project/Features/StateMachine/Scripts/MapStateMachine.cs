@@ -11,6 +11,7 @@ public class MapStateMachine : NetworkBehaviour
     [Header("References")]
     public GameplaySystem GS;
     [SerializeField] LayerMask TerrainLayer;
+    public LayerMask UILayer;
 
     TerrainGridSystem _tgs;
     ServerMap _serverMap;
