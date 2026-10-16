@@ -1979,6 +1979,9 @@ MonoBehaviour:
   TerrainLayer:
     serializedVersion: 2
     m_Bits: 1024
+  UILayer:
+    serializedVersion: 2
+    m_Bits: 32
 --- !u!1 &1517153352
 GameObject:
   m_ObjectHideFlags: 0

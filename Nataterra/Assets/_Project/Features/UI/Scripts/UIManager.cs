@@ -104,26 +104,38 @@ public partial class UIManager : MonoBehaviour
     {
         List<Transform> icons = new();
 
+        
+
         foreach (UnitType type in dictTypes.Keys)
         {
+            Dictionary<int, List<Unit>> dictMovementUnits = new();
+
+            Group group = dictTypes[type];
+
+            List<Unit> units = new();
+            foreach (Unit unit in group.ListOfUnits)
+            {
+                if (Extensions.Contains(units, unit.CurrentMovement, u => u.CurrentMovement, out Unit found))
+                    continue;
+
+                if (dictMovementUnits.ContainsKey(unit.CurrentMovement))
+                {
+                    dictMovementUnits[unit.CurrentMovement].Add(unit);
+                }
+                else
+                {
+                    dictMovementUnits[unit.CurrentMovement] = new List<Unit> { unit };
+                }
+
+                units.Add(unit);
+            }
+
             Vector3 dir = spawnPosition - Camera.main.transform.position;
 
             GameObject icon = ObjectPoolManager.Instance.SpawnObject(UnitSelectionIcon, UnitSelectionParent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
 
-            UnitSelectionIcon xray = icon.GetComponent<UnitSelectionIcon>();
-            xray.SetMaterial(DictUnitTextures[type]);
-
-            icons.Add(icon.transform);
-        }
-
-        for (int i = 0; i < 3f; i++)
-        {
-            Vector3 dir = spawnPosition - Camera.main.transform.position;
-
-            GameObject icon = ObjectPoolManager.Instance.SpawnObject(UnitSelectionIcon, UnitSelectionParent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
-            
             UnitSelectionIcon selectionIcon = icon.GetComponent<UnitSelectionIcon>();
-            selectionIcon.SetMaterial(DictUnitTextures[UnitType.Woodcutter]);
+            selectionIcon.SetData(DictUnitTextures[type], type, dictMovementUnits);
 
             icons.Add(icon.transform);
         }
