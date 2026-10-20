@@ -25,6 +25,7 @@ public class MapStateMachine : NetworkBehaviour
     DijkstraResult _movementResult;
     PlayerID _localPlayerID;
 
+    List<Unit> _selectedUnits = new();
 
     public Dictionary<UnitType, UnitData> DictOfUnits { get { return _dictOfUnits; } }
     public FactionState FactionState { get { return _factionState; } }
@@ -33,6 +34,7 @@ public class MapStateMachine : NetworkBehaviour
     public Cell SelectedCell { get { return _selectedCell; } set { _selectedCell = value; } }
     public GameObject MovementBorder { get { return _movementBorder; } set { _movementBorder = value; } }
     public DijkstraResult MovementResult { get { return _movementResult; } set { _movementResult = value; } }
+    public List<Unit> SelectedUnits { get { return _selectedUnits; } set { _selectedUnits = value; } }
 
     public Action<Unit> OnUnitSelect;
     public Action<Unit> OnUnitDeselect;

@@ -114,12 +114,8 @@ public partial class UIManager : MonoBehaviour
 
             Group group = dictTypes[type];
 
-            List<Unit> units = new();
             foreach (Unit unit in group.ListOfUnits)
             {
-                if (Extensions.Contains(units, unit.CurrentMovement, u => u.CurrentMovement, out Unit found))
-                    continue;
-
                 if (dictMovementUnits.ContainsKey(unit.CurrentMovement))
                 {
                     dictMovementUnits[unit.CurrentMovement].Add(unit);
@@ -128,8 +124,6 @@ public partial class UIManager : MonoBehaviour
                 {
                     dictMovementUnits[unit.CurrentMovement] = new List<Unit> { unit };
                 }
-
-                units.Add(unit);
             }
 
             Vector3 dir = spawnPosition - Camera.main.transform.position;
@@ -180,7 +174,6 @@ public partial class UIManager : MonoBehaviour
 
             UnitSelectionPopup unitSelectionPopup = popup.GetComponent<UnitSelectionPopup>();
             unitSelectionPopup.SetData(icon, movement, DictUnitTextures[icon.GetUnitType()]);
-
         }
     }
 }

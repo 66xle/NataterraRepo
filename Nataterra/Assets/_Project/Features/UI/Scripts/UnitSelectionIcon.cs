@@ -89,23 +89,33 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
         return count;
     }
 
-    Unit SelectUnit()
+    Unit SelectUnit(int movement = -1)
     {
-        foreach (int movement in _listMovements)
+        List<int> temp = new();
+        if (movement == -1)
         {
-            if (_dictMovementUnits[movement].Count == 0)
+            temp = _listMovements;
+        }
+        else
+        {
+            temp.Add(movement);
+        }
+
+        foreach (int movementIndex in temp)
+        {
+            if (_dictMovementUnits[movementIndex].Count == 0)
                 continue;
 
-            Unit selectedUnit = _dictMovementUnits[movement][0];
-            _dictMovementUnits[movement].Remove(selectedUnit);
+            Unit selectedUnit = _dictMovementUnits[movementIndex][0];
+            _dictMovementUnits[movementIndex].Remove(selectedUnit);
 
-            if (_dictSelectedUnits.ContainsKey(movement))
+            if (_dictSelectedUnits.ContainsKey(movementIndex))
             {
-                _dictSelectedUnits[movement].Add(selectedUnit);
+                _dictSelectedUnits[movementIndex].Add(selectedUnit);
             }
             else
             {
-                _dictSelectedUnits[movement] = new List<Unit> { selectedUnit };
+                _dictSelectedUnits[movementIndex] = new List<Unit> { selectedUnit };
             }
 
             return selectedUnit;
@@ -114,21 +124,31 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
         return null;
     }
 
-    Unit DeselectUnit()
+    Unit DeselectUnit(int movement = -1)
     {
-        for (int i = _listMovements.Count - 1; i >= 0; i--)
+        List<int> temp = new();
+        if (movement == -1)
         {
-            int movement = _listMovements[i];
+            temp = _listMovements;
+        }
+        else
+        {
+            temp.Add(movement);
+        }
 
-            if (!_dictSelectedUnits.ContainsKey(movement))
+        for (int i = temp.Count - 1; i >= 0; i--)
+        {
+            int movementIndex = temp[i];
+
+            if (!_dictSelectedUnits.ContainsKey(movementIndex))
                 continue;
 
-            if (_dictSelectedUnits[movement].Count == 0)
+            if (_dictSelectedUnits[movementIndex].Count == 0)
                 continue;
 
-            Unit unit = _dictSelectedUnits[movement][0];
-            _dictSelectedUnits[movement].Remove(unit);
-            _dictMovementUnits[movement].Add(unit);
+            Unit unit = _dictSelectedUnits[movementIndex][0];
+            _dictSelectedUnits[movementIndex].Remove(unit);
+            _dictMovementUnits[movementIndex].Add(unit);
 
             return unit;
         }
@@ -136,7 +156,7 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
         return null;
     }
 
-    void IconStateChange()
+    void IconStateChange(UnitSelectionPopup popup = null, int movement = -1)
     {
         int count = CheckDictSize(_dictSelectedUnits);
         if (count > 0)
@@ -148,31 +168,49 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
             SelectIcon(false);
         }
 
-        RemainingUnitText.text = CheckDictSize(_dictMovementUnits).ToString();
         SelectedUnitText.text = count.ToString();
+        RemainingUnitText.text = CheckDictSize(_dictMovementUnits).ToString();
+
+        if (popup != null)
+        {
+            int selected = _dictSelectedUnits[movement].Count;
+            int remaining = _dictMovementUnits[movement].Count;
+
+            popup.IconStateChange(selected, remaining);
+        }
+    }
+
+    public void SelectIcon(UnitSelectionPopup popup = null, int movement = -1)
+    {
+        Unit unit = SelectUnit(movement);
+        if (unit == null)
+            return;
+
+        IconStateChange(popup, movement);
+
+        MapCtx.OnUnitSelect?.Invoke(unit);
+    }
+
+    public void DeselectIcon(UnitSelectionPopup popup = null, int movement = -1)
+    {
+        Unit unit = DeselectUnit(movement);
+        if (unit == null)
+            return;
+
+        IconStateChange(popup, movement);
+
+        MapCtx.OnUnitDeselect?.Invoke(unit);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            Unit unit = SelectUnit();
-            if (unit == null)
-                return;
-
-            IconStateChange();
-
-            MapCtx.OnUnitSelect?.Invoke(unit);
+            SelectIcon();
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            Unit unit = DeselectUnit();
-            if (unit == null)
-                return;
-
-            IconStateChange();
-
-            MapCtx.OnUnitDeselect?.Invoke(unit);
+            DeselectIcon();
         }
         else if (eventData.button == PointerEventData.InputButton.Middle)
         {

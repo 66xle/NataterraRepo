@@ -46,10 +46,6 @@ public class SMM_MapState : GameplayBaseState
             return;
 
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 10000f, MapCtx.UILayer))
-            return;
-
         Cell cell = TGS.CellGetAtMousePosition();
 
 
@@ -80,6 +76,7 @@ public class SMM_MapState : GameplayBaseState
         TGS.CellDrawBorder(cell, Color.red, 1);
 
         MapCtx.GS.UISystem.ClearSelectionIcons();
+        MapCtx.SelectedUnits.Clear();
 
         CheckForUnit();
     }

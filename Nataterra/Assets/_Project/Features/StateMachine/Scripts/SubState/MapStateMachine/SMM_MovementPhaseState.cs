@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using TGS;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SMM_MovementPhaseState : GameplayBaseState
 {
-    List<Unit> _selectedUnits = new();
-
     public SMM_MovementPhaseState(StateMachineManager context, GameplayStateFactory combatStateFactory) : base(context, combatStateFactory) { }
     public override void EnterState()
     {
         Debug.Log("Entered Movement State");
 
-        _selectedUnits.Clear();
+        MapCtx.SelectedUnits.Clear();
 
         MapCtx.GS.UISystem.EnableEndPhaseButton(true);
 
@@ -54,26 +53,26 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
     void UnitSelect(Unit unit)
     {
-        _selectedUnits.Add(unit);
+        MapCtx.SelectedUnits.Add(unit);
 
         ShowUnitMovementRange();
     }
 
     void UnitDeselect(Unit unit)
     {
-        _selectedUnits.Remove(unit);
+        MapCtx.SelectedUnits.Remove(unit);
 
         ShowUnitMovementRange();
     }
 
     private void ShowUnitMovementRange()
     {
-        if (_selectedUnits.Count == 0) 
+        if (MapCtx.SelectedUnits.Count == 0) 
             return;
 
-        int origin = MapCtx.GetOrigin(_selectedUnits, MapCtx.SelectedCell.index, out bool IsOrigin);
+        int origin = MapCtx.GetOrigin(MapCtx.SelectedUnits, MapCtx.SelectedCell.index, out bool IsOrigin);
 
-        int lowestMovement = MapCtx.GetLowestMovement(_selectedUnits, IsOrigin);
+        int lowestMovement = MapCtx.GetLowestMovement(MapCtx.SelectedUnits, IsOrigin);
 
         if (lowestMovement == 0)
         {
@@ -82,7 +81,7 @@ public class SMM_MovementPhaseState : GameplayBaseState
         }
 
         // If all units are flying set to true
-        bool flying = Extensions.EqualAll(_selectedUnits, true, units => units.IsFlying);
+        bool flying = Extensions.EqualAll(MapCtx.SelectedUnits, true, units => units.IsFlying);
 
         DijkstraResult result = MapCtx.CalculateMovementRange(MapCtx.LocalPlayerID, origin, lowestMovement, TGS.cells, MapCtx.GetState(), flying);
         MapCtx.MovementResult = result;
@@ -100,6 +99,9 @@ public class SMM_MovementPhaseState : GameplayBaseState
 
     private void MoveUnit()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (MapCtx.MovementResult == null)
             return;
 
@@ -118,18 +120,20 @@ public class SMM_MovementPhaseState : GameplayBaseState
             return;
         }
 
-        if (_selectedUnits.Count == 0)
+        if (MapCtx.SelectedUnits.Count == 0)
         {
             Debug.LogError("MovementPhaseState: MoveUnit(): No units are selected");
             return;
         }
 
-        MapCtx.SendCommandToServer(CreateCommand.UnitMove(MapCtx.SelectedCell.index, cell.index, _selectedUnits));
+        MapCtx.SendCommandToServer(CreateCommand.UnitMove(MapCtx.SelectedCell.index, cell.index, MapCtx.SelectedUnits));
 
         MapCtx.MovementResult = null;
         MapCtx.RemoveMovementBorder();
 
         TGS.CellDestroyBorder(MapCtx.SelectedCell.index);
         MapCtx.SelectedCell = null;
+
+        //MapCtx.SelectedUnits.Clear();
     }
 }
