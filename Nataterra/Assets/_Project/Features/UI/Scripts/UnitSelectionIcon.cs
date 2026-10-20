@@ -12,6 +12,7 @@ using static UnityEngine.Rendering.DebugUI;
 public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
 {
     MapStateMachine MapCtx;
+    UIManager UIManager;
 
     [SerializeField] Material XrayMaterial;
     [SerializeField] Image SelectedImage;
@@ -25,9 +26,16 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
 
     List<int> _listMovements = new();
 
+    public List<int> ListOfMovement => _listMovements;
+    public Dictionary<int, List<Unit>> DictMovementUnits => _dictMovementUnits;
+    public Dictionary<int, List<Unit>> DictSelectedUnits => _dictSelectedUnits;
+    public UnitType GetUnitType() => _unitType;
+    public Texture GetTexture() => TextureImage.mainTexture;
+
     private void Start()
     {
         MapCtx = InstanceHandler.GetInstance<MapStateMachine>();
+        UIManager = InstanceHandler.GetInstance<UIManager>();
     }
     void OnDestroy()
     {
@@ -48,6 +56,7 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
         TextureImage.material = newMat;
         _unitType = type;
         _dictMovementUnits = dictMovementUnits;
+        _dictSelectedUnits.Clear();
 
         RemainingUnitText.text = CheckDictSize(_dictMovementUnits).ToString();
         SelectedUnitText.text = "0";
@@ -110,6 +119,10 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
         for (int i = _listMovements.Count - 1; i >= 0; i--)
         {
             int movement = _listMovements[i];
+
+            if (!_dictSelectedUnits.ContainsKey(movement))
+                continue;
+
             if (_dictSelectedUnits[movement].Count == 0)
                 continue;
 
@@ -160,6 +173,10 @@ public class UnitSelectionIcon : MonoBehaviour, IPointerClickHandler
             IconStateChange();
 
             MapCtx.OnUnitDeselect?.Invoke(unit);
+        }
+        else if (eventData.button == PointerEventData.InputButton.Middle)
+        {
+            UIManager.ShowSelectionPopup(true, this);
         }
     }
 }

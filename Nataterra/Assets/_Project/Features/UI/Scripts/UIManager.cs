@@ -21,15 +21,19 @@ public partial class UIManager : MonoBehaviour
     [Header("Selection")]
     [SerializeField] GameObject UnitSelectionIcon;
     [SerializeField] Transform UnitSelectionParent;
+    [SerializeField] GameObject SelectionPopup;
+    [SerializeField] GameObject PopupSelectionIcon;
+    [SerializeField] Transform PopupContent;
 
     [AlchemySerializeField, NonSerialized]
-    public Dictionary<UnitType, Texture2D> DictUnitTextures = new();
+    public Dictionary<UnitType, Sprite> DictUnitTextures = new();
 
     List<UnitUI> _listOfUnitUI = new();
 
     MapStateMachine MapCtx;
     UnitSelectionRadial _radical;
-    List<Transform> _icons = new();
+    List<UnitSelectionIcon> _icons = new();
+    List<GameObject> _popups = new();
 
     private void Awake()
     {
@@ -102,9 +106,7 @@ public partial class UIManager : MonoBehaviour
 
     public void ShowSelectionIcons(Dictionary<UnitType, Group> dictTypes, Vector3 spawnPosition)
     {
-        List<Transform> icons = new();
-
-        
+        List<UnitSelectionIcon> icons = new();
 
         foreach (UnitType type in dictTypes.Keys)
         {
@@ -135,9 +137,9 @@ public partial class UIManager : MonoBehaviour
             GameObject icon = ObjectPoolManager.Instance.SpawnObject(UnitSelectionIcon, UnitSelectionParent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
 
             UnitSelectionIcon selectionIcon = icon.GetComponent<UnitSelectionIcon>();
-            selectionIcon.SetData(DictUnitTextures[type], type, dictMovementUnits);
+            selectionIcon.SetData(DictUnitTextures[type].texture, type, dictMovementUnits);
 
-            icons.Add(icon.transform);
+            icons.Add(selectionIcon);
         }
 
         _icons = icons;
@@ -149,11 +151,36 @@ public partial class UIManager : MonoBehaviour
         if (_icons.Count == 0) 
             return;
 
-        foreach (Transform icon in _icons)
+        foreach (UnitSelectionIcon icon in _icons)
         {
             ObjectPoolManager.Instance.ReturnObjectToPool(icon.gameObject, ObjectPoolManager.PoolType.SelectionIcon);
         }
 
         _icons.Clear();
+        ShowSelectionPopup(false);
+    }
+
+    public void ShowSelectionPopup(bool active, UnitSelectionIcon icon = null)
+    {
+        SelectionPopup.SetActive(active);
+
+        if (!active)
+            return;
+
+        foreach (GameObject obj in _popups)
+        {
+            ObjectPoolManager.Instance.ReturnObjectToPool(obj, ObjectPoolManager.PoolType.SelectionIcon);
+        }
+        _popups.Clear();
+
+        foreach (int movement in icon.ListOfMovement)
+        {
+            GameObject popup = ObjectPoolManager.Instance.SpawnObject(PopupSelectionIcon, PopupContent, Quaternion.identity, ObjectPoolManager.PoolType.SelectionIcon);
+            _popups.Add(popup);
+
+            UnitSelectionPopup unitSelectionPopup = popup.GetComponent<UnitSelectionPopup>();
+            unitSelectionPopup.SetData(icon, movement, DictUnitTextures[icon.GetUnitType()]);
+
+        }
     }
 }

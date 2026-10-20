@@ -14,11 +14,11 @@ public class UnitSelectionRadial : MonoBehaviour
     [SerializeField] float ScaleReferenceDistance = 10f;
     [SerializeField] [Range(0, 1)] float ScaleDistanceMultiplier = 1f;
 
-    List<Transform> _listOfIcons;
+    List<UnitSelectionIcon> _listOfIcons;
     Vector3 _origin;
     Camera _cam;
 
-    public void SetIcons(List<Transform> icons, Vector3 position)
+    public void SetIcons(List<UnitSelectionIcon> icons, Vector3 position)
     {
         transform.position = position;
         _origin = position;
@@ -52,7 +52,7 @@ public class UnitSelectionRadial : MonoBehaviour
         int iconCount = _listOfIcons.Count;
         for (int i = 0; i < iconCount; i++)
         {
-            Transform icon = _listOfIcons[i];
+            Transform icon = _listOfIcons[i].transform;
 
             if (icon == null)
                 continue;
